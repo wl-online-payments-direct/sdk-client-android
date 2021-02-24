@@ -1,0 +1,1 @@
+include ':ingenicodirect-sdk', ':ingenicodirect-sdk-integrationtest'
