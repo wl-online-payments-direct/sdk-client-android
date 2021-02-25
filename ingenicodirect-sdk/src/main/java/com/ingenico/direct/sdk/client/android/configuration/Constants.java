@@ -7,7 +7,7 @@ package com.ingenico.direct.sdk.client.android.configuration;
 public class Constants {
 
 	/** SDK version **/
-	public final static String SDK_IDENTIFIER = "DirectAndroidClientSDK/v1.0.0";
+	public final static String SDK_IDENTIFIER = "DirectAndroidClientSDK/v1.0.1";
 
 	/** SDK creator **/
 	public final static String SDK_CREATOR = "Ingenico";

@@ -14,7 +14,7 @@ Add a requirement to the SDK to your `build.gradle` file, where `x.y.z` is the v
 
     dependencies {
         // other dependencies
-        implementation 'com.ingenico.direct.gateway:direct-sdk-client-android:x.y.z'
+        implementation 'com.ingenico.direct:direct-sdk-client-android:x.y.z'
     }
 
 Manual installation
