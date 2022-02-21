@@ -1,1 +1,8 @@
-include ':ingenicodirect-sdk', ':ingenicodirect-sdk-integrationtest'
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+include ':onlinepayments-sdk'

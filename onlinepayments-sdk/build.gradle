@@ -1,0 +1,90 @@
+plugins {
+    id 'com.android.library'
+    id 'signing'
+}
+
+android {
+    compileSdkVersion 31
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 31
+        versionCode 1
+        versionName "2.0.0"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'org.apache.commons:commons-lang3:3.9'
+    implementation 'androidx.annotation:annotation:1.3.0'
+
+    // Google pay
+    implementation 'com.google.android.gms:play-services-wallet:19.0.0'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:3.4.6'
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    failOnError  false
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.implementation
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+signing {
+    sign configurations.archives
+}
+
+String skipReleaseSigningArg = "${project.hasProperty('skipReleaseSigning') ? project.property('skipReleaseSigning') : 'false'}"
+def skipReleaseSigning = false
+if (skipReleaseSigningArg.equalsIgnoreCase('true')) {
+    skipReleaseSigning = true
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (!skipReleaseSigning && taskGraph.allTasks.any { it instanceof Sign }) {
+        def password = System.getProperty("signing.passphrase")
+        if (password == null) {
+            // Use Java 6's console to read from the console (no good for a CI environment)
+            Console console = System.console()
+            console.printf "\n\nWe have to sign some things in this build." +
+                    "\n\nPlease enter your signing details.\n\n"
+
+            password = console.readPassword("PGP Private Key Password: ")
+
+            console.printf "\nThanks.\n\n"
+        }
+
+        allprojects { ext."signing.keyId" = System.getProperty("signing.keyId") }
+        allprojects { ext."signing.secretKeyRingFile" = System.getProperty("signing.secretKeyRingFile") }
+        allprojects { ext."signing.password" = password }
+    }
+}
