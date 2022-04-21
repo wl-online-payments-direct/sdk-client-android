@@ -210,6 +210,19 @@ public class AssetManager implements OnImageLoadedListener {
 		}
 	}
 
+	public Drawable getImageFromStringUrl(String url, String paymentProductId){
+		try {
+			Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(url).getContent(), null, null);
+			BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
+			cacheHandler.saveImageOnInternalStorage(paymentProductId, bitmapDrawable);
+			return bitmapDrawable;
+		} catch (MalformedURLException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
 	@Override
 	public void onImageLoaded(Drawable image, String productId, Map<String, String> logoMapping, String url) {
 

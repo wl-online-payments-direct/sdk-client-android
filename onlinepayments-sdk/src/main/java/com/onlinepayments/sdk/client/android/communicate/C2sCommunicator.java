@@ -22,7 +22,9 @@ import com.onlinepayments.sdk.client.android.model.paymentproduct.BasicPaymentPr
 import com.onlinepayments.sdk.client.android.model.paymentproduct.BasicPaymentProducts;
 import com.onlinepayments.sdk.client.android.model.paymentproduct.PaymentProduct;
 import com.google.gson.Gson;
+import com.onlinepayments.sdk.client.android.model.paymentproduct.PaymentProductField;
 import com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints.DisplayHintsPaymentItem;
+import com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints.DisplayHintsProductFields;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -153,9 +155,9 @@ public class C2sCommunicator implements Serializable {
 	        BasicPaymentProducts basicPaymentProducts = gson.fromJson(responseBody, BasicPaymentProducts.class);
 
 			for(BasicPaymentProduct paymentProduct : basicPaymentProducts.getBasicPaymentProducts()) {
-			setLogoForDisplayHints(paymentProduct.getDisplayHintsList(), context);
+				setLogoForDisplayHints(paymentProduct, context);
+				setLogoForDisplayHintsList(paymentProduct, context);
 			}
-
 			response.data = basicPaymentProducts;
 			return response;
 
@@ -227,7 +229,12 @@ public class C2sCommunicator implements Serializable {
 			}
 
 			response.data = gson.fromJson(responseBody, PaymentProduct.class);
-			setLogoForDisplayHints(response.data.getDisplayHintsList(), context);
+			setLogoForDisplayHintsList(response.data, context);
+			setLogoForDisplayHints(response.data, context);
+
+			for(PaymentProductField paymentProductField : response.data.getPaymentProductFields()) {
+				setImageForTooltip(paymentProductField.getDisplayHints(), context);
+			}
 
 			return response;
 
@@ -677,10 +684,21 @@ public class C2sCommunicator implements Serializable {
 		}
 	}
 
-	private void setLogoForDisplayHints(List<DisplayHintsPaymentItem> displayHintsPaymentItems, Context context){
+	private void setLogoForDisplayHintsList(BasicPaymentProduct basicPaymentProduct, Context context) {
 		AssetManager assetManager = AssetManager.getInstance(context);
-		for (DisplayHintsPaymentItem displayHints : displayHintsPaymentItems){
-			displayHints.setLogo(assetManager.getImageFromStringUrl(displayHints.getLogoUrl()));
+		for (DisplayHintsPaymentItem displayHints : basicPaymentProduct.getDisplayHintsList()){
+			displayHints.setLogo(assetManager.getImageFromStringUrl(displayHints.getLogoUrl(), basicPaymentProduct.getId()));
 		}
+	}
+
+	private void setLogoForDisplayHints(BasicPaymentProduct basicPaymentProduct, Context context) {
+		AssetManager assetManager = AssetManager.getInstance(context);
+		DisplayHintsPaymentItem displayHints = basicPaymentProduct.getDisplayHints();
+		displayHints.setLogo(assetManager.getImageFromStringUrl(displayHints.getLogoUrl(), basicPaymentProduct.getId()));
+	}
+
+	private void setImageForTooltip(DisplayHintsProductFields displayHintsProductFields, Context context) {
+		AssetManager assetManager = AssetManager.getInstance(context);
+		displayHintsProductFields.getTooltip().setImageDrawable(assetManager.getImageFromStringUrl(displayHintsProductFields.getTooltip().getImageURL()));
 	}
 }

@@ -1,5 +1,9 @@
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
+import android.graphics.drawable.Drawable;
+
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 /**
@@ -12,19 +16,34 @@ import java.io.Serializable;
  */
 public class Tooltip implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -317203058533669043L;
 
-	private String image;
 	private String label;
-
-	public String getImage(){
-		return image;
-	}
+	@SerializedName("image")
+	private String imageURL;
+	private transient Drawable imageDrawable;
 
 	public String getLabel(){
 		return label;
+	}
+
+	public String getImageURL(){
+		return imageURL;
+	}
+
+	/**
+	 * @deprecated use {@link #getImageDrawable()} instead.
+	 */
+	@Deprecated
+	public Drawable getImage(){
+		return imageDrawable;
+	}
+
+	public Drawable getImageDrawable() {
+		return imageDrawable;
+	}
+
+	public void setImageDrawable(Drawable imageDrawable){
+		this.imageDrawable = imageDrawable;
 	}
 }
