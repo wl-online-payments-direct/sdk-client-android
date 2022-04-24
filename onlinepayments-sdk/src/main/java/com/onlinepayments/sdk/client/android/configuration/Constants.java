@@ -7,7 +7,7 @@ package com.onlinepayments.sdk.client.android.configuration;
 public class Constants {
 
 	/** SDK version **/
-	public final static String SDK_IDENTIFIER = "OnlinePaymentsAndroidClientSDK/v2.0.1";
+	public final static String SDK_IDENTIFIER = "OnlinePaymentsAndroidClientSDK/v2.0.2";
 
 	/** SDK creator **/
 	public final static String SDK_CREATOR = "OnlinePayments";

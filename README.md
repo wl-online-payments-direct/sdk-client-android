@@ -12,5 +12,5 @@ Add a requirement to the SDK to your `build.gradle` file, where `x.y.z` is the v
 
     dependencies {
         // other dependencies
-        implementation 'com.worldline-solutions.direct:sdk-client-android:x.y.z'
+        implementation 'com.worldline-solutions:sdk-client-android:x.y.z'
     }
