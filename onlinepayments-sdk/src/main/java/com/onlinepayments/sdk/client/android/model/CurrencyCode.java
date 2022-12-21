@@ -4,8 +4,10 @@ package com.onlinepayments.sdk.client.android.model;
  * This enum is a full list of all Currency Codes supported by the Online Payments platform.
  *
  * Copyright 2020 Global Collect Services B.V
- *
+ * @deprecated This enum will be removed. Use 3-letter Currency Code Strings instead, adhering to the ISO 4217 standard.
+ *     @see <a href="https://www.iso.org/iso-4217-currency-codes.html">ISO 4217 Currency Codes</a>
  */
+@Deprecated
 public enum CurrencyCode {
 	AED,
 	AFN,

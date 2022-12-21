@@ -5,7 +5,10 @@ package com.onlinepayments.sdk.client.android.model;
  *
  * Copyright 2020 Global Collect Services B.V
  *
+ * @deprecated This enum will be removed. Use 2-letter Country Code Strings instead, adhering to the ISO 3166-1 alpha-2 standard.
+ * @see <a href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166 Country Codes</a>
  */
+@Deprecated
 public enum CountryCode {
 	AD,
 	AE,

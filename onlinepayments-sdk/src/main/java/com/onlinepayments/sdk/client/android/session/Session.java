@@ -288,7 +288,15 @@ public class Session implements OnBasicPaymentProductsCallCompleteListener, OnIi
         }
     }
 
+    /**
+     * @deprecated use {@link #getNetworkForCustomerAndPaymentProductId} instead
+     */
+    @Deprecated
     public void getNetworkForCustomerAndPaymentProductId(String customerId, String productId, CountryCode countryCode, CurrencyCode currencyCode, Context context, PaymentContext paymentContext, PaymentProductNetworkAsyncTask.PaymentProductNetworkListener listener) {
+        getNetworkForCustomerAndPaymentProductId(customerId, productId, countryCode.toString(), currencyCode.toString(), context, paymentContext, listener);
+    }
+
+    public void getNetworkForCustomerAndPaymentProductId(String customerId, String productId, String countryCode, String currencyCode, Context context, PaymentContext paymentContext, PaymentProductNetworkAsyncTask.PaymentProductNetworkListener listener) {
 
         Map<String, Object> objectToCheck = new HashMap();
         objectToCheck.put("context", context);
@@ -414,11 +422,10 @@ public class Session implements OnBasicPaymentProductsCallCompleteListener, OnIi
 
 
     private PaymentItemCacheKey createPaymentItemCacheKey(PaymentContext paymentContext, String paymentItemId) {
-
         // Create the cache key for this retrieved BasicPaymentitem
         return new PaymentItemCacheKey(paymentContext.getAmountOfMoney().getAmount(),
-                paymentContext.getCountryCode(),
-                paymentContext.getAmountOfMoney().getCurrencyCode(),
+                paymentContext.getCountryCodeString(),
+                paymentContext.getAmountOfMoney().getCurrencyCodeString(),
                 paymentContext.isRecurring(),
                 paymentItemId);
     }

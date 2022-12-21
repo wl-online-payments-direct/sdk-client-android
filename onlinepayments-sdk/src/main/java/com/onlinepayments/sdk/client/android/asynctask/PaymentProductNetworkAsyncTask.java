@@ -27,9 +27,17 @@ public class PaymentProductNetworkAsyncTask extends AsyncTask<String, Void, ApiR
     
     private String productId;
     private String customerId;
-    private CurrencyCode currencyCode;
-    private CountryCode countryCode;
+    private String currencyCode;
+    private String countryCode;
 
+    /**
+     * @deprecated use {@link #PaymentProductNetworkAsyncTask(String, String, String, String, C2sCommunicator, Context, PaymentContext, PaymentProductNetworkListener)} instead
+     */
+    @Deprecated
+    public PaymentProductNetworkAsyncTask(String productId, String customerId, CurrencyCode currencyCode, CountryCode countryCode,
+                                          C2sCommunicator communicator, Context context, PaymentContext paymentContext, PaymentProductNetworkListener listener) {
+        this(productId, customerId, currencyCode.toString(), countryCode.toString(), communicator, context, paymentContext, listener);
+    }
     /**
      * Constructor
      *
@@ -41,7 +49,7 @@ public class PaymentProductNetworkAsyncTask extends AsyncTask<String, Void, ApiR
      * @param communicator, Communicator which does the communication to the GC gateway
      * @param listener,     listener which will be called by the AsyncTask
      */
-    public PaymentProductNetworkAsyncTask(String productId, String customerId, CurrencyCode currencyCode, CountryCode countryCode,
+    public PaymentProductNetworkAsyncTask(String productId, String customerId, String currencyCode, String countryCode,
                                           C2sCommunicator communicator, Context context, PaymentContext paymentContext, PaymentProductNetworkListener listener) {
         if (productId == null) {
             throw new InvalidParameterException("Error creating PaymentProductNetworkAsyncTask, productId may not be null");

@@ -133,10 +133,10 @@ public class C2sCommunicator implements Serializable {
 
 			// Add query parameters
 			StringBuilder queryString = new StringBuilder();
-			queryString.append("?countryCode=").append(paymentContext.getCountryCode());
+			queryString.append("?countryCode=").append(paymentContext.getCountryCodeString());
 			queryString.append("&amount=").append(paymentContext.getAmountOfMoney().getAmount());
 			queryString.append("&isRecurring=").append(paymentContext.isRecurring());
-			queryString.append("&currencyCode=").append(paymentContext.getAmountOfMoney().getCurrencyCode());
+			queryString.append("&currencyCode=").append(paymentContext.getAmountOfMoney().getCurrencyCodeString());
 			queryString.append("&hide=fields");
 			queryString.append("&").append(createCacheBusterParameter());
 
@@ -208,10 +208,10 @@ public class C2sCommunicator implements Serializable {
 
 			// Add query parameters
 			StringBuilder queryString = new StringBuilder();
-			queryString.append("?countryCode=").append(paymentContext.getCountryCode());
+			queryString.append("?countryCode=").append(paymentContext.getCountryCodeString());
 			queryString.append("&amount=").append(paymentContext.getAmountOfMoney().getAmount());
 			queryString.append("&isRecurring=").append(paymentContext.isRecurring());
-			queryString.append("&currencyCode=").append(paymentContext.getAmountOfMoney().getCurrencyCode());
+			queryString.append("&currencyCode=").append(paymentContext.getAmountOfMoney().getCurrencyCodeString());
 			if (paymentContext.isForceBasicFlow()!= null) {
 				queryString.append("&forceBasicFlow=").append(paymentContext.isForceBasicFlow());
 			}
@@ -258,7 +258,15 @@ public class C2sCommunicator implements Serializable {
 		}
 	}
 
+	/**
+	 * @deprecated use {@link #getPaymentProductNetwork(String, String, String, String, Context, PaymentContext)} instead
+	 */
+	@Deprecated
 	public ApiResponse<PaymentProductNetworkResponse> getPaymentProductNetwork(String customerId, String productId, CurrencyCode currencyCode, CountryCode countryCode, Context context, PaymentContext paymentContext) {
+		return getPaymentProductNetwork(customerId, productId, currencyCode.toString(), countryCode.toString(), context, paymentContext);
+	}
+
+	public ApiResponse<PaymentProductNetworkResponse> getPaymentProductNetwork(String customerId, String productId, String currencyCode, String countryCode, Context context, PaymentContext paymentContext) {
 
 		if (customerId == null) {
 			throw new InvalidParameterException("Error getting PaymentProduct network, customerId may not be null");
@@ -291,10 +299,10 @@ public class C2sCommunicator implements Serializable {
 
 			// Add query parameters
 			StringBuilder queryString = new StringBuilder();
-			queryString.append("?countryCode=").append(paymentContext.getCountryCode());
+			queryString.append("?countryCode=").append(paymentContext.getCountryCodeString());
 			queryString.append("&amount=").append(paymentContext.getAmountOfMoney().getAmount());
 			queryString.append("&isRecurring=").append(paymentContext.isRecurring());
-			queryString.append("&currencyCode=").append(paymentContext.getAmountOfMoney().getCurrencyCode());
+			queryString.append("&currencyCode=").append(paymentContext.getAmountOfMoney().getCurrencyCodeString());
 			queryString.append("&").append(createCacheBusterParameter());
 			completePath += queryString.toString();
 
