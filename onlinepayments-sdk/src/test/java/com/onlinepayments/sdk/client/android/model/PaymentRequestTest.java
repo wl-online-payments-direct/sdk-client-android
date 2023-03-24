@@ -6,7 +6,7 @@ import com.onlinepayments.sdk.client.android.testUtil.GsonHelper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,11 +22,11 @@ import static org.junit.Assert.*;
 @RunWith(MockitoJUnitRunner.class)
 public class PaymentRequestTest {
 
-    private static PaymentProduct paymentProductVisa =  GsonHelper.fromResourceJson("paymentProductVisa.json", PaymentProduct.class);
-    private static PaymentProduct paymentProductInvoice = GsonHelper.fromResourceJson("paymentProductInVoice.json", PaymentProduct.class);
-    private static PaymentProduct paymentProductPayPal = GsonHelper.fromResourceJson("paymentProductPayPal.json", PaymentProduct.class);
+    private final PaymentProduct paymentProductVisa =  GsonHelper.fromResourceJson("paymentProductVisa.json", PaymentProduct.class);
+    private final PaymentProduct paymentProductInvoice = GsonHelper.fromResourceJson("paymentProductInVoice.json", PaymentProduct.class);
+    private final PaymentProduct paymentProductPayPal = GsonHelper.fromResourceJson("paymentProductPayPal.json", PaymentProduct.class);
 
-    private static AccountOnFile accountOnFileVisa = GsonHelper.fromResourceJson("accountOnFileVisa.json", AccountOnFile.class);
+    private final AccountOnFile accountOnFileVisa = GsonHelper.fromResourceJson("accountOnFileVisa.json", AccountOnFile.class);
 
     public static Map<String, String> allValidValuesVisa = new HashMap<>();
     static {

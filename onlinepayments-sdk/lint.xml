@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="UnusedResources">
+        <ignore path="src/main/res/*" />
+    </issue>
+    <issue id="TypographyEllipsis">
+        <ignore path="src/main/res/*" />
+    </issue>
+    <issue id="Typos">
+        <ignore path="src/main/res/*" />
+    </issue>
+    <issue id="IconMissingDensityFolder">
+        <ignore path="src/main/res" />
+    </issue>
+    <issue id="IconDuplicates">
+        <ignore path="src/main/res/*" />
+    </issue>
+    <issue id="StaticFieldLeak">
+        <ignore path="src/main/java/com/onlinepayments/sdk/client/android/manager/AssetManager" />
+        <ignore path="src/main/java/com/onlinepayments/sdk/client/android/asynctask/*" />
+    </issue>
+</lint>

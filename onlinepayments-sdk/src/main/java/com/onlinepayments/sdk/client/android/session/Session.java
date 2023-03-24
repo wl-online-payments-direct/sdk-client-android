@@ -170,7 +170,7 @@ public class Session implements OnBasicPaymentProductsCallCompleteListener, OnIi
         this.paymentContext = paymentContext;
 
         // Add OnBasicPaymentProductsCallCompleteListener and this class to list of listeners so we can store the paymentproducts here
-        List<OnBasicPaymentProductsCallCompleteListener> listeners = new ArrayList<OnBasicPaymentProductsCallCompleteListener>();
+        List<OnBasicPaymentProductsCallCompleteListener> listeners = new ArrayList<>();
         listeners.add(this);
         listeners.add(listener);
 
@@ -199,7 +199,7 @@ public class Session implements OnBasicPaymentProductsCallCompleteListener, OnIi
         this.paymentContext = paymentContext;
 
         // Add OnBasicPaymentProductsCallCompleteListener and this class to list of listeners so we can store the paymentproducts here
-        List<BasicPaymentProductsAsyncTask.BasicPaymentProductsCallListener> listeners = new ArrayList<BasicPaymentProductsAsyncTask.BasicPaymentProductsCallListener>();
+        List<BasicPaymentProductsAsyncTask.BasicPaymentProductsCallListener> listeners = new ArrayList<>();
         listeners.add(this);
         listeners.add(listener);
 
@@ -239,7 +239,7 @@ public class Session implements OnBasicPaymentProductsCallCompleteListener, OnIi
         } else {
 
             // Add OnPaymentProductsCallComplete listener and this class to list of listeners so we can store the paymentproduct here
-            List<OnPaymentProductCallCompleteListener> listeners = new ArrayList<OnPaymentProductCallCompleteListener>();
+            List<OnPaymentProductCallCompleteListener> listeners = new ArrayList<>();
             listeners.add(this);
             listeners.add(listener);
 
@@ -278,7 +278,7 @@ public class Session implements OnBasicPaymentProductsCallCompleteListener, OnIi
         } else {
 
             // Add OnPaymentProductsCallComplete listener and this class to list of listeners so we can store the paymentproduct here
-            List<PaymentProductAsyncTask.PaymentProductCallListener> listeners = new ArrayList<PaymentProductAsyncTask.PaymentProductCallListener>();
+            List<PaymentProductAsyncTask.PaymentProductCallListener> listeners = new ArrayList<>();
             listeners.add(this);
             listeners.add(listener);
 
@@ -329,7 +329,7 @@ public class Session implements OnBasicPaymentProductsCallCompleteListener, OnIi
         nullCheck("IinDetails", objectsToCheck);
 
         // Add OnPaymentProductsCallComplete listener and this class to list of listeners so we can reset the iinLookupPending flag
-        List<OnIinLookupCompleteListener> listeners = new ArrayList<OnIinLookupCompleteListener>();
+        List<OnIinLookupCompleteListener> listeners = new ArrayList<>();
         listeners.add(this);
         listeners.add(listener);
 

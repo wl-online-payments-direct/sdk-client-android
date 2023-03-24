@@ -34,7 +34,7 @@ public class BasicPaymentProduct implements BasicPaymentItem, Serializable {
 	private List<DisplayHintsPaymentItem> displayHintsList = new ArrayList<>();
 
 	// List containing all AccountOnFiles
-	private List<AccountOnFile> accountsOnFile = new ArrayList<AccountOnFile>();
+	private List<AccountOnFile> accountsOnFile = new ArrayList<>();
 
 	// Payment product specific data
 	private PaymentProduct302SpecificData paymentProduct302SpecificData;

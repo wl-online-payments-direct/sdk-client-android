@@ -17,9 +17,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.onlinepayments.sdk.client.android.configuration.Constants;
-import com.onlinepayments.sdk.client.android.Util;
 import com.onlinepayments.sdk.client.android.asynctask.LoadImageAsyncTask;
 import com.onlinepayments.sdk.client.android.asynctask.LoadImageAsyncTask.OnImageLoadedListener;
 import com.onlinepayments.sdk.client.android.caching.CacheHandler;
@@ -36,6 +36,9 @@ import com.google.gson.reflect.TypeToken;
  *
  */
 public class AssetManager implements OnImageLoadedListener {
+
+	// Tag used for logging
+	private static final String TAG = AssetManager.class.getName();
 
 	// Name of cache in preferences
 	private static final String LOGO_MAPPING_FILENAME = "initial_logo_mapping.list";
@@ -155,15 +158,15 @@ public class AssetManager implements OnImageLoadedListener {
 
 		// Parse the LOGO_MAPPING_FILENAME as a properties file
 		Properties properties = new Properties();
-		try {
-			InputStream inputStream = context.getAssets().open(LOGO_MAPPING_FILENAME);
+
+		try(InputStream inputStream = context.getAssets().open(LOGO_MAPPING_FILENAME)) {
 			properties.load(inputStream);
 		} catch (IOException e) {
 			return null;
 		}
 
 		// Fill the logoMapping with all entries
-		Map<String, String> logoMapping = new HashMap<String, String>();
+		Map<String, String> logoMapping = new HashMap<>();
 		for (Entry<Object, Object> property : properties.entrySet()) {
 			logoMapping.put((String) property.getKey(), (String) property.getValue());
 		}

@@ -2,6 +2,7 @@ package com.onlinepayments.sdk.client.android.communicate;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -169,17 +170,17 @@ public class C2sCommunicatorConfiguration implements Serializable {
 		}
 
 		// Check if the URL is correct
-		if(clientApiUrl.toLowerCase().endsWith(API_PATH)) {
+		if(clientApiUrl.toLowerCase(Locale.ROOT).endsWith(API_PATH)) {
 			return clientApiUrl;
 		}
 
 		// Add the version if it is missing
-		if(clientApiUrl.toLowerCase().endsWith(API_BASE)) {
+		if(clientApiUrl.toLowerCase(Locale.ROOT).endsWith(API_BASE)) {
 			return clientApiUrl + API_VERSION;
 		}
 
 		// Check if the wrong version is set
-		Matcher versionMatcher = VERSION_PATTERN.matcher(clientApiUrl.toLowerCase());
+		Matcher versionMatcher = VERSION_PATTERN.matcher(clientApiUrl.toLowerCase(Locale.ROOT));
 		if (versionMatcher.matches()) {
 			String version = versionMatcher.group(1);
 			throw new InvalidParameterException("This version of the Online Payments is only compatible with '" + API_PATH + "', you supplied: '" + version + "'");

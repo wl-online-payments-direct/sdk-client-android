@@ -2,7 +2,6 @@ package com.onlinepayments.sdk.client.android.encryption;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -73,7 +72,7 @@ public class Encryptor {
 
 			// Create protected header and encode it with Base64 encoding
 			String protectedHeader = createProtectedHeader();
-			String encodededProtectedHeader = encryptUtil.base64UrlEncode(protectedHeader.getBytes());
+			String encodededProtectedHeader = encryptUtil.base64UrlEncode(protectedHeader.getBytes(StandardCharsets.UTF_8));
 
 			// Create ContentEncryptionKey, is a random byte[]
 			byte[] contentEncryptionKey = encryptUtil.generateSecureRandomBytes(CONTENT_ENCRYPTION_KEY_SIZE);
@@ -96,12 +95,7 @@ public class Encryptor {
 
 			// Create Additional Authenticated Data  and Additional Authenticated Data Length
 			byte[] additionalAuthenticatedData = new byte[0];
-			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-				additionalAuthenticatedData = encodededProtectedHeader.getBytes(StandardCharsets.UTF_8);
-			} else {
-				// StandardCharsets is only available from API level 19 and up.
-				additionalAuthenticatedData = encodededProtectedHeader.getBytes(Charset.forName("UTF-8"));
-			}
+			additionalAuthenticatedData = encodededProtectedHeader.getBytes(StandardCharsets.UTF_8);
 			byte[] al = calculateAdditionalAuthenticatedDataLength(additionalAuthenticatedData);
 
 			// Calculates HMAC
@@ -116,10 +110,9 @@ public class Encryptor {
 											   encodededinitializationVector,
 											   encodedCipherText, encodedAuthenticationTag);
 
-		} catch (EncryptDataException e) {
+		} catch (EncryptDataException | IOException e) {
 			Log.i(TAG, "Error while encrypting fields" + e.getMessage());
 		}
-
 
 		return null;
 	}
@@ -137,23 +130,12 @@ public class Encryptor {
 	 *
 	 * @return encrypted
 	 */
-	private byte[] calculateHMAC(byte[] macKey, byte[] additionalAuthenticatedData, byte[] initializationVector, byte[] cipherText, byte[] al) {
+	private byte[] calculateHMAC(byte[] macKey, byte[] additionalAuthenticatedData, byte[] initializationVector, byte[] cipherText, byte[] al) throws IOException, EncryptDataException {
+		// Create HMAC Computation input
+		byte[] hmacInput = encryptUtil.concatenateByteArrays(additionalAuthenticatedData, initializationVector, cipherText, al);
 
-		try {
-			// Create HMAC Computation input
-			byte[] hmacInput = encryptUtil.concatenateByteArrays(additionalAuthenticatedData, initializationVector, cipherText, al);
-
-			// And calculate HMAC over those byte[]
-			return encryptUtil.calculateHmac(macKey, hmacInput);
-
-		} catch (EncryptDataException e) {
-			Log.i(TAG, "Error while encrypting fields" + e.getMessage());
-
-		} catch (IOException e) {
-			Log.i(TAG, "Error while encrypting fields" + e.getMessage());
-		}
-
-		return null;
+		// And calculate HMAC over those byte[]
+		return encryptUtil.calculateHmac(macKey, hmacInput);
 	}
 
 

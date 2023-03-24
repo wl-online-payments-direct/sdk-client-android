@@ -5,10 +5,9 @@ import com.onlinepayments.sdk.client.android.testUtil.GsonHelper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Junit Testclass which tests PaymentProductField apply-/removeMask methods with no Mask present
@@ -19,35 +18,35 @@ import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class PaymentProductFieldTest {
 
-    private PaymentProductField paymentProductFieldWithoutMask = GsonHelper.fromResourceJson("paymentProductFieldWithoutMask.json", PaymentProductField.class);
+    private final PaymentProductField paymentProductFieldWithoutMask = GsonHelper.fromResourceJson("paymentProductFieldWithoutMask.json", PaymentProductField.class);
 
 
     @Test
     public void testMaskingSingleAddedCharacterInclCursor() {
         FormatResult result = paymentProductFieldWithoutMask.applyMask("123", "12", 2, 0, 1);
         assertEquals("123", result.getFormattedResult());
-        assertTrue(result.getCursorIndex() == 3);
+        assertEquals(3, result.getCursorIndex().intValue());
     }
 
     @Test
     public void testMaskingTwoAddedCharactersInclCursor() {
         FormatResult result = paymentProductFieldWithoutMask.applyMask("123", "1", 1, 0, 2);
         assertEquals("123", result.getFormattedResult());
-        assertTrue(result.getCursorIndex() == 3);
+        assertEquals(3, result.getCursorIndex().intValue());
     }
 
     @Test
     public void testMaskingSingleRemovedCharacterInclCursor() {
         FormatResult result = paymentProductFieldWithoutMask.applyMask("12", "123", 3, 1, 0);
         assertEquals("12", result.getFormattedResult());
-        assertTrue(result.getCursorIndex() == 2);
+        assertEquals(2, result.getCursorIndex().intValue());
     }
 
     @Test
     public void testMaskingTwoRemovedCharactersInclCursor() {
         FormatResult result = paymentProductFieldWithoutMask.applyMask("1", "123", 3, 2, 0);
         assertEquals("1", result.getFormattedResult());
-        assertTrue(result.getCursorIndex() == 1);
+        assertEquals(1, result.getCursorIndex().intValue());
     }
 
 
@@ -55,28 +54,28 @@ public class PaymentProductFieldTest {
     public void testMaskingSingleAddedCharacterInclCursorDeprecatedVersion() {
         FormatResult result = paymentProductFieldWithoutMask.applyMask("123", "12", 2);
         assertEquals("123", result.getFormattedResult());
-        assertTrue(result.getCursorIndex() == 2);
+        assertEquals(2, result.getCursorIndex().intValue());
     }
 
     @Test
     public void testMaskingTwoAddedCharactersInclCursorDeprecatedVersion() {
         FormatResult result = paymentProductFieldWithoutMask.applyMask("123", "1", 1);
         assertEquals("123", result.getFormattedResult());
-        assertTrue(result.getCursorIndex() == 1);
+        assertEquals(1, result.getCursorIndex().intValue());
     }
 
     @Test
     public void testMaskingSingleRemovedCharacterInclCursorDeprecatedVersion() {
         FormatResult result = paymentProductFieldWithoutMask.applyMask("12", "123", 2);
         assertEquals("12", result.getFormattedResult());
-        assertTrue(result.getCursorIndex() == 2);
+        assertEquals(2, result.getCursorIndex().intValue());
     }
 
     @Test
     public void testMaskingTwoRemovedCharactersInclCursorDeprecatedVersion() {
         FormatResult result = paymentProductFieldWithoutMask.applyMask("1", "123", 1);
         assertEquals("1", result.getFormattedResult());
-        assertTrue(result.getCursorIndex() == 1);
+        assertEquals(1, result.getCursorIndex().intValue());
     }
 
 

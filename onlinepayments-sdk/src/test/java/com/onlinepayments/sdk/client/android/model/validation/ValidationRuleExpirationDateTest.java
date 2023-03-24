@@ -11,9 +11,6 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import com.onlinepayments.sdk.client.android.model.validation.ValidationRuleExpirationDate;
-import com.onlinepayments.sdk.client.android.model.validation.ValidationType;
-
 public class ValidationRuleExpirationDateTest {
 
     private final ValidationRuleExpirationDate testValidationRule = new ValidationRuleExpirationDate("", ValidationType.EXPIRATIONDATE);

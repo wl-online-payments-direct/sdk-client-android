@@ -7,7 +7,7 @@ package com.onlinepayments.sdk.client.android.configuration;
 public class Constants {
 
 	/** SDK version **/
-	public final static String SDK_IDENTIFIER = "OnlinePaymentsAndroidClientSDK/v2.0.3";
+	public final static String SDK_IDENTIFIER = "OnlinePaymentsAndroidClientSDK/v2.0.4";
 
 	/** SDK creator **/
 	public final static String SDK_CREATOR = "OnlinePayments";
@@ -36,15 +36,15 @@ public class Constants {
 	public static final int ACCEPTABLE_WAIT_TIME_IN_MILISECONDS = 10000;
 
 	/** Cards Group ID **/
-	public static String PAYMENTPRODUCTGROUPID_CARDS = "cards";
+	public final static String PAYMENTPRODUCTGROUPID_CARDS = "cards";
 
 	/** Payment product Id's of android and apple pay **/
 	public final static String PAYMENTPRODUCTID_APPLEPAY = "302";
 	public final static String PAYMENTPRODUCTID_GOOGLEPAY = "320";
 
 	public final static int GOOGLE_API_VERSION = 2;
-	public final static String 	GOOGLE_PAY_TOKEN_FIELD_ID = "encryptedPaymentData";
+	public final static String GOOGLE_PAY_TOKEN_FIELD_ID = "encryptedPaymentData";
 
 	/** Link placeholder for label texts **/
-	public static String LINK_PLACEHOLDER = "{link}";
+	public final static String LINK_PLACEHOLDER = "{link}";
 }

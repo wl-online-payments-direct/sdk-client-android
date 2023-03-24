@@ -1,5 +1,6 @@
 package com.onlinepayments.sdk.client.android;
 
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class Util {
 			throw new InvalidParameterException("Error creating metadata, context may not be null.");
 		}
 
-		Map<String, String> metaData = new HashMap<String, String>();
+		Map<String, String> metaData = new HashMap<>();
 
 		// Add OS + buildversion
 		metaData.put(METADATA_PLATFORM_IDENTIFIER, "Android/" + android.os.Build.VERSION.RELEASE);
@@ -106,7 +107,7 @@ public class Util {
 
 		Gson gson = new Gson();
 		String jsonMetadata = gson.toJson(getMetadata(context));
-		String encodedData = encryptUtil.base64UrlEncode(jsonMetadata.getBytes());
+		String encodedData = encryptUtil.base64UrlEncode(jsonMetadata.getBytes(StandardCharsets.UTF_8));
 
 		return encodedData;
 	}
@@ -122,7 +123,7 @@ public class Util {
 
 		Gson gson = new Gson();
 		String jsonMetadata = gson.toJson(getMetadata(context, appIdentifier, null));
-		String encodedData = encryptUtil.base64UrlEncode(jsonMetadata.getBytes());
+		String encodedData = encryptUtil.base64UrlEncode(jsonMetadata.getBytes(StandardCharsets.UTF_8));
 
 		return encodedData;
 	}
@@ -139,7 +140,7 @@ public class Util {
 
 		Gson gson = new Gson();
 		String jsonMetadata = gson.toJson(getMetadata(context, appIdentifier, ipAddress));
-		String encodedData = encryptUtil.base64UrlEncode(jsonMetadata.getBytes());
+		String encodedData = encryptUtil.base64UrlEncode(jsonMetadata.getBytes(StandardCharsets.UTF_8));
 
 		return encodedData;
 	}
@@ -156,7 +157,7 @@ public class Util {
 
 		Gson gson = new Gson();
 		String jsonMetadata = gson.toJson(metadata);
-		String encodedData = encryptUtil.base64UrlEncode(jsonMetadata.getBytes());
+		String encodedData = encryptUtil.base64UrlEncode(jsonMetadata.getBytes(StandardCharsets.UTF_8));
 
 		return encodedData;
 	}

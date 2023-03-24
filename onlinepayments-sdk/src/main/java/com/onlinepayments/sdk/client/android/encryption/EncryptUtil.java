@@ -3,6 +3,7 @@ package com.onlinepayments.sdk.client.android.encryption;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 
@@ -47,7 +48,7 @@ public class EncryptUtil {
 	 * @throws UnsupportedEncodingException
 	 */
 	public String base64UrlEncode(byte[] data) {
-		String encodedData = new String(Base64.encode(data, Base64.URL_SAFE));
+		String encodedData = new String(Base64.encode(data, Base64.URL_SAFE), StandardCharsets.UTF_8);
 		encodedData = encodedData.replace("=", ""); // replace wrapping characters
 		encodedData = encodedData.replace("\n", ""); // replace wrapping characters
 		return encodedData;
@@ -115,7 +116,7 @@ public class EncryptUtil {
 		    Cipher aesCipher = Cipher.getInstance(AES_ALGORITHM_MODE);
 		    aesCipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameter);
 
-		    byte[] encryptedData = aesCipher.doFinal(payload.getBytes());
+		    byte[] encryptedData = aesCipher.doFinal(payload.getBytes(StandardCharsets.UTF_8));
 		    return encryptedData;
 
 		} catch (Exception e) {

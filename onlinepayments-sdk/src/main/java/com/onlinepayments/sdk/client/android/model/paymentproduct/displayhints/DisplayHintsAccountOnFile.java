@@ -19,7 +19,7 @@ public class DisplayHintsAccountOnFile implements Serializable {
 	private static final long serialVersionUID = 3446099654728722104L;
 
 
-	private List<AccountOnFileDisplay> labelTemplate = new ArrayList<AccountOnFileDisplay>();
+	private List<AccountOnFileDisplay> labelTemplate = new ArrayList<>();
 
 	public List<AccountOnFileDisplay> getLabelTemplate(){
 		return labelTemplate;
