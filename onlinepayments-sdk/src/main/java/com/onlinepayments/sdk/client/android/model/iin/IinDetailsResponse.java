@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.iin;
 
 import com.onlinepayments.sdk.client.android.model.CountryCode;
@@ -6,10 +10,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Pojo that contains the response for IIN lookup
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO that contains the response for IIN lookup.
  */
 public class IinDetailsResponse implements Serializable {
 
@@ -21,6 +22,10 @@ public class IinDetailsResponse implements Serializable {
 	private List<IinDetail> coBrands;
 	private IinStatus status;
 
+	/**
+	 @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public IinDetailsResponse(IinStatus status) {
 		paymentProductId = null;
 		countryCode = null;
@@ -42,8 +47,9 @@ public class IinDetailsResponse implements Serializable {
 	}
 
 	/**
-	 * @deprecated In the next major release, the type of countryCode will change to String.
 	 * Note that 'null' will be returned when an unknown String value was set.
+	 *
+	 * @deprecated In the next major release, the type of countryCode will change to String.
 	 * Use {@link #getCountryCodeString()} instead.
 	 */
 	@Deprecated

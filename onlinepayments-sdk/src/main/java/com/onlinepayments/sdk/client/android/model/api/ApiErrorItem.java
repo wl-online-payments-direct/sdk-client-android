@@ -1,12 +1,13 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.api;
 
 import java.io.Serializable;
 
 /**
- * The error item in the error body
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * The error item in the error body.
  */
 public class ApiErrorItem implements Serializable {
 

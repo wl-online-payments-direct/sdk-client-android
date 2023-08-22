@@ -1,9 +1,9 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.exception;
 
-/**
- * Copyright 2020 Global Collect Services B.V
- *
- */
 public class EncryptDataException extends Exception {
 
 

@@ -1,10 +1,17 @@
+/*
+ * Copyright 2017 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.communicate;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 
-import com.onlinepayments.sdk.client.android.manager.AssetManager;
 import com.onlinepayments.sdk.client.android.model.CountryCode;
 import com.onlinepayments.sdk.client.android.model.CurrencyCode;
 import com.onlinepayments.sdk.client.android.model.PaymentProductNetworkResponse;
@@ -23,10 +30,12 @@ import com.onlinepayments.sdk.client.android.model.paymentproduct.BasicPaymentPr
 import com.onlinepayments.sdk.client.android.model.paymentproduct.PaymentProduct;
 import com.google.gson.Gson;
 import com.onlinepayments.sdk.client.android.model.paymentproduct.PaymentProductField;
+import com.onlinepayments.sdk.client.android.model.paymentproduct.Tooltip;
 import com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints.DisplayHintsPaymentItem;
 import com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints.DisplayHintsProductFields;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
@@ -46,11 +55,11 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 /**
- * Handles all communication with the Client API.
+ * Handles all communication with the Online Payments Client API.
  *
- * Copyright 2017 Global Collect Services B.V
- *
+ * @deprecated In a future release, this class, its functions and its properties will become internal to the SDK.
  */
+@Deprecated
 public class C2sCommunicator implements Serializable {
 
 
@@ -69,20 +78,21 @@ public class C2sCommunicator implements Serializable {
 	private static final int MAX_CHARS_PAYMENT_PRODUCT_ID_LOOKUP = 8;
 	private static final int MIN_CHARS_PAYMENT_PRODUCT_ID_LOOKUP = 6;
 
-	// Configuration needed for communicating with the GC gateway
+	// Configuration needed for communicating with the Online Payments gateway
 	private C2sCommunicatorConfiguration configuration;
 
 	/**
-	 * Creates the Communicator object which handles the communication with the Online Payments Client API
+	 * Creates the Communicator object which handles the communication with the Online Payments Client API.
 	 */
 	private C2sCommunicator(C2sCommunicatorConfiguration configuration) {
 		this.configuration = configuration;
 	}
 
-
 	/**
-	 * Get C2sCommunicator instance
+	 * Get C2sCommunicator instance.
+	 *
 	 * @param configuration configuration which is used to establish a connection with the Online Payments gateway
+	 *
 	 * @return the instance of this class
 	 */
 	public static C2sCommunicator getInstance(C2sCommunicatorConfiguration configuration) {
@@ -95,8 +105,10 @@ public class C2sCommunicator implements Serializable {
 
 
 	/**
-	 * Returns true if the EnvironmentType is set to production; otherwise false is returned.
-     */
+	 * Checks whether the EnvironmentType is set to production or not.
+	 *
+	 * @return a Boolean indicating whether the EnvironmentType is set to production or not
+	 */
 	public boolean isEnvironmentTypeProduction() {
 		return configuration.environmentIsProduction();
 	}
@@ -109,12 +121,30 @@ public class C2sCommunicator implements Serializable {
 	}
 
 	/**
-	 * Retrieves a list of basicpaymentproducts from the GC gateway without any fields
+	 * Utility method for setting whether request/response logging should be enabled or not.
 	 *
-	 * @param context, used for reading device metadata which is send to the GC gateway
-	 * @param paymentContext, payment information that is used to retrieve the correct payment products
+	 * @param enableLogging boolean indicating whether request/response logging should be enabled or not
+	 */
+	public void setLoggingEnabled(boolean enableLogging) {
+		configuration.setLoggingEnabled(enableLogging);
+	}
+
+	/**
+	 * Checks whether request/response logging is enabled or not.
 	 *
-	 * @return list of BasicPaymentProducts, wrapped as ApiResponse, with errors if those occurred
+	 * @return a boolean indicating whether request/response logging is enabled or not
+	 */
+	public boolean getLoggingEnabled() {
+		return configuration.getLoggingEnabled();
+	}
+
+	/**
+	 * Retrieves {@link BasicPaymentProducts} from the Online Payments gateway without any fields.
+	 *
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param paymentContext {@link PaymentContext} which contains all necessary data to retrieve the correct {@link BasicPaymentProducts}
+	 *
+	 * @return {@link BasicPaymentProducts}, wrapped as {@link ApiResponse}, with errors if those occurred
 	 */
 	public ApiResponse<BasicPaymentProducts> getBasicPaymentProducts(PaymentContext paymentContext, Context context) {
 		if (paymentContext == null) {
@@ -148,26 +178,33 @@ public class C2sCommunicator implements Serializable {
 			String responseBody = new Scanner(connection.getInputStream(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
 
 			// Log the response
-			if (Constants.ENABLE_REQUEST_LOGGING) {
+			if (getLoggingEnabled()) {
 				logResponse(connection, responseBody);
 			}
 
 	        BasicPaymentProducts basicPaymentProducts = gson.fromJson(responseBody, BasicPaymentProducts.class);
 
 			for(BasicPaymentProduct paymentProduct : basicPaymentProducts.getBasicPaymentProducts()) {
-				setLogoForDisplayHints(paymentProduct, context);
+				setLogoForDisplayHints(paymentProduct.getDisplayHints(), context);
 				setLogoForDisplayHintsList(paymentProduct, context);
 			}
 			response.data = basicPaymentProducts;
 			return response;
 
 		} catch (CommunicationException e) {
-			Log.i(TAG, "Error while getting paymentproducts:" + e.getMessage());
-			response.error = e.errorResponse;
+			if (e.errorResponse != null) {
+				Log.i(TAG, "API Error when getting BasicPaymentItems Response:" + e.getMessage());
+				response.error =  e.errorResponse;
+			} else {
+				Log.i(TAG, "API Exception when getting BasicPaymentItems Response:" + e.getMessage());
+				response.error = new ErrorResponse("Exception when getting BasicPaymentItems Response");
+				response.error.throwable = e;
+			}
 			return response;
 		} catch (Exception e) {
-			Log.i(TAG, "Error while getting paymentproducts:" + e.getMessage());
-			response.error = new ErrorResponse("Error while getting paymentproducts:" + e.getMessage());
+			Log.i(TAG, "Exception when getting BasicPaymentItems Response:" + e.getMessage());
+			response.error = new ErrorResponse("Exception when getting BasicPaymentItems Response:" + e.getMessage());
+			response.error.throwable = e;
 			return response;
 		} finally {
 			try {
@@ -183,13 +220,13 @@ public class C2sCommunicator implements Serializable {
 
 
 	/**
-	 * Retrieves a single paymentproduct from the GC gateway including all its fields
+	 * Retrieves a single {@link PaymentProduct} from the Online Payments gateway including all its fields.
 	 *
-	 * @param productId, used to retrieve the PaymentProduct that is associated with this id
-	 * @param context, used for reading device metada which is send to the GC gateway
-	 * @param paymentContext, PaymentContext which contains all neccesary data to retrieve a paymentproduct
+	 * @param productId used to retrieve the {@link PaymentProduct} that is associated with this id
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param paymentContext {@link PaymentContext} which contains all necessary data to retrieve a {@link PaymentProduct}
 	 *
-	 * @return PaymentProduct, or null when an error has occured
+	 * @return {@link PaymentProduct}, wrapped as {@link ApiResponse}, with errors if those occurred
 	 */
 	public ApiResponse<PaymentProduct> getPaymentProduct(String productId, Context context, PaymentContext paymentContext) {
 		if (productId == null) {
@@ -212,9 +249,6 @@ public class C2sCommunicator implements Serializable {
 			queryString.append("&amount=").append(paymentContext.getAmountOfMoney().getAmount());
 			queryString.append("&isRecurring=").append(paymentContext.isRecurring());
 			queryString.append("&currencyCode=").append(paymentContext.getAmountOfMoney().getCurrencyCodeString());
-			if (paymentContext.isForceBasicFlow()!= null) {
-				queryString.append("&forceBasicFlow=").append(paymentContext.isForceBasicFlow());
-			}
 			queryString.append("&").append(createCacheBusterParameter());
 			completePath += queryString.toString();
 
@@ -224,27 +258,34 @@ public class C2sCommunicator implements Serializable {
 			String responseBody = new Scanner(connection.getInputStream(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
 
 			// Log the response
-			if (Constants.ENABLE_REQUEST_LOGGING) {
+			if (getLoggingEnabled()) {
 				logResponse(connection, responseBody);
 			}
 
 			response.data = gson.fromJson(responseBody, PaymentProduct.class);
+
+			setLogoForDisplayHints(response.data.getDisplayHints(), context);
 			setLogoForDisplayHintsList(response.data, context);
-			setLogoForDisplayHints(response.data, context);
 
 			for(PaymentProductField paymentProductField : response.data.getPaymentProductFields()) {
 				setImageForTooltip(paymentProductField.getDisplayHints(), context);
 			}
 
 			return response;
-
 		} catch (CommunicationException e) {
-			Log.i(TAG, "Error while getting paymentproduct:" + e.getMessage());
-			response.error = e.errorResponse;
+			if (e.errorResponse != null) {
+				Log.i(TAG, "API Error while getting Payment Product Response:" + e.getMessage());
+				response.error = e.errorResponse;
+			} else {
+				Log.i(TAG, "API Exception when getting PaymentProduct Response:" + e.getMessage());
+				response.error = new ErrorResponse("Exception when getting PaymentProduct Response");
+				response.error.throwable = e;
+			}
 			return response;
 		} catch (Exception e) {
-			Log.i(TAG, "Error while getting paymentproduct:" + e.getMessage());
-			response.error = new ErrorResponse("Error while getting paymentproduct:" + e.getMessage());
+			Log.i(TAG, "Error while getting PaymentProduct:" + e.getMessage());
+			response.error = new ErrorResponse("Error while getting PaymentProduct:" + e.getMessage());
+			response.error.throwable = e;
 			return response;
 		} finally {
 			try {
@@ -259,32 +300,62 @@ public class C2sCommunicator implements Serializable {
 	}
 
 	/**
+	 * Retrieves a single Payment Product Network from the Online Payments gateway.
+	 *
+	 * @param customerId for which customer the network must be retrieved
+	 * @param productId the product of the id for which the network must be retrieved
+	 * @param currencyCode for which {@link CurrencyCode} the network must be retrieved
+	 * @param countryCode for which {@link CountryCode} the network must be retrieved
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param paymentContext {@link PaymentContext} which contains all necessary data to retrieve a {@link PaymentProduct}
+	 *
+	 * @return {@link PaymentProduct}, wrapped as {@link ApiResponse}, with errors if those occurred
+	 *
 	 * @deprecated use {@link #getPaymentProductNetwork(String, String, String, String, Context, PaymentContext)} instead
 	 */
 	@Deprecated
 	public ApiResponse<PaymentProductNetworkResponse> getPaymentProductNetwork(String customerId, String productId, CurrencyCode currencyCode, CountryCode countryCode, Context context, PaymentContext paymentContext) {
-		return getPaymentProductNetwork(customerId, productId, currencyCode.toString(), countryCode.toString(), context, paymentContext);
+		return getPaymentProductNetwork(productId, context, paymentContext);
 	}
 
+	/**
+	 * Retrieves a single Payment Product Network from the Online Payments gateway.
+	 *
+	 * @param customerId for which customer the network must be retrieved
+	 * @param productId the product of the id for which the network must be retrieved
+	 * @param currencyCode for which the network must be retrieved
+	 * @param countryCode for which the network must be retrieved
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param paymentContext {@link PaymentContext} which contains all necessary data to retrieve a {@link PaymentProduct}
+	 *
+	 * @return {@link PaymentProduct}, wrapped as {@link ApiResponse}, with errors if those occurred
+	 *
+	 * @deprecated use {@link #getPaymentProductNetwork(String, Context, PaymentContext)} instead
+	 */
+	@Deprecated
 	public ApiResponse<PaymentProductNetworkResponse> getPaymentProductNetwork(String customerId, String productId, String currencyCode, String countryCode, Context context, PaymentContext paymentContext) {
+		return getPaymentProductNetwork(productId, context, paymentContext);
+	}
 
-		if (customerId == null) {
-			throw new InvalidParameterException("Error getting PaymentProduct network, customerId may not be null");
-		}
+	/**
+	 * Retrieves a single Payment Product Network from the Online Payments gateway.
+	 *
+	 * @param productId the product of the id for which the network must be retrieved
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param paymentContext {@link PaymentContext} which contains all necessary data to retrieve a {@link PaymentProduct}
+	 *
+	 * @return {@link PaymentProduct}, wrapped as {@link ApiResponse}, with errors if those occurred
+	 */
+	public ApiResponse<PaymentProductNetworkResponse> getPaymentProductNetwork(String productId, Context context, PaymentContext paymentContext) {
+
 		if (productId == null) {
-			throw new InvalidParameterException("Error getting PaymentProduct network, productId may not be null");
-		}
-		if (countryCode == null) {
-			throw new InvalidParameterException("Error getting PaymentProduct network, countryCode may not be null");
-		}
-		if (currencyCode == null) {
-			throw new InvalidParameterException("Error getting PaymentProduct network, currencyCode may not be null");
+			throw new InvalidParameterException("Error getting Payment Product Network, productId may not be null");
 		}
 		if (context == null) {
-			throw new InvalidParameterException("Error getting PaymentProduct network, context may not be null");
+			throw new InvalidParameterException("Error getting Payment Product Network, context may not be null");
 		}
 		if (paymentContext == null) {
-			throw new InvalidParameterException("Error getting PaymentProduct network, paymentContext may not be null");
+			throw new InvalidParameterException("Error getting Payment Product Network, paymentContext may not be null");
 		}
 
 		HttpURLConnection connection = null;
@@ -311,19 +382,26 @@ public class C2sCommunicator implements Serializable {
 			String responseBody = new Scanner(connection.getInputStream(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
 
 			// Log the response
-			if (Constants.ENABLE_REQUEST_LOGGING) {
+			if (getLoggingEnabled()) {
 				logResponse(connection, responseBody);
 			}
 
 			response.data = gson.fromJson(responseBody, PaymentProductNetworkResponse.class);
 			return response;
 		} catch (CommunicationException e) {
-			Log.i(TAG, "Error while getting paymentproduct directory:" + e.getMessage());
-			response.error = e.errorResponse;
+			if (e.errorResponse != null) {
+				Log.i(TAG, "API Error while getting paymentproduct directory" + e.getMessage());
+				response.error =  e.errorResponse;
+			} else {
+				Log.i(TAG, "Error while getting paymentproduct directory" + e.getMessage());
+				response.error = new ErrorResponse("Error while getting paymentproduct directory");
+				response.error.throwable = e;
+			}
 			return response;
 		} catch (Exception e) {
 			Log.i(TAG, "Error while getting paymentproduct network:" + e.getMessage());
 			response.error = new ErrorResponse("Error while getting paymentproduct network:" + e.getMessage());
+			response.error.throwable = e;
 			return response;
 		} finally {
 			try {
@@ -338,13 +416,13 @@ public class C2sCommunicator implements Serializable {
 	}
 
 	/**
-	 * Get the IIN details for the entered partial creditcardnumber
+	 * Retrieves the IIN details as a {@link IinDetailsResponse} for the entered partial credit card number.
 	 *
-	 * @param context, used for reading device metada which is send to the GC gateway
-	 * @param partialCreditCardNumber, entered partial creditcardnumber
-	 * @param paymentContext, meta data for the payment that is used to get contextual information from the GC gateway
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param partialCreditCardNumber entered partial credit card number for which the {@link IinDetailsResponse} should be retrieved
+	 * @param paymentContext {@link PaymentContext} which contains all necessary data to retrieve the {@link IinDetailsResponse}
 	 *
-	 * @return IinDetailsResponse which contains the result of the IIN lookup, or null when an error has occured
+	 * @return {@link IinDetailsResponse} which contains the result of the IIN lookup, wrapped as {@link ApiResponse}, with errors if those occurred
 	 */
 	public ApiResponse<IinDetailsResponse> getPaymentProductIdByCreditCardNumber(String partialCreditCardNumber, Context context, PaymentContext paymentContext) {
 
@@ -377,7 +455,7 @@ public class C2sCommunicator implements Serializable {
 			String responseBody = new Scanner(connection.getInputStream(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
 
 			// Log the response
-			if (Constants.ENABLE_REQUEST_LOGGING) {
+			if (getLoggingEnabled()) {
 				logResponse(connection, responseBody);
 			}
 
@@ -385,9 +463,20 @@ public class C2sCommunicator implements Serializable {
 
 			return response;
 
+		} catch (CommunicationException e) {
+			if (e.errorResponse != null) {
+				Log.i(TAG, "API Error when getting PaymentProductIdByCreditCardNumber Response:" + e.getMessage());
+				response.error =  e.errorResponse;
+			} else {
+				Log.i(TAG, "Error getting PaymentProductIdByCreditCardNumber response:" + e.getMessage());
+				response.error = new ErrorResponse("Exception when getting PaymentProductIdByCreditCardNumber Response");
+				response.error.throwable = e;
+			}
+			return response;
 		} catch (Exception e) {
 			Log.i(TAG, "Error getting PaymentProductIdByCreditCardNumber response:" + e.getMessage());
 			response.error = new ErrorResponse("Exception when retrieving IinDetails: " + e.getMessage());
+			response.error.throwable = e;
 			return response;
 		} finally {
 			try {
@@ -403,11 +492,11 @@ public class C2sCommunicator implements Serializable {
 
 
 	/**
-	 * Retrieves the publickey from the GC gateway
+	 * Retrieves the public key as a {@link PublicKeyResponse} from the Online Payments gateway.
 	 *
-	 * @param context, used for reading device metada which is send to the GC gateway
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
 	 *
-	 * @return PublicKeyResponse response , or null when an error has occured
+	 * @return {@link PublicKeyResponse}, wrapped as {@link ApiResponse}, with errors if those occurred
 	 */
 	public ApiResponse<PublicKeyResponse> getPublicKey(Context context) {
 
@@ -425,7 +514,7 @@ public class C2sCommunicator implements Serializable {
 			String responseBody = new Scanner(connection.getInputStream(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
 
 			// Log the response
-			if (Constants.ENABLE_REQUEST_LOGGING) {
+			if (getLoggingEnabled()) {
 				logResponse(connection, responseBody);
 			}
 
@@ -433,12 +522,19 @@ public class C2sCommunicator implements Serializable {
 			return response;
 
 		} catch (CommunicationException e) {
-			Log.i(TAG, "Error getting Public key response:" + e.getMessage());
-			response.error = e.errorResponse;
+			if (e.errorResponse != null) {
+				Log.i(TAG, "API Error getting Public key response:" + e.getMessage());
+				response.error = e.errorResponse;
+			} else {
+				Log.i(TAG, "Exception when getting Public key response:" + e.getMessage());
+				response.error = new ErrorResponse("Exception when getting Public key response:" + e.getMessage());
+				response.error.throwable = e;
+			}
 			return response;
 		}  catch (Exception e) {
-			Log.i(TAG, "Error getting Public key response:" + e.getMessage());
-			response.error = new ErrorResponse("Error getting Public key response:" + e.getMessage());
+			Log.i(TAG, "Exception when getting Public key response:" + e.getMessage());
+			response.error = new ErrorResponse("Exception when getting Public key response:" + e.getMessage());
+			response.error.throwable = e;
 			return response;
 		} finally {
 			try {
@@ -453,23 +549,23 @@ public class C2sCommunicator implements Serializable {
 	}
 
 	/**
-	 * Returns map of metadata of the device this SDK is running on
-	 * The map contains the SDK version, OS, OS version and screensize
+	 * Returns a map of metadata of the device this SDK is running on.
+	 * The map contains the SDK version, OS, OS version and screen size.
 	 *
-	 * @param context, used for reading device metada which is send to the GC gateway
+	 * @param context used for retrieving device metadata
 	 *
-	 * @return Map<String, String> containing key/values of metadata
+	 * @return a Map containing key/values of metadata
 	 */
 	public Map<String, String> getMetadata(Context context) {
 		return configuration.getMetadata(context);
 	}
 
 	/**
-	 * Does a GET request with HttpURLConnection
+	 * Does a GET request with HttpURLConnection.
 	 *
-	 * @param location, url where the request is sent to
-	 * @param clientSessionId, used for session identification on the GC gateway
-	 * @param metadata, map filled with metadata, which is added to the request
+	 * @param location url where the request is sent to
+	 * @param clientSessionId used for session identification on the Online Payments gateway
+	 * @param metadata map filled with metadata, which is added to the request
 	 *
 	 * @return HttpURLConnection, which contains the response of the request
 	 *
@@ -494,19 +590,13 @@ public class C2sCommunicator implements Serializable {
 			}
 
 			// Log the request
-			if (Constants.ENABLE_REQUEST_LOGGING) {
+			if (getLoggingEnabled()) {
 				logRequest(connection, null);
 			}
 
 			// Check if the response code is HTTP_OK
 			if (connection.getResponseCode() != 200) {
-				ErrorResponse errorResponse = new ErrorResponse("No status 200 received, status is :" + connection.getResponseCode());
-				try {
-					ApiError apiError = gson.fromJson(connection.getResponseMessage(), ApiError.class);
-					errorResponse.apiError = apiError;
-				} catch (Exception e) {
-					Log.i(TAG,"doHTTPGetRequest, Unable to parse json for errors " + e.getMessage());
-				}
+				ErrorResponse errorResponse = createErrorResponse(connection.getResponseCode(), connection.getErrorStream());
 				throw new CommunicationException("No status 200 received, status is :" + connection.getResponseCode(), errorResponse);
 			}
 
@@ -529,12 +619,12 @@ public class C2sCommunicator implements Serializable {
 
 
 	/**
-	 * Does a POST request with HttpClient
+	 * Does a POST request with HttpClient.
 	 *
-	 * @param location, url where the request is sent to
-	 * @param clientSessionId, used for identification on the GC gateway
-	 * @param metadata, map filled with metadata, which is added to the request
-	 * @param postBody, the content of the postbody
+	 * @param location url where the request is sent to
+	 * @param clientSessionId used for identification on the Online Payments gateway
+	 * @param metadata map filled with metadata, which is added to the request
+	 * @param postBody the content of the post body
 	 *
 	 * @return HttpURLConnection, which contains the response of the request
 	 *
@@ -566,7 +656,7 @@ public class C2sCommunicator implements Serializable {
 			}
 
 			// Log the request
-			if (Constants.ENABLE_REQUEST_LOGGING) {
+			if (getLoggingEnabled()) {
 				logRequest(connection, postBody);
 			}
 
@@ -578,13 +668,7 @@ public class C2sCommunicator implements Serializable {
 
 			// Check if the response code is HTTP_OK
 			if (connection.getResponseCode() != 200) {
-				ErrorResponse errorResponse = new ErrorResponse("No status 200 received, status is :" + connection.getResponseCode());
-				try {
-					ApiError apiError = gson.fromJson(connection.getResponseMessage(), ApiError.class);
-					errorResponse.apiError = apiError;
-				} catch (Exception e) {
-					Log.i(TAG,"doHTTPPostRequest, Unable to parse json for errors " + e.getMessage());
-				}
+				ErrorResponse errorResponse = createErrorResponse(connection.getResponseCode(), connection.getErrorStream());
 				throw new CommunicationException("No status 200 received, status is :" + connection.getResponseCode(), errorResponse);
 			}
 
@@ -638,9 +722,21 @@ public class C2sCommunicator implements Serializable {
 		return cacheBuster;
 	}
 
+	private ErrorResponse createErrorResponse(int responseCode, InputStream errorStream) {
+		ErrorResponse errorResponse = new ErrorResponse("No status 200 received, status is :" + responseCode);
+		try {
+			String errorBody = new Scanner(errorStream, StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
+			errorResponse.apiError = gson.fromJson(errorBody, ApiError.class);
+		} catch (Exception e) {
+			Log.i(TAG,"doHTTPPostRequest, Unable to parse json for errors " + e.getMessage());
+		}
+
+		return errorResponse;
+	}
+
 
 	/**
-	 * Logs all request headers, url and body
+	 * Logs all request headers, url and body.
 	 */
 	private void logRequest(HttpURLConnection connection, String postBody) {
 
@@ -661,9 +757,9 @@ public class C2sCommunicator implements Serializable {
 	}
 
 	/**
-	 * Logs all response headers, statuscode and body
+	 * Logs all response headers, status code and body.
 	 *
-	 * @throws IOException
+	 * @throws IOException when an error occurs while retrieving response code
      */
 	private void logResponse(HttpURLConnection connection, String responseBody) throws IOException {
 
@@ -693,20 +789,29 @@ public class C2sCommunicator implements Serializable {
 	}
 
 	private void setLogoForDisplayHintsList(BasicPaymentProduct basicPaymentProduct, Context context) {
-		AssetManager assetManager = AssetManager.getInstance(context);
 		for (DisplayHintsPaymentItem displayHints : basicPaymentProduct.getDisplayHintsList()){
-			displayHints.setLogo(assetManager.getImageFromStringUrl(displayHints.getLogoUrl(), basicPaymentProduct.getId()));
+			this.setLogoForDisplayHints(displayHints, context);
 		}
 	}
 
-	private void setLogoForDisplayHints(BasicPaymentProduct basicPaymentProduct, Context context) {
-		AssetManager assetManager = AssetManager.getInstance(context);
-		DisplayHintsPaymentItem displayHints = basicPaymentProduct.getDisplayHints();
-		displayHints.setLogo(assetManager.getImageFromStringUrl(displayHints.getLogoUrl(), basicPaymentProduct.getId()));
+	private void setLogoForDisplayHints(DisplayHintsPaymentItem displayHints, Context context) {
+		Drawable logo = this.getImageFromStringUrl(displayHints.getLogoUrl(), context);
+
+		displayHints.setLogo(logo);
 	}
 
 	private void setImageForTooltip(DisplayHintsProductFields displayHintsProductFields, Context context) {
-		AssetManager assetManager = AssetManager.getInstance(context);
-		displayHintsProductFields.getTooltip().setImageDrawable(assetManager.getImageFromStringUrl(displayHintsProductFields.getTooltip().getImageURL()));
+		Tooltip tooltip = displayHintsProductFields.getTooltip();
+		Drawable tooltipImage = this.getImageFromStringUrl(tooltip.getImageURL(), context);
+		displayHintsProductFields.getTooltip().setImageDrawable(tooltipImage);
+	}
+
+	private Drawable getImageFromStringUrl(String url, Context context) {
+		try {
+			Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(url).getContent(), null, null);
+			return new BitmapDrawable(context.getResources(), bitmap);
+		} catch (IOException e) {
+			return null;
+		}
 	}
 }

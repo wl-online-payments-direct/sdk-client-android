@@ -1,15 +1,19 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 
 /**
- * Pojo which holds the PaymentProductCachkey data
- * It's used to determine if a PaymentProduct should be retrieved from the Online Payments platform, or retrieved from the memory cache
+ * POJO which holds the PaymentProductCachkey data.
+ * It's used to determine if a PaymentProduct should be retrieved from the Online Payments platform, or retrieved from the memory cache.
  *
- * Copyright 2020 Global Collect Services B.V
- *
+ * @deprecated In a future release, this class and its functions will become internal to the SDK.
  */
+@Deprecated
 public class PaymentItemCacheKey implements Serializable {
 
 	private static final long serialVersionUID = 930873231953051398L;
@@ -28,6 +32,10 @@ public class PaymentItemCacheKey implements Serializable {
 		this(amount, countryCode.toString(), currencyCode.toString(), isRecurring, paymentProductId);
 	}
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public PaymentItemCacheKey(Long amount, String countryCode, String currencyCode, boolean isRecurring, String paymentProductId) {
 
 		if (amount == null) {
@@ -56,9 +64,9 @@ public class PaymentItemCacheKey implements Serializable {
 	}
 
 	/**
-	 * @deprecated In the next major release, the type of countryCode will change to String.
 	 * Note that 'null' will be returned when an unknown String value was set.
-	 * Use {@link #getCountryCodeString()} instead.
+	 *
+	 * @deprecated In the next major release, the type of countryCode will change to String. Use {@link #getCountryCodeString()} instead.
 	 */
 	@Deprecated
 	public CountryCode getCountryCode() {
@@ -74,9 +82,9 @@ public class PaymentItemCacheKey implements Serializable {
 	}
 
 	/**
-	 * @deprecated In the next major release, the type of currencyCode will change to String.
 	 * Note that 'null' will be returned when an unknown String value was set.
-	 * Use {@link #getCurrencyCodeString()} instead.
+	 *
+	 * @deprecated In the next major release, the type of currencyCode will change to String. Use {@link #getCurrencyCodeString()} instead.
 	 */
 	@Deprecated
 	public CurrencyCode getCurrencyCode() {

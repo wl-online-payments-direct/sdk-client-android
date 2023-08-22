@@ -1,3 +1,7 @@
+/*
+ * Copyright 2017 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.asynctask;
 
 import java.security.InvalidParameterException;
@@ -11,6 +15,7 @@ import androidx.annotation.NonNull;
 
 import com.onlinepayments.sdk.client.android.configuration.Constants;
 import com.onlinepayments.sdk.client.android.communicate.C2sCommunicator;
+import com.onlinepayments.sdk.client.android.listener.BasicPaymentProductsResponseListener;
 import com.onlinepayments.sdk.client.android.model.PaymentContext;
 import com.onlinepayments.sdk.client.android.model.api.ApiResponse;
 import com.onlinepayments.sdk.client.android.model.api.ErrorResponse;
@@ -18,35 +23,36 @@ import com.onlinepayments.sdk.client.android.model.paymentproduct.BasicPaymentPr
 import com.onlinepayments.sdk.client.android.model.paymentproduct.BasicPaymentProducts;
 
 /**
- * AsyncTask which loads all BasicPaymentProducts from the GC Gateway
+ * AsyncTask which loads all {@link BasicPaymentProducts} from the Online Payments Gateway.
  *
- * Copyright 2017 Global Collect Services B.V
- *
+ * @deprecated In a future release, this class will become internal to the SDK. Use {@link com.onlinepayments.sdk.client.android.session.Session#getBasicPaymentProducts(Context, PaymentContext, BasicPaymentProductsResponseListener)} to obtain Basic Payment Products.
  */
+@Deprecated
 public class BasicPaymentProductsAsyncTask extends AsyncTask<String, Void, ApiResponse<BasicPaymentProducts>> implements Callable<BasicPaymentProducts> {
 
-	// The listener which will be called by the AsyncTask when the BasicPaymentProducts are loaded
+	// The listeners that will be called by the AsyncTask when the BasicPaymentProducts are loaded
 	private List<OnBasicPaymentProductsCallCompleteListener> listeners;
-
+	// The listeners that will be called by the AsyncTask when the BasicPaymentProducts are loaded
 	private List<BasicPaymentProductsCallListener> callListeners;
+	// The listeners that will be called by the AsyncTask when the BasicPaymentProducts are loaded
+	private List<BasicPaymentProductsResponseListener> responseListeners;
 
-	// Context needed for reading stubbed BasicPaymentProducts
+	// Context needed for reading metadata which is sent to the Online Payments gateway
 	private Context context;
 
-	// Contains all the information needed to communicate with the GC gateway to get paymentproducts
+	// Contains all the information needed to communicate with the Online Payments gateway to get BasicPaymentProducts
 	private PaymentContext paymentContext;
 
-	// Communicator which does the communication to the GC gateway
+	// Communicator which does the communication to the Online Payments gateway
 	private C2sCommunicator communicator;
 
 	/**
-	 * Constructor
-	 * @deprecated use {@link #BasicPaymentProductsAsyncTask(Context, C2sCommunicator, PaymentContext, List)}
+	 * Create a BasicPaymentProductsAsyncTask
 	 *
-	 * @param context, used for reading device metada which is send to the GC gateway
-	 * @param paymentContext, request which contains all necessary data for doing call to the GC gateway to get paymentproducts
-	 * @param communicator, Communicator which does the communication to the GC gateway
-	 * @param listeners, list of listeners which will be called by the AsyncTask when the BasicPaymentProducts are loaded
+	 * @param context {@link Context} used for reading device metadata which is sent to the Online Payments gateway
+	 * @param paymentContext {@link PaymentContext} which contains all necessary payment data for doing a call to the Online Payments gateway to get the {@link BasicPaymentProducts}
+	 * @param communicator {@link C2sCommunicator} which does the communication to the Online Payments gateway
+	 * @param listeners list of {@link OnBasicPaymentProductsCallCompleteListener} which will be called by the AsyncTask when the {@link BasicPaymentProducts} are loaded
 	 */
 	public BasicPaymentProductsAsyncTask(Context context, PaymentContext paymentContext, C2sCommunicator communicator, List<OnBasicPaymentProductsCallCompleteListener> listeners) {
 		this(context, paymentContext, communicator);
@@ -57,11 +63,12 @@ public class BasicPaymentProductsAsyncTask extends AsyncTask<String, Void, ApiRe
 	}
 
 	/**
-	 * Constructor
-	 * @param context, used for reading device metada which is send to the GC gateway
-	 * @param paymentContext, request which contains all necessary data for doing call to the GC gateway to get paymentproducts
-	 * @param communicator, Communicator which does the communication to the GC gateway
-	 * @param callListeners, list of listeners which will be called by the AsyncTask when the BasicPaymentProducts are loaded
+	 * Create a BasicPaymentProductsAsyncTask
+	 *
+	 * @param context {@link Context} used for reading device metadata which is sent to the Online Payments gateway
+	 * @param paymentContext {@link PaymentContext} which contains all necessary payment data for doing a call to the Online Payments gateway to get the {@link BasicPaymentProducts}
+	 * @param communicator {@link C2sCommunicator} which does the communication to the Online Payments gateway
+	 * @param callListeners list of {@link BasicPaymentProductsCallListener} which will be called by the AsyncTask when the {@link BasicPaymentProducts} are loaded
 	 */
 	public BasicPaymentProductsAsyncTask(Context context, C2sCommunicator communicator, PaymentContext paymentContext, List<BasicPaymentProductsCallListener> callListeners) {
 		this(context, paymentContext, communicator);
@@ -72,10 +79,27 @@ public class BasicPaymentProductsAsyncTask extends AsyncTask<String, Void, ApiRe
 	}
 
 	/**
-	 * Constructor
-	 * @param context, used for reading device metada which is send to the GC gateway
-	 * @param paymentContext, request which contains all necessary data for doing call to the GC gateway to get paymentproducts
-	 * @param communicator, Communicator which does the communication to the GC gateway
+	 * Create a BasicPaymentProductsAsyncTask
+	 *
+	 * @param context {@link Context} used for reading device metadata which is sent to the Online Payments gateway
+	 * @param paymentContext {@link PaymentContext} which contains all necessary payment data for doing a call to the Online Payments gateway to get the {@link BasicPaymentProducts}
+	 * @param communicator {@link C2sCommunicator} which does the communication to the Online Payments gateway
+	 * @param responseListeners list of {@link BasicPaymentProductsResponseListener} which will be called by the AsyncTask when the {@link BasicPaymentProducts} are loaded
+	 */
+	public BasicPaymentProductsAsyncTask(C2sCommunicator communicator, Context context, PaymentContext paymentContext, List<BasicPaymentProductsResponseListener> responseListeners) {
+		this(context, paymentContext, communicator);
+		if (responseListeners == null ) {
+			throw new InvalidParameterException("Error creating BasicPaymentProductsAsyncTask, responseListeners may not be null");
+		}
+		this.responseListeners = responseListeners;
+	}
+
+	/**
+	 * Create a BasicPaymentProductsAsyncTask
+	 *
+	 * @param context {@link Context} used for reading device metadata which is sent to the Online Payments gateway
+	 * @param paymentContext {@link PaymentContext} which contains all necessary payment data for doing a call to the Online Payments gateway to get the {@link BasicPaymentProducts}
+	 * @param communicator {@link C2sCommunicator} which does the communication to the Online Payments gateway
 	 */
 	private BasicPaymentProductsAsyncTask(Context context, PaymentContext paymentContext, C2sCommunicator communicator) {
 
@@ -83,7 +107,7 @@ public class BasicPaymentProductsAsyncTask extends AsyncTask<String, Void, ApiRe
 			throw new InvalidParameterException("Error creating BasicPaymentProductsAsyncTask, context may not be null");
 		}
 		if (paymentContext == null ) {
-			throw new InvalidParameterException("Error creating BasicPaymentProductsAsyncTask, c2sContext may not be null");
+			throw new InvalidParameterException("Error creating BasicPaymentProductsAsyncTask, paymentContext may not be null");
 		}
 		if (communicator == null ) {
 			throw new InvalidParameterException("Error creating BasicPaymentProductsAsyncTask, communicator may not be null");
@@ -126,12 +150,31 @@ public class BasicPaymentProductsAsyncTask extends AsyncTask<String, Void, ApiRe
 				}
 			}
 		}
+
+		if (responseListeners != null ) {
+			for (BasicPaymentProductsResponseListener listener : responseListeners) {
+				if (apiResponse.error == null) {
+					if (basicPaymentProducts != null) {
+						listener.onSuccess(basicPaymentProducts);
+					} else {
+						ErrorResponse error = new ErrorResponse("Empty Response without Error");
+						listener.onApiError(error);
+					}
+				} else {
+					if (apiResponse.error.throwable != null) {
+						listener.onException(apiResponse.error.throwable);
+					} else {
+						listener.onApiError(apiResponse.error);
+					}
+				}
+			}
+		}
 	}
 
 	@Override
 	public BasicPaymentProducts call() throws Exception {
 
-		// Load the BasicPaymentProducts from the GC gateway
+		// Load the BasicPaymentProducts from the Online Payments gateway
 		return getBasicPaymentProductsInBackground().data;
 	}
 
@@ -193,38 +236,35 @@ public class BasicPaymentProductsAsyncTask extends AsyncTask<String, Void, ApiRe
 
 
 	/**
-	 * Interface for OnBasicPaymentProductsCallComplete listener
-	 * Is called from the BasicPaymentProductsAsyncTask when it has the BasicPaymentProducts
+	 * Callback Interface that is invoked when the Basic Payment Products request completes.
 	 *
-	 * @deprecated use {@link BasicPaymentProductsCallListener} instead to receive callbacks with
-	 * error information.
-	 *
-	 * Copyright 2017 Global Collect Services B.V
-	 *
+	 * @deprecated use {@link BasicPaymentProductsResponseListener} instead to also receive callbacks with error information.
 	 */
+	@Deprecated
 	public interface OnBasicPaymentProductsCallCompleteListener {
 		void onBasicPaymentProductsCallComplete(BasicPaymentProducts basicPaymentProducts);
 	}
 
 	/**
-	 * Updated interface for OnBasicPaymentProductsCallComplete listener
-	 * Is called from the BasicPaymentProductsAsyncTask when it has the BasicPaymentProducts
-	 * When there was an error and/or exception, the error callback will be
-	 * invoked. On success the complete callback will be invoked.
+	 * Callback Interface that is invoked when the Basic Payment Products request completes.
+	 * In case of an error and/or exception, the {@link #onBasicPaymentProductsCallError(ErrorResponse)} callback will be invoked.
+	 * On success the {@link #onBasicPaymentProductsCallComplete(BasicPaymentProducts)} callback will be invoked.
 	 *
-	 * Copyright 2020 Global Collect Services B.V
-	 *
+	 * @deprecated use {@link BasicPaymentProductsResponseListener} instead to also receive callbacks with error information.
 	 */
+	@Deprecated
 	public interface BasicPaymentProductsCallListener {
 		/**
-		 * When async task was successful and data available
-		 * @param basicPaymentProducts The payment products
+		 * Invoked when the request was successful and data is available.
+		 *
+		 * @param basicPaymentProducts the payment products
 		 */
 		void onBasicPaymentProductsCallComplete(@NonNull BasicPaymentProducts basicPaymentProducts);
 
 		/**
-		 * When async task failed due to an error and/or exception
-		 * @param error The error why payment products could not be retrieved
+		 * Invoked when the request failed due to a network error.
+		 *
+		 * @param error Error object that contains more information about the error that occurred.
 		 */
 		void onBasicPaymentProductsCallError(ErrorResponse error);
 	}

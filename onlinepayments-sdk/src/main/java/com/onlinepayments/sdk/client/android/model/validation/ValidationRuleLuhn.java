@@ -1,15 +1,15 @@
-package com.onlinepayments.sdk.client.android.model.validation;
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
 
+package com.onlinepayments.sdk.client.android.model.validation;
 
 import android.util.Log;
 
 import com.onlinepayments.sdk.client.android.model.PaymentRequest;
 
 /**
- * Validation rule for luhn check
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Validation rule for luhn check.
  */
 public class ValidationRuleLuhn extends AbstractValidationRule {
 
@@ -17,15 +17,22 @@ public class ValidationRuleLuhn extends AbstractValidationRule {
 
 	private static final String TAG = ValidationRuleLuhn.class.getName();
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public ValidationRuleLuhn(String errorMessage, ValidationType type) {
 		super(errorMessage, type);
 	}
 
 	/**
-	 * Validates that the Credit Card number passes the Luhn test
-	 * @param text, the text to be validated
-	 * @return True if the Luhn check is passed, false otherwise
-	 * @deprecated use {@link #validate(PaymentRequest, String)} instead
+	 * Validates that the Credit Card number passes the Luhn test.
+	 *
+	 * @param text the value for which it should be checked if it passes the Luhn test, as a String
+	 *
+	 * @return true, if the value passes the Luhn check; false otherwise
+	 *
+	 * @deprecated use {@link #validate(PaymentRequest, String)} instead.
      */
 	@Override
 	@Deprecated
@@ -67,11 +74,12 @@ public class ValidationRuleLuhn extends AbstractValidationRule {
 	}
 
 	/**
-	 * Validates that the value in the field with fieldId passes the Luhn check
-	 * @param paymentRequest The fully filled payment request that is ready for doing the payment
-	 * @param fieldId The ID of the field to which to apply the current validator
-	 * @return True if the value in the field with <code>fieldId</code> passes the Luhn check; false
-	 * if it doesn't or the fieldId could not be found.
+	 * Validates that the value in the field with fieldId passes the Luhn check.
+	 *
+	 * @param paymentRequest the fully filled {@link PaymentRequest} that will be used for doing a payment
+	 * @param fieldId the ID of the field to which to apply the current validator
+	 *
+	 * @return true, if the value in the field with fieldId passes the Luhn check; false, if it doesn't or if the fieldId could not be found
 	 */
 	@Override
 	public boolean validate(PaymentRequest paymentRequest, String fieldId) {

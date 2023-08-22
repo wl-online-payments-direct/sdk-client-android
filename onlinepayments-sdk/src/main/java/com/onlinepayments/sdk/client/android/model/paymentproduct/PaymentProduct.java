@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
 import java.io.Serializable;
@@ -7,11 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Pojo which holds the BasicPaymentProduct data and its PaymentProductFields
- * This class is filled by deserialising a JSON string from the GC gateway
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO which holds the BasicPaymentProduct data and its PaymentProductFields.
  */
 public class PaymentProduct extends BasicPaymentProduct implements PaymentItem, Serializable {
 
@@ -21,6 +21,12 @@ public class PaymentProduct extends BasicPaymentProduct implements PaymentItem, 
 	private boolean hasBeenSorted = false;
 
 	private List<PaymentProductField> fields = new ArrayList<>();
+
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public PaymentProduct() {}
 
 	public List<PaymentProductField> getPaymentProductFields() {
 		sortList();

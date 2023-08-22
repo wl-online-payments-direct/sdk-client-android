@@ -1,18 +1,17 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.exception;
 
 import com.onlinepayments.sdk.client.android.model.api.ErrorResponse;
 
-/**
- *
- * Copyright 2020 Global Collect Services B.V
- *
- */
 public class CommunicationException extends Exception {
 
 	private static final long serialVersionUID = 378923281056384514L;
 
 	/**
-	 * The error response, if this was returned from the server/API
+	 * The error response, if this was returned from the server/API.
 	 */
 	public ErrorResponse errorResponse;
 

@@ -1,13 +1,13 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
 import java.io.Serializable;
 
 /**
- * Pojo which holds a PaymentProductFieldDisplayElement.
- * This class is filled by deserialising a JSON string from the GC gateway
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO which holds a PaymentProductFieldDisplayElement.
  */
 public class PaymentProductFieldDisplayElement implements Serializable {
 

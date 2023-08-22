@@ -1,14 +1,18 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.encryption;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Pojo which contains the all the possible EncryptData fields
+ * POJO which contains the all the possible EncryptData fields.
  *
- * Copyright 2020 Global Collect Services B.V
- *
+ * @deprecated In a future release, this class, its functions and its properties will become internal to the SDK.
  */
+@Deprecated
 public class EncryptData {
 
 	Integer accountOnFileId;

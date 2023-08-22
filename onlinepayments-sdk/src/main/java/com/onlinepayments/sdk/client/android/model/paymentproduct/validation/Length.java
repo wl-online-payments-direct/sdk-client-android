@@ -1,24 +1,27 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct.validation;
 
 import java.io.Serializable;
 
 /**
- * Pojo which holds the Length data
- * This class is filled by deserialising a JSON string from the GC gateway
- * Used for validation
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO which holds the Length data.
+ * Used for validation.
  */
 public class Length implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -8127911803708372125L;
 
 	private Integer minLength;
 	private Integer maxLength;
+
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public Length() {}
 
 	public Integer getMinLength(){
 		return minLength;

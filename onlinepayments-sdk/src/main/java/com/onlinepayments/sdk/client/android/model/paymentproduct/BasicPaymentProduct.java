@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
 import com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints.DisplayHintsPaymentItem;
@@ -10,11 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Pojo which holds the BasicPaymentProduct properties
- * This class is filled by deserialising a JSON string from the GC gateway
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO which holds the BasicPaymentProduct properties.
  */
 public class BasicPaymentProduct implements BasicPaymentItem, Serializable {
 
@@ -33,12 +33,18 @@ public class BasicPaymentProduct implements BasicPaymentItem, Serializable {
 	private DisplayHintsPaymentItem displayHints;
 	private List<DisplayHintsPaymentItem> displayHintsList = new ArrayList<>();
 
-	// List containing all AccountOnFiles
+	// List containing all AccountsOnFile
 	private List<AccountOnFile> accountsOnFile = new ArrayList<>();
 
 	// Payment product specific data
 	private PaymentProduct302SpecificData paymentProduct302SpecificData;
 	private PaymentProduct320SpecificData paymentProduct320SpecificData;
+
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public BasicPaymentProduct() {}
 
 	public String getId(){
 		return id;

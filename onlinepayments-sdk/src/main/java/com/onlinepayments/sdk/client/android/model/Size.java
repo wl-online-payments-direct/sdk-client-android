@@ -1,16 +1,21 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model;
 
 /**
- * Model for getting scaled images
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO for getting scaled images.
  */
 public class Size {
 
 	private Integer width;
 	private Integer height;
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public Size(Integer width, Integer height){
 		this.width = width;
 		this.height = height;

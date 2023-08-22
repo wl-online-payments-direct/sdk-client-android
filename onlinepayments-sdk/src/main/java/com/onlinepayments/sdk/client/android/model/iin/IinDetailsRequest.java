@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.iin;
 
 import com.onlinepayments.sdk.client.android.model.PaymentContext;
@@ -6,10 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 /**
- * Pojo that contains the request for IIN lookup
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO that contains the request for IIN lookup.
  */
 public class IinDetailsRequest implements Serializable {
 
@@ -20,10 +21,18 @@ public class IinDetailsRequest implements Serializable {
 
 	private PaymentContext paymentContext;
 
+	/**
+	 @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public IinDetailsRequest(String ccPartial) {
 		this.ccPartial = ccPartial;
 	}
 
+	/**
+	 @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public IinDetailsRequest(String ccPartial, PaymentContext paymentContext) {
 		this.ccPartial = ccPartial;
 		this.paymentContext = paymentContext;

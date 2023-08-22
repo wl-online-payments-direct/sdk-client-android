@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model;
 
 import java.io.Serializable;
@@ -15,10 +19,7 @@ import com.onlinepayments.sdk.client.android.model.paymentproduct.PaymentProduct
 import com.onlinepayments.sdk.client.android.model.validation.ValidationErrorMessage;
 
 /**
- * Contains all payment request data needed for doing a payment
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Contains all payment request data needed for doing a payment.
  */
 public class PaymentRequest implements Serializable {
 
@@ -40,17 +41,19 @@ public class PaymentRequest implements Serializable {
 	// Used for storing account on file (true is storing)
 	private Boolean tokenize = false;
 
-
 	/**
-	 * Get the value of tokenize
+	 * Get the value of tokenize.
+	 *
+	 * @return a Boolean indicating whether account on file should be stored
 	 */
 	public Boolean getTokenize(){
 		return tokenize;
 	}
 
 	/**
-	 * Set the value of tokenize
-	 * @param tokenize
+	 * Set the value of tokenize.
+	 *
+	 * @param tokenize the new value of tokenize
 	 */
 	public void setTokenize(Boolean tokenize){
 		this.tokenize = tokenize;
@@ -58,8 +61,8 @@ public class PaymentRequest implements Serializable {
 
 
 	/**
-	 * Validates all fields based on their value and their validationrules
-	 * If a field is prefilled from the account on file, but it has been altered, it will be validated.
+	 * Validates all fields based on their value and their validation rules.
+	 * If a field is prefilled from the {@link AccountOnFile}, but it has been altered, it will be validated.
 	 *
 	 * @return list of errorMessageIds
 	 */
@@ -107,10 +110,10 @@ public class PaymentRequest implements Serializable {
 	}
 
 	/**
-	 * Add value to the paymentproductfields map
+	 * Add value to the paymentProductFields map.
 	 *
-	 * @param paymentProductFieldId
-	 * @param value
+	 * @param paymentProductFieldId the id of the {@link PaymentProductField} for which the value will be set
+	 * @param value the value to set for the corresponding {@link PaymentProductField}
 	 */
 	public void setValue(String paymentProductFieldId, String value) {
 
@@ -127,7 +130,11 @@ public class PaymentRequest implements Serializable {
 
 
 	/**
-	 * Gets the value of given paymentProductFieldId
+	 * Gets the value of given paymentProductFieldId.
+	 *
+	 * @param paymentProductFieldId the id of the {@link PaymentProductField} the value should be retrieved from
+	 *
+	 * @return the value of the {@link PaymentProductField}
 	 */
 	public String getValue(String paymentProductFieldId) {
 
@@ -139,7 +146,8 @@ public class PaymentRequest implements Serializable {
 
 	/**
 	 * Removes the value of given paymentProductFieldId
-	 * @param paymentProductFieldId
+	 *
+	 * @param paymentProductFieldId the id of the {@link PaymentProductField} the value should be removed from
      */
 	public void removeValue(String paymentProductFieldId) {
 
@@ -151,13 +159,14 @@ public class PaymentRequest implements Serializable {
 
 
 	/**
-	 * Gets masked value for the given newValue and oldValue with the mask of the paymentProductField with paymentProductFieldId
+	 * Gets masked value for the given newValue and oldValue with the mask of the {@link PaymentProductField} with the corresponding paymentProductFieldId.
 	 *
-	 * @param paymentProductFieldId, the paymentProductField whose mask is used
-	 * @param newValue, the value which is masked
-	 * @param oldValue, the previous value, used for determining
+	 * @param paymentProductFieldId the id of the {@link PaymentProductField} whose mask is used
+	 * @param newValue the value which is masked
+	 * @param oldValue the previous value
+	 * @param cursorIndex the current index of the cursor
 	 *
-	 * @return FormatResult which contains maskedvalue and cursorindex, or null if there is no paymentProductField found
+	 * @return FormatResult which contains maskedValue and cursorIndex, or null if there is no {@link PaymentProductField} found
 	 */
 	public FormatResult getMaskedValue(String paymentProductFieldId, String newValue, String oldValue, Integer cursorIndex) {
 
@@ -182,12 +191,12 @@ public class PaymentRequest implements Serializable {
 	}
 
 	/**
-	 * Removes the mask of a given value
+	 * Removes the mask of a given value.
 	 *
-	 * @param paymentProductFieldId The ID of the field that the value belongs to
-	 * @param value The value that will be unmasked
+	 * @param paymentProductFieldId the ID of the {@link PaymentProductField} that the value belongs to
+	 * @param value the value that will be unmasked
 	 *
-	 * @return String with unmaskedvalue, or null if there is no no paymentProductField found
+	 * @return String with unmaskedValue, or null if there is no {@link PaymentProductField} found
 	 */
 	public String getUnmaskedValue(String paymentProductFieldId, String value){
 		if (paymentProductFieldId == null) {
@@ -209,14 +218,18 @@ public class PaymentRequest implements Serializable {
 
 
 	/**
-	 * Gets the map with all fieldvalues
+	 * Gets the map with all field values.
+	 *
+	 * @return a Map of the {@link PaymentProductField} id and their corresponding values
 	 */
 	public Map<String, String> getValues() {
 		return fieldValues;
 	}
 
 	/**
-	 * Gets the map with all unmasked fieldvalues
+	 * Gets the map with all unmasked field values.
+	 *
+	 * @return a Map of the {@link PaymentProductField} id and the corresponding unmasked value
 	 */
 	public Map<String, String> getUnmaskedValues(){
 		Map<String, String> unMaskedFieldValues = new HashMap<>();
@@ -244,7 +257,9 @@ public class PaymentRequest implements Serializable {
 
 
 	/**
-	 * Gets the map with all masked fieldvalues
+	 * Gets the map with all masked field values.
+	 *
+	 * @return a Map of the {@link PaymentProductField} id and the corresponding masked value
 	 */
 	public Map<String, String> getMaskedValues(){
 		Map<String, String> maskedFieldValues = new HashMap<>();
@@ -268,14 +283,10 @@ public class PaymentRequest implements Serializable {
 		return maskedFieldValues;
 	}
 
-
-
-
-
 	/**
-	 * Merges given paymentProduct.fieldvalues map with the current paymentproduct values
+	 * Merges existing field values map with the current {@link PaymentProduct} values.
 	 *
-	 * @param paymentProduct
+	 * @param paymentProduct the {@link PaymentProduct} for which the field values should be merged with fieldValues
 	 */
 	public void mergePaymentRequest(PaymentProduct paymentProduct) {
 
@@ -302,11 +313,10 @@ public class PaymentRequest implements Serializable {
 		fieldValues = newFieldValues;
 	}
 
-
 	/**
-	 * Sets the PaymentProduct for which the customer is going to do a payment
+	 * Sets the {@link PaymentProduct} for which the customer is going to do a payment.
 	 *
-	 * @param paymentProduct
+	 * @param paymentProduct the {@link PaymentProduct} for which the customer is going to do a payment
 	 */
 	public void setPaymentProduct(PaymentProduct paymentProduct) {
 
@@ -318,9 +328,9 @@ public class PaymentRequest implements Serializable {
 
 
 	/**
-	 * Sets which accountOnfile is selected on the paymentproduct selection page
+	 * Sets which {@link AccountOnFile} is selected on the {@link PaymentProduct} selection page.
 	 *
-	 * @param accountOnFile
+	 * @param accountOnFile the selected {@link AccountOnFile}
 	 */
 	public void setAccountOnFile(AccountOnFile accountOnFile) {
 
@@ -334,8 +344,6 @@ public class PaymentRequest implements Serializable {
 		this.accountOnFile = null;
 	}
 
-
-	/** Getters **/
 	public PaymentProduct getPaymentProduct() {
 		return paymentProduct;
 	}

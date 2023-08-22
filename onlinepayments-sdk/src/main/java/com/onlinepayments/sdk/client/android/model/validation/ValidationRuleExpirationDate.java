@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.validation;
 
 import android.util.Log;
@@ -13,10 +17,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
- * Validation rule for expirationdate
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Validation rule for expiration date.
  */
 public class ValidationRuleExpirationDate extends AbstractValidationRule {
 
@@ -27,14 +28,22 @@ public class ValidationRuleExpirationDate extends AbstractValidationRule {
 	private static String DATE_FORMAT_PATTERN_MONTH_YEAR = "MMyyyy";
 	private static String DATE_FORMAT_PATTERN_CENTURY = "yyyy";
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public ValidationRuleExpirationDate(String errorMessage, ValidationType type) {
 		super(errorMessage, type);
 	}
 
 	/**
-	 * Validates an expiration date
-	 * @param text, the text to be validated
-	 * @deprecated use {@link #validate(PaymentRequest, String)} instead
+	 * Validates an expiration date.
+	 *
+	 * @param text the expiration date to be validated, as a String
+	 *
+	 * @return whether the expiration date is valid or not
+	 *
+	 * @deprecated use {@link #validate(PaymentRequest, String)} instead.
 	 */
 	@Override
 	@Deprecated
@@ -81,11 +90,12 @@ public class ValidationRuleExpirationDate extends AbstractValidationRule {
 	}
 
 	/**
-	 * Validates an expiration date
-	 * @param paymentRequest The fully filled payment request that is ready for doing the payment
-	 * @param fieldId The ID of the field to which to apply the current validator
-	 * @return True if the value in the field with <code>fieldId</code> is a valid expiration date; false
-	 * if it is not a valid expiration date or the fieldId could not be found.
+	 * Validates an expiration date.
+	 *
+	 * @param paymentRequest the fully filled {@link PaymentRequest} that will be used for doing a payment
+	 * @param fieldId the ID of the field to which to apply the current validator
+	 *
+	 * @return true, if the value in the field with fieldId is a valid expiration date; false, if it is not a valid expiration date or the fieldId could not be found
 	 */
 	@Override
 	public boolean validate(PaymentRequest paymentRequest, String fieldId) {
@@ -132,10 +142,12 @@ public class ValidationRuleExpirationDate extends AbstractValidationRule {
 	/**
 	 * Validates whether the month and year of the 'dateToValidate' is between month and year of 'now' and 'futureDate'.
 	 * Validation happens inclusive. E.g. if dateToValidate = 01-2019 and now = 01-2019, true is returned.
-	 * @param now Lower threshold of the comparison. Is expected to be the current Date.
-	 * @param futureDate Upper threshold of the comparison. futureDate should be > now
-	 * @param dateToValidate The date that should be checked to be between now and futureDate.
-	 * @return true if and only if dateToValidate is inclusive between now and futureDate; false otherwise.
+	 *
+	 * @param now lower threshold of the comparison, is expected to be the current Date
+	 * @param futureDate upper threshold of the comparison, futureDate should be > now
+	 * @param dateToValidate the date that should be checked to be between now and futureDate
+	 *
+	 * @return true, if and only if dateToValidate is inclusive between now and futureDate; false otherwise.
 	 */
 	boolean validateDateIsBetween(Date now, Date futureDate, Date dateToValidate) {
 		// Before comparison, this method generates Dates that only have a month and year (for the lower bound)

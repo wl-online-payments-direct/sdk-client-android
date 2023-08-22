@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.validation;
 
 import android.util.Log;
@@ -7,10 +11,7 @@ import com.onlinepayments.sdk.client.android.model.PaymentRequest;
 import java.security.InvalidParameterException;
 
 /**
- * Validation rule for range
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Validation rule for range.
  */
 public class ValidationRuleRange extends AbstractValidationRule {
 
@@ -21,15 +22,19 @@ public class ValidationRuleRange extends AbstractValidationRule {
 	private Integer minValue;
 	private Integer maxValue;
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public ValidationRuleRange(Integer minValue, Integer maxValue, String errorMessage, ValidationType type) {
 		super(errorMessage, type);
 
 		if (minValue == null) {
-			throw new InvalidParameterException("Error initialising FieldValidationRuleRange, rangeFrom may not be null");
+			throw new InvalidParameterException("Error initialising ValidationRuleRange, minValue may not be null");
 		}
 
 		if (maxValue == null) {
-			throw new InvalidParameterException("Error initialising FieldValidationRuleRange, rangeTo may not be null");
+			throw new InvalidParameterException("Error initialising ValidationRuleRange, maxValue may not be null");
 		}
 
 		this.minValue = minValue;
@@ -38,10 +43,13 @@ public class ValidationRuleRange extends AbstractValidationRule {
 
 
 	/**
-	 * Validates that the text value is of the correct amount
-	 * @param text, the text to be validated
-	 * @return True if the String is valid, false otherwise
-	 * @deprecated use {@link #validate(PaymentRequest, String)} instead
+	 * Validates that the text value is of the correct amount.
+	 *
+	 * @param text the value for which it should be checked if it is the correct amount, as a String
+	 *
+	 * @return true, if the value has the correct amount; false otherwise
+	 *
+	 * @deprecated use {@link #validate(PaymentRequest, String)} instead.
 	 */
 	@Override
 	@Deprecated
@@ -61,11 +69,12 @@ public class ValidationRuleRange extends AbstractValidationRule {
 	}
 
 	/**
-	 * Validates that the value in the field with fieldId has a value within the set bounds
-	 * @param paymentRequest The fully filled payment request that is ready for doing the payment
-	 * @param fieldId The ID of the field to which to apply the current validator
-	 * @return True if the value in the field with <code>fieldId</code> is in the correct range; false
-	 * if it is out of bounds or the fieldId could not be found.
+	 * Validates that the value in the field with fieldId has a value within the set bounds.
+	 *
+	 * @param paymentRequest the fully filled {@link PaymentRequest} that will be used for doing a payment
+	 * @param fieldId the ID of the field to which to apply the current validator
+	 *
+	 * @return true, if the value in the field with fieldId is in the correct range; false, if it is out of bounds or if the fieldId could not be found
 	 */
 	@Override
 	public boolean validate(PaymentRequest paymentRequest, String fieldId) {

@@ -1,14 +1,14 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct.specificdata;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * Pojo which holds the payment product 320 specific properties
- * This class is filled by deserialising a JSON string from the GC gateway
- *
- * Copyright 2018 Global Collect Services B.V
- *
+ * POJO which holds the payment product 320 specific properties.
  */
 public class PaymentProduct320SpecificData implements Serializable {
 
@@ -17,6 +17,11 @@ public class PaymentProduct320SpecificData implements Serializable {
 	private String gateway;
 	private List<String> networks;
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public PaymentProduct320SpecificData() {}
 
 	public String getGateway() {
 		return gateway;

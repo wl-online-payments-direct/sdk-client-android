@@ -1,12 +1,13 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model;
 
 import java.io.Serializable;
 
-
 /**
- * Pojo that contains money information for a payment.
- *
- * Copyright 2020 Global Collect Services B.V
+ * POJO that contains money information for a payment.
  */
 public class AmountOfMoney implements Serializable{
 
@@ -26,9 +27,9 @@ public class AmountOfMoney implements Serializable{
     }
 
     /**
-     * @param amount The amount, in the smallest possible denominator of the provided currency.
-     * @param currencyCode The ISO-4217 Currency Code.
-     *     @see <a href="https://www.iso.org/iso-4217-currency-codes.html">ISO 4217 Currency Codes</a>
+     * @param amount the amount in the smallest possible denominator of the provided currency
+     * @param currencyCode the ISO-4217 Currency Code as a String
+     * @see <a href="https://www.iso.org/iso-4217-currency-codes.html">ISO 4217 Currency Codes</a>
      */
     public AmountOfMoney(Long amount, String currencyCode) {
         this.amount = amount;
@@ -40,9 +41,9 @@ public class AmountOfMoney implements Serializable{
     }
 
     /**
-     * @deprecated In the next major release, the type of currencyCode will change to String.
      * Note that 'null' will be returned when an unknown String value was set.
-     * Use {@link #getCurrencyCodeString()} instead.
+     *
+     * @deprecated In the next major release, the type of currencyCode will change to String. Use {@link #getCurrencyCodeString()} instead.
      */
     @Deprecated
     public CurrencyCode getCurrencyCode() {

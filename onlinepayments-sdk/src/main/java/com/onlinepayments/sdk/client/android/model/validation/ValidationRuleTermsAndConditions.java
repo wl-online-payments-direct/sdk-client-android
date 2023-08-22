@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.validation;
 
 import android.util.Log;
@@ -7,10 +11,7 @@ import com.onlinepayments.sdk.client.android.model.PaymentRequest;
 import java.security.InvalidParameterException;
 
 /**
- * Validation rule for terms and conditions
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Validation rule for terms and conditions.
  */
 public class ValidationRuleTermsAndConditions extends AbstractValidationRule {
 
@@ -18,15 +19,21 @@ public class ValidationRuleTermsAndConditions extends AbstractValidationRule {
 
     private static final String TAG = ValidationRuleTermsAndConditions.class.getName();
 
+    /**
+     * @deprecated In a future release, this constructor will become internal to the SDK.
+     */
+    @Deprecated
     public ValidationRuleTermsAndConditions(String errorMessage, ValidationType type) {
         super(errorMessage, type);
     }
 
     /**
-     * Validates that the terms and conditions have been accepted
-     * @param paymentRequest The fully filled payment request that is ready for doing the payment
-     * @param fieldId The ID of the field to which to apply the current validator
-     * @return True if the value in the field with <code>fieldId</code> is true
+     * Validates that the terms and conditions have been accepted.
+     *
+     * @param paymentRequest the fully filled {@link PaymentRequest} that will be used for doing a payment
+     * @param fieldId the ID of the field to which to apply the current validator
+     *
+     * @return true, if the value in the field with fieldId is true; false, if the value in the field is false or if the fieldId could not be found
      */
     @Override
     public boolean validate(PaymentRequest paymentRequest, String fieldId) {

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
 import java.io.Serializable;
@@ -7,13 +11,9 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * POJO that represents a Formelement object
- * This class is filled by deserialising a JSON string from the GC gateway
- * The Formelements are used for determining whether it is a list or text input field
- * In case of list, it also has values inside the valuemapping
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO that represents a Formelement object.
+ * The FormElement is used for determining its list type (text, list, currency, date or boolean).
+ * In case of a list, it also has values inside the valueMapping.
  */
 public class FormElement implements Serializable {
 
@@ -41,6 +41,11 @@ public class FormElement implements Serializable {
 	private ListType type;
 	private List<ValueMap> valueMapping = new ArrayList<>();
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public FormElement() {}
 
 	public ListType getType(){
 		return type;
@@ -48,7 +53,7 @@ public class FormElement implements Serializable {
 
 	/**
 	 * @deprecated
-	 * Do not use this method. This method is intented for a temporary internal fix, and will be removed when no longer required.
+	 * Do not use this method. This method is intended for a temporary internal fix, and will be removed when no longer required.
 	 *
 	 * @param type the new type for this FormElement
 	 */

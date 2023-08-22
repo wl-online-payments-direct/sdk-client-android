@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
 import java.io.Serializable;
@@ -8,11 +12,7 @@ import com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints.D
 
 
 /**
- * POJO that represents an AccountOnFile object
- * This class is filled by deserialising a JSON string from the GC gateway
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO that represents an AccountOnFile object.
  */
 public class AccountOnFile implements Serializable {
 
@@ -26,6 +26,11 @@ public class AccountOnFile implements Serializable {
 
 	private List<KeyValuePair> attributes = new ArrayList<>();
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public AccountOnFile() {}
 
 	public Integer getId() {
 		return id;

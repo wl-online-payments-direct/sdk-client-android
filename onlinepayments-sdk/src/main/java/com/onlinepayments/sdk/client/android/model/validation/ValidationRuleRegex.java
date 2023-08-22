@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.validation;
 
 import android.util.Log;
@@ -6,12 +10,8 @@ import com.onlinepayments.sdk.client.android.model.PaymentRequest;
 
 import java.security.InvalidParameterException;
 
-
 /**
- * Validation rule for regex
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Validation rule for regex.
  */
 public class ValidationRuleRegex extends AbstractValidationRule {
 
@@ -21,6 +21,10 @@ public class ValidationRuleRegex extends AbstractValidationRule {
 
 	private String regex;
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public ValidationRuleRegex(String regex, String errorMessage, ValidationType type) {
 		super(errorMessage, type);
 
@@ -32,10 +36,13 @@ public class ValidationRuleRegex extends AbstractValidationRule {
 	}
 
 	/**
-	 * Validates if the text matches the regular expression
-	 * @param text, the text to be validated
-	 * @return True if the text matches the regex, false otherwise
-	 * @deprecated use {@link #validate(PaymentRequest, String)} instead
+	 * Validates if the text matches the regular expression.
+	 *
+	 * @param text the text which should be checked whether is matches the regular expression
+	 *
+	 * @return true, if the text matches the regex; false otherwise
+	 *
+	 * @deprecated use {@link #validate(PaymentRequest, String)} instead.
      */
 	@Override
 	@Deprecated
@@ -50,12 +57,12 @@ public class ValidationRuleRegex extends AbstractValidationRule {
 	}
 
 	/**
-	 * Validates that the value in the field with fieldId matches the regular expression of this
-	 * validator.
-	 * @param paymentRequest The fully filled payment request that is ready for doing the payment
-	 * @param fieldId The ID of the field to which to apply the current validator
-	 * @return True if the value in the field with <code>fieldId</code> matches the regex; false
-	 * if it doesn't or the fieldId could not be found.
+	 * Validates that the value in the field with fieldId matches the regular expression of this validator.
+	 *
+	 * @param paymentRequest the fully filled {@link PaymentRequest} that will be used for doing a payment
+	 * @param fieldId the ID of the field to which to apply the current validator
+	 *
+	 * @return true, if the value in the field with fieldId matches the regex; false, if it doesn't or if the fieldId could not be found
 	 */
 	@Override
 	public boolean validate(PaymentRequest paymentRequest, String fieldId) {

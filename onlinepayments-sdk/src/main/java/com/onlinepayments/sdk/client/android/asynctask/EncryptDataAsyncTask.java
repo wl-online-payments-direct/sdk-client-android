@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.asynctask;
 
 import java.security.InvalidParameterException;
@@ -5,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.onlinepayments.sdk.client.android.encryption.EncryptData;
@@ -12,24 +17,34 @@ import com.onlinepayments.sdk.client.android.encryption.Encryptor;
 import com.onlinepayments.sdk.client.android.model.PaymentRequest;
 import com.onlinepayments.sdk.client.android.model.PublicKeyResponse;
 import com.onlinepayments.sdk.client.android.model.paymentproduct.PaymentProductField;
+import com.onlinepayments.sdk.client.android.session.SessionEncryptionHelper;
 
 /**
- * AsyncTask which encrypts all PaymentProductFields with the GC gateway publickey
+ * AsyncTask which encrypts all PaymentProductFields with the Online Payments gateway public key.
  *
- * Copyright 2020 Global Collect Services B.V
- *
+ * @deprecated In a future release, this class will become internal to the SDK. Use {@link com.onlinepayments.sdk.client.android.session.Session#preparePaymentRequest(PaymentRequest, Context, SessionEncryptionHelper.OnPaymentRequestPreparedListener)} to obtain an encrypted Prepared Payment Request.
  */
+@Deprecated
 public class EncryptDataAsyncTask extends AsyncTask<String, Void, String>{
 
-	// The listener which will be called by the AsyncTask when the paymentproductfields are encrypted
+	// The listener which will be called by the AsyncTask when the PaymentProductFields are encrypted
 	private OnEncryptDataCompleteListener listener;
 
-	// Variables needed for the Encryptor for encryption
+	// PaymentRequest for which the PaymentProductFields will be encrypted
 	private PaymentRequest paymentRequest;
+	// Contains the Online Payments gateway public key that will be used for encrypting the PaymentProductFields
 	private PublicKeyResponse publicKeyResponse;
+	// Used for identifying the customer on the Online Payments gateway
 	private String clientSessionId;
 
-
+	/**
+	 * Create a EncryptDataAsyncTask
+	 *
+	 * @param publicKeyResponse {@link PublicKeyResponse} contains the Online Payments gateway public key that will be used for encrypting the PaymentProductFields
+	 * @param paymentRequest the {@link PaymentRequest} for which the PaymentProductFields will be encrypted
+	 * @param clientSessionId used for identifying the session on the Online Payments gateway
+	 * @param listener {@link OnEncryptDataCompleteListener} which will be called by the AsyncTask when the PaymentProductFields are encrypted
+	 */
     public EncryptDataAsyncTask(PublicKeyResponse publicKeyResponse, PaymentRequest paymentRequest, String clientSessionId, OnEncryptDataCompleteListener listener) {
 
     	if (publicKeyResponse == null) {
@@ -63,8 +78,8 @@ public class EncryptDataAsyncTask extends AsyncTask<String, Void, String>{
 
     		String value = paymentRequest.getValue(field.getId());
 
-    		// The date and expirydate are already in the correct format.
-    		// If the masks given by the GC gateway are correct
+    		// The date and expiry date are already in the correct format.
+    		// If the masks given by the Online Payments gateway are correct
     		if (field.getType() != null && value != null){
 	    		if (field.getType().equals(PaymentProductField.Type.NUMERICSTRING)) {
 	    			formattedPaymentValues.put(field.getId(), value.replaceAll("[^\\d.]", ""));
@@ -93,7 +108,7 @@ public class EncryptDataAsyncTask extends AsyncTask<String, Void, String>{
     		encryptData.setTokenize(true);
     	}
 
-    	// Encrypt all the fields in the paymentproduct
+    	// Encrypt all the fields in the PaymentProduct
     	Encryptor encryptor = new Encryptor(publicKeyResponse);
 		return encryptor.encrypt(encryptData);
     }
@@ -108,13 +123,18 @@ public class EncryptDataAsyncTask extends AsyncTask<String, Void, String>{
 
 
     /**
-     * Interface for onEncryptDataComplete listener
-     * Is called from the EncryptDataAsyncTask when it has encrypted the given paymentproductfields
-     *
-     * Copyright 2020 Global Collect Services B.V
-     *
+     * Callback Interface that is invoked when the encryption is completed.
+	 * On success the {@link #onEncryptDataComplete(String)} callback will be invoked.
+	 *
+	 * @deprecated In a future release, this class will become internal to the SDK. Use {@link com.onlinepayments.sdk.client.android.session.Session#preparePaymentRequest(PaymentRequest, Context, SessionEncryptionHelper.OnPaymentRequestPreparedListener)} to obtain an encrypted Prepared Payment Request.
      */
+	@Deprecated
     public interface OnEncryptDataCompleteListener {
+		/**
+		 * Invoked when the task was successful and data is available.
+		 *
+		 * @param encryptedData the encrypted data. Send this to your server to create a payment.
+		 */
         void onEncryptDataComplete(String encryptedData);
     }
 }

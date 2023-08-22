@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints;
 
 import java.io.Serializable;
@@ -7,20 +11,14 @@ import com.onlinepayments.sdk.client.android.model.paymentproduct.Tooltip;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * POJO that represents an DisplayHintsProductFields object
- * This class is filled by deserialising a JSON string from the GC gateway
- * Contains information for payment product fields
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO that represents an DisplayHintsProductFields object.
  */
 public class DisplayHintsProductFields implements Serializable {
 
 	private static final long serialVersionUID = -4396644758512959868L;
 
 	/**
-	 * Enum containing all the possible input types
-	 *
+	 * Enum containing all the possible input types.
 	 */
 	public enum PreferredInputType {
 		@SerializedName("IntegerKeyboard")
@@ -50,8 +48,12 @@ public class DisplayHintsProductFields implements Serializable {
 	private Tooltip tooltip;
 	private FormElement formElement;
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public DisplayHintsProductFields() {}
 
-	/** Getters **/
 	public Tooltip getTooltip(){
 		return tooltip;
 	}
@@ -77,10 +79,9 @@ public class DisplayHintsProductFields implements Serializable {
 	}
 
 	/**
-	 * @deprecated
-	 * 	 * Do not use this method. This method is intented for a temporary internal fix, and will be removed when no longer required.
-	 *
 	 * @param mask the new mask for this FormElement
+	 *
+	 * @deprecated Do not use this method. This method is intended for a temporary internal fix, and will be removed when no longer required.
 	 */
 	public void setMask(String mask) { this.mask = mask; }
 

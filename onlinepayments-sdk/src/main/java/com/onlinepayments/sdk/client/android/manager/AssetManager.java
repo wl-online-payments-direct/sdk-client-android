@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.manager;
 
 import java.io.IOException;
@@ -12,6 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,13 +35,12 @@ import com.google.gson.reflect.TypeToken;
 
 
 /**
- * Singleton who handles all logo related functionality
+ * Singleton who handles all logo related functionality.
  *
- * Copyright 2020 Global Collect Services B.V
- *
+ * @deprecated In a future release this class, its functions and its properties will be removed. Instead please retrieve the logo / tooltip image directly from the PaymentItem. If an image is not available, or you wish to retrieve it again, you can retrieve it from the logo's / tooltip image's URL that is also stored in the PaymentItem.
  */
+@Deprecated
 public class AssetManager implements OnImageLoadedListener {
-
 	// Tag used for logging
 	private static final String TAG = AssetManager.class.getName();
 
@@ -57,9 +61,9 @@ public class AssetManager implements OnImageLoadedListener {
 	private CacheHandler cacheHandler;
 
 	/**
-	 * Private constructor for Singleton purposes
+	 * Private constructor for Singleton purposes.
 	 *
-	 * @param context, needed for reading and writing files
+	 * @param context needed for reading and writing files
 	 */
 	private AssetManager(Context context) {
 		this.context = context;
@@ -67,9 +71,10 @@ public class AssetManager implements OnImageLoadedListener {
 	}
 
 	/**
-	 * Gets Singleton instance of this AssetManager
+	 * Gets Singleton instance of this AssetManager.
 	 *
-	 * @param context, needed for reading and writing files
+	 * @param context needed for reading and writing files
+	 *
 	 * @return AssetManager singleton instance
 	 */
 	public static synchronized AssetManager getInstance(Context context) {
@@ -85,11 +90,12 @@ public class AssetManager implements OnImageLoadedListener {
 	}
 
 	/**
-	 * Retrieves a logo for the given paymentProductId
-	 * First the diskcache is checked for this logo
-	 * If it doesn't exist there, the version in the app is returned
+	 * Retrieves a logo for the given paymentProductId.
+	 * First the diskcache is checked for this logo.
+	 * If it doesn't exist there, the version that is stored in the app is returned.
 	 *
-	 * @param paymentProductId, the paymentProductId for which the logo is returned
+	 * @param paymentProductId the paymentProductId for which the logo is returned
+	 *
 	 * @return Drawable logo
 	 */
 	public Drawable getLogo(String paymentProductId) {
@@ -101,6 +107,7 @@ public class AssetManager implements OnImageLoadedListener {
 		} else {
 
 			// Else return the original logo for this paymentProduct
+			@SuppressLint("DiscouragedApi")
 			Integer logoId = context.getResources().getIdentifier(LOGO_PREFIX + paymentProductId, "drawable", context.getPackageName());
 			if (logoId != 0) {
 				return context.getResources().getDrawable(logoId);
@@ -111,10 +118,11 @@ public class AssetManager implements OnImageLoadedListener {
 	}
 
 	/**
-	 * Update the logos for the given paymentProducts if there is a new version
+	 * Update the logos for the given basicPaymentItems if there is a new version.
 	 *
-	 * @param assetUrl,				the asset url for loading images
-	 * @param basicPaymentItems, 	PaymentProductSelectables for which the logo will be updated if there is a new version
+	 * @param assetUrl the asset url for loading images
+	 * @param basicPaymentItems list of basic payment items for which the logo will be updated if there is a new version
+	 * @param size can be used to retrieve images of a certain size
 	 */
 	public void updateLogos(String assetUrl, List<BasicPaymentItem> basicPaymentItems, Size size) {
 
@@ -150,9 +158,9 @@ public class AssetManager implements OnImageLoadedListener {
 	}
 
 	/**
-	 * Parses the key/value map in the file LOGO_MAPPING_FILENAME to a Map containing all initial logo url per paymentproductId
+	 * Parses the key/value map in the file LOGO_MAPPING_FILENAME to a Map containing all initial logo url per paymentProductId.
 	 *
-	 * @return Map containing all logos for paymentproducts
+	 * @return Map containing all logos for paymentProducts
 	 */
 	private Map<String, String> readInitialLogoMapping() {
 
@@ -175,12 +183,12 @@ public class AssetManager implements OnImageLoadedListener {
 	}
 
 	/**
-	 * Loads an image from the products url
+	 * Loads an image from the {@link BasicPaymentItem}'s logo url.
 	 *
-	 * @param assetUrl,		the asset url for loading images
-	 * @param logoMapping, 	map containing mapping with url's and paymentproductid
-	 * @param product,     	this products image is loaded
-	 * @param size,        	can be used to retrieve images of certain size
+	 * @param assetUrl the asset url for loading images
+	 * @param logoMapping map containing mapping with url's and paymentProductId
+	 * @param product image is loaded for this {@link BasicPaymentItem}
+	 * @param size can be used to retrieve images of certain size
 	 */
 	private void getImageFromUrl(String assetUrl, Map<String, String> logoMapping, BasicPaymentItem product, Size size) {
 

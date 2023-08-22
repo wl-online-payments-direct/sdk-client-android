@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.communicate;
 
 import java.io.Serializable;
@@ -14,11 +18,11 @@ import com.onlinepayments.sdk.client.android.Util;
 import com.onlinepayments.sdk.client.android.session.Session;
 
 /**
- * Contains all configuration parameters needed for communicating with the GC gateway
+ * Contains all configuration parameters needed for communicating with the Online Payments gateway.
  *
- * Copyright 2020 Global Collect Services B.V
- *
+ * @deprecated In a future release, this class and its functions will become internal to the SDK.
  */
+@Deprecated
 public class C2sCommunicatorConfiguration implements Serializable {
 
 	private static final long serialVersionUID = 4087796898189138740L;
@@ -38,18 +42,38 @@ public class C2sCommunicatorConfiguration implements Serializable {
 	private String appIdentifier;
 	private String ipAddress;
 
+	public boolean loggingEnabled = false;
+
 	/**
-	 * Constructor, creates the C2SCommunicatorConfiguration object
+	 * Constructor, creates the C2SCommunicatorConfiguration object.
 	 *
-	 * @param clientSessionId,         used for identifying the customer on the GC gateway
-	 * @param customerId,              used for sending calls to the GC gateway
-	 * @param clientApiUrl,            the endpoint baseurl
-	 * @param assetUrl,            	   the asset baseurl
-	 * @param environmentIsProduction, states if the environment is production
-	 * @param appIdentifier,           used to create device metadata
-	 * @param ipAddress,               used to create device metadata; may be null
+	 * @param clientSessionId used for identifying the session on the Online Payments gateway
+	 * @param customerId used for identifying the customer on the Online Payments gateway
+	 * @param clientApiUrl the endpoint baseurl
+	 * @param assetUrl the asset baseurl
+	 * @param environmentIsProduction states if the environment is production
+	 * @param appIdentifier used to create device metadata
+	 * @param ipAddress used to create device metadata; may be null
+	 *
 	 */
 	public C2sCommunicatorConfiguration(String clientSessionId, String customerId, String clientApiUrl, String assetUrl, boolean environmentIsProduction, String appIdentifier, String ipAddress) {
+		this(clientSessionId, customerId, clientApiUrl, assetUrl, environmentIsProduction, appIdentifier, ipAddress, false);
+	}
+
+
+	/**
+	 * Constructor, creates the C2SCommunicatorConfiguration object.
+	 *
+	 * @param clientSessionId used for identifying the session on the Online Payments gateway
+	 * @param customerId used for identifying the customer on the Online Payments gateway
+	 * @param clientApiUrl the endpoint baseurl
+	 * @param assetUrl the asset baseurl
+	 * @param environmentIsProduction states if the environment is production
+	 * @param appIdentifier used to create device metadata
+	 * @param ipAddress used to create device metadata; may be null
+	 * @param loggingEnabled indicates whether requests and responses should be logged to the console; default is false; should be false in production
+	 */
+	public C2sCommunicatorConfiguration(String clientSessionId, String customerId, String clientApiUrl, String assetUrl, boolean environmentIsProduction, String appIdentifier, String ipAddress, boolean loggingEnabled) {
 
 		if (clientSessionId == null) {
 			throw new InvalidParameterException("Error creating C2SCommunicatorConfiguration, clientSessionId may not be null");
@@ -74,40 +98,51 @@ public class C2sCommunicatorConfiguration implements Serializable {
 		this.environmentIsProduction = environmentIsProduction;
 		this.appIdentifier = appIdentifier;
 		this.ipAddress = ipAddress;
+		this.loggingEnabled = loggingEnabled;
 	}
 
 	/**
-	 * Convenience method for creating Session given the clientSessionId, customerId and region
+	 * Convenience method for creating a {@link Session} without a given ipAddress.
 	 *
-	 * @param clientSessionId,         used for identifying the customer on the GC gateway
-	 * @param customerId,              used for sending calls to the GC gateway
-	 * @param clientApiUrl,                 the endpoint baseurl
-	 * @param assetBaseUrl,            the asset baseurl
-	 * @param environmentIsProduction, states if the environment is production
-	 * @param appIdentifier,           used to create device metadata
+	 * @param clientSessionId used for identifying the session on the Online Payments gateway
+	 * @param customerId used for identifying the customer on the Online Payments gateway
+	 * @param clientApiUrl the endpoint baseurl
+	 * @param assetBaseUrl the asset baseurl
+	 * @param environmentIsProduction states if the environment is production
+	 * @param appIdentifier used to create device metadata
+	 *
 	 * @return initialised Session
+	 *
+	 * @deprecated use {@link Session#Session(String, String, String, String, boolean, String)} or {@link Session#Session(String, String, String, String, boolean, String, boolean)} instead.
 	 */
+	@Deprecated
 	public static Session initWithClientSessionId(String clientSessionId, String customerId, String clientApiUrl, String assetBaseUrl, boolean environmentIsProduction, String appIdentifier) {
 		return initSession(clientSessionId, customerId, clientApiUrl, assetBaseUrl, environmentIsProduction, appIdentifier, null);
 	}
 
+
 	/**
-	 * Convenience method for creating Session given the clientSessionId, customerId and region
+	 * Convenience method for creating a {@link Session} with a given ipAddress.
 	 *
-	 * @param clientSessionId, used for identifying the customer on the GC gateway
-	 * @param customerId,      used for sending calls to the GC gateway
-	 * @param clientApiUrl,         the endpoint baseurl
-	 * @param assetBaseUrl,    the asset baseurl
-	 * @param appIdentifier,   used to create device metadata
-	 * @param ipAddress,       used to create device metadata
+	 * @param clientSessionId used for identifying the session on the Online Payments gateway
+	 * @param customerId used for identifying the customer on the Online Payments gateway
+	 * @param clientApiUrl the endpoint baseurl
+	 * @param assetBaseUrl the asset baseurl
+	 * @param environmentIsProduction states if the environment is production
+	 * @param appIdentifier used to create device metadata
+	 * @param ipAddress used to create device metadata
+	 *
 	 * @return initialised Session
+	 *
+	 * @deprecated use {@link Session#Session(String, String, String, String, boolean, String)} or {@link Session#Session(String, String, String, String, boolean, String, boolean)} instead.
 	 */
+	@Deprecated
 	public static Session initWithClientSessionId(String clientSessionId, String customerId, String clientApiUrl, String assetBaseUrl, boolean environmentIsProduction, String appIdentifier, String ipAddress) {
 		return initSession(clientSessionId, customerId, clientApiUrl, assetBaseUrl, environmentIsProduction, appIdentifier, ipAddress);
 	}
 
 	private static Session initSession(String clientSessionId, String customerId, String clientApiUrl, String assetBaseUrl, boolean environmentIsProduction, String appIdentifier, String ipAddress) {
-		C2sCommunicatorConfiguration configuration = new C2sCommunicatorConfiguration(clientSessionId, customerId, clientApiUrl, assetBaseUrl, environmentIsProduction, appIdentifier, ipAddress);
+		C2sCommunicatorConfiguration configuration = new C2sCommunicatorConfiguration(clientSessionId, customerId, clientApiUrl, assetBaseUrl, environmentIsProduction, appIdentifier, ipAddress, false);
 		return initSession(clientSessionId, configuration);
 	}
 
@@ -153,10 +188,30 @@ public class C2sCommunicatorConfiguration implements Serializable {
 	}
 
 	/**
-	 * Returns map of metadata of the device this SDK is running on
-	 * The map contains the SDK version, OS, OS version and screensize
+	 * Utility method for setting whether request/response logging should be enabled or not.
 	 *
-	 * @return Map<String, String> containing key/values of metadata
+	 * @param enableLogging boolean indicating whether request/response logging should be enabled or not
+	 */
+	public void setLoggingEnabled(boolean enableLogging) {
+		this.loggingEnabled = enableLogging;
+	}
+
+	/**
+	 * Checks whether request/response logging is enabled or not.
+	 *
+	 * @return a boolean indicating whether request/response logging is enabled or not
+	 */
+	public boolean getLoggingEnabled() {
+		return loggingEnabled;
+	}
+
+	/**
+	 * Returns a map of metadata of the device this SDK is running on.
+	 * The map contains the SDK version, OS, OS version and screen size.
+	 *
+	 * @param context used for retrieving device metadata
+	 *
+	 * @return a Map containing key/values of metadata
 	 */
 	public Map<String, String> getMetadata(Context context) {
 		return Util.getMetadata(context, appIdentifier, ipAddress);

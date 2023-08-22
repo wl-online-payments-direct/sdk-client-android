@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
 import java.io.Serializable;
@@ -19,12 +23,8 @@ import com.onlinepayments.sdk.client.android.model.validation.ValidationType;
 
 
 /**
- * POJO that represents an Data restrictions object
- * This class is filled by deserialising a JSON string from the GC gateway
- * The DataRestrictions are used for validating user input
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO that represents an Data restrictions object.
+ * The DataRestrictions are used for validating user input.
  */
 public class DataRestrictions implements Serializable {
 
@@ -35,6 +35,12 @@ public class DataRestrictions implements Serializable {
 	private List<AbstractValidationRule> validationRules = new ArrayList<>();
 
 	private Validator validators;
+
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public DataRestrictions() {}
 
 	public Validator getValidator(){
 		return validators;

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.asynctask;
 
 import android.content.Context;
@@ -7,6 +11,7 @@ import androidx.annotation.NonNull;
 
 import com.onlinepayments.sdk.client.android.communicate.C2sCommunicator;
 import com.onlinepayments.sdk.client.android.configuration.Constants;
+import com.onlinepayments.sdk.client.android.listener.PaymentProductResponseListener;
 import com.onlinepayments.sdk.client.android.model.PaymentContext;
 import com.onlinepayments.sdk.client.android.model.api.ApiResponse;
 import com.onlinepayments.sdk.client.android.model.api.ErrorResponse;
@@ -18,39 +23,42 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 /**
- * AsyncTask which loads a PaymentProduct with fields from the GC Gateway
+ * AsyncTask which loads a {@link PaymentProduct} from the Online Payments Gateway.
  *
- * Copyright 2017 Global Collect Services B.V
- *
+ * @deprecated In a future release, this class will become internal to the SDK. Use {@link com.onlinepayments.sdk.client.android.session.Session#getPaymentProduct(Context, String, PaymentContext, PaymentProductResponseListener)} to obtain a specific Payment Product.
  */
+@Deprecated
 public class PaymentProductAsyncTask extends AsyncTask<String, Void, ApiResponse<PaymentProduct>> {
 
-	// The listener which will be called by the AsyncTask when PaymentProduct with fields is retrieved
+	// The listeners which will be called by the AsyncTask when the PaymentProduct is retrieved
 	private List<OnPaymentProductCallCompleteListener> listeners;
 
+	// The listeners which will be called by the AsyncTask when the PaymentProduct is retrieved
 	private List<PaymentProductCallListener> callListeners;
 
-	// Context needed for reading stubbed PaymentProduct
+	// The listeners which will be called by the AsyncTask when the PaymentProduct is retrieved
+	private List<PaymentProductResponseListener> responseListeners;
+
+	// Context needed for reading metadata which is sent to the Online Payments gateway
 	private Context context;
 
 	// The productId for the product which need to be retrieved
 	private String productId;
 
-	// Communicator which does the communication to the GC gateway
+	// Communicator which does the communication to the Online Payments gateway
 	private C2sCommunicator communicator;
 
-	// PaymentContext which contains all neccesary data for doing call to the GC gateway to retrieve paymentproducts
+	// PaymentContext which contains all necessary data for doing call to the Online Payments gateway to retrieve the PaymentProduct
 	private PaymentContext paymentContext;
 
 	/**
-	 * Constructor
-	 * @deprecated use {@link #PaymentProductAsyncTask(Context, String, C2sCommunicator, PaymentContext, List)} instead
+	 * Create PaymentProductAsyncTask
 	 *
-	 * @param context, used for reading stubbing data
-	 * @param productId, the productId for the product which need to be retrieved
-	 * @param paymentContext, PaymentContext which contains all neccesary data for doing call to the GC gateway to retrieve paymentproducts
-	 * @param communicator, communicator which does the communication to the GC gateway
-	 * @param listeners, listener which will be called by the AsyncTask when the PaymentProduct with fields is retrieved
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param productId the productId of the product which need to be retrieved
+	 * @param paymentContext {@link PaymentContext} which contains all necessary data for doing call to the Online Payments gateway to retrieve the {@link PaymentProduct}
+	 * @param communicator {@link C2sCommunicator} which does the communication to the Online Payments gateway
+	 * @param listeners list of {@link OnPaymentProductCallCompleteListener} which will be called by the AsyncTask when the {@link PaymentProduct} is loaded
 	 */
 	public PaymentProductAsyncTask(Context context, String productId, PaymentContext paymentContext, C2sCommunicator communicator,
 								   List<OnPaymentProductCallCompleteListener> listeners) {
@@ -63,12 +71,13 @@ public class PaymentProductAsyncTask extends AsyncTask<String, Void, ApiResponse
 	}
 
 	/**
-	 * Constructor
-	 * @param context, used for reading stubbing data
-	 * @param productId, the productId for the product which need to be retrieved
-	 * @param paymentContext, PaymentContext which contains all neccesary data for doing call to the GC gateway to retrieve paymentproducts
-	 * @param communicator, communicator which does the communication to the GC gateway
-	 * @param callListeners, listeners which will be called by the AsyncTask when the PaymentProduct with fields is retrieved
+	 * Create PaymentProductAsyncTask
+	 *
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param productId the productId of the product which need to be retrieved
+	 * @param paymentContext {@link PaymentContext} which contains all necessary data for doing call to the Online Payments gateway to retrieve the {@link PaymentProduct}
+	 * @param communicator {@link C2sCommunicator} which does the communication to the Online Payments gateway
+	 * @param callListeners list of {@link PaymentProductCallListener} which will be called by the AsyncTask when the {@link PaymentProduct} is loaded
 	 */
 	public PaymentProductAsyncTask(Context context, String productId, C2sCommunicator communicator, PaymentContext paymentContext,
 								   List<PaymentProductCallListener> callListeners) {
@@ -81,11 +90,31 @@ public class PaymentProductAsyncTask extends AsyncTask<String, Void, ApiResponse
 	}
 
 	/**
-	 * Constructor
-	 * @param context, used for reading stubbing data
-	 * @param productId, the productId for the product which need to be retrieved
-	 * @param paymentContext, PaymentContext which contains all neccesary data for doing call to the GC gateway to retrieve paymentproducts
-	 * @param communicator, communicator which does the communication to the GC gateway
+	 * Create PaymentProductAsyncTask
+	 *
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param productId the productId of the product which need to be retrieved
+	 * @param paymentContext {@link PaymentContext} which contains all necessary data for doing call to the Online Payments gateway to retrieve the {@link PaymentProduct}
+	 * @param communicator {@link C2sCommunicator} which does the communication to the Online Payments gateway
+	 * @param responseListeners list of {@link com.onlinepayments.sdk.client.android.listener.PaymentProductResponseListener} which will be called by the AsyncTask when the {@link PaymentProduct} is loaded
+	 */
+	public PaymentProductAsyncTask(Context context, C2sCommunicator communicator, String productId, PaymentContext paymentContext,
+								   List<PaymentProductResponseListener> responseListeners) {
+
+		this(context, productId, paymentContext, communicator);
+		if (responseListeners == null ) {
+			throw new InvalidParameterException("Error creating PaymentProductAsyncTask, responseListeners may not be null");
+		}
+		this.responseListeners = responseListeners;
+	}
+
+	/**
+	 * Create PaymentProductAsyncTask
+	 *
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param productId the productId of the product which need to be retrieved
+	 * @param paymentContext {@link PaymentContext} which contains all necessary data for doing call to the Online Payments gateway to retrieve the {@link PaymentProduct}
+	 * @param communicator {@link C2sCommunicator} which does the communication to the Online Payments gateway
 	 */
 	private PaymentProductAsyncTask(Context context, String productId, PaymentContext paymentContext, C2sCommunicator communicator) {
 
@@ -156,6 +185,25 @@ public class PaymentProductAsyncTask extends AsyncTask<String, Void, ApiResponse
 				}
 			}
 		}
+
+		if (responseListeners != null) {
+			for (PaymentProductResponseListener listener : responseListeners) {
+				if (apiResponse.error == null) {
+					if (paymentProduct != null) {
+						listener.onSuccess(paymentProduct);
+					} else {
+						ErrorResponse error = new ErrorResponse("Empty Response without Error");
+						listener.onApiError(error);
+					}
+				} else {
+					if (apiResponse.error.throwable != null) {
+						listener.onException(apiResponse.error.throwable);
+					} else {
+						listener.onApiError(apiResponse.error);
+					}
+				}
+			}
+		}
 	}
 
 	private PaymentProduct fixProductParametersIfRequired(PaymentProduct paymentProduct) {
@@ -205,40 +253,37 @@ public class PaymentProductAsyncTask extends AsyncTask<String, Void, ApiResponse
 	}
 
 	/**
-	 * Interface for OnPaymentProductCallComplete listener
-	 * Is called from the PaymentProductAsyncTask when it has retrieved a PaymentProduct with fields
+	 * Interface for the Async task that retrieves a {@link PaymentProduct}.
+	 * Is called from the {@link PaymentProductAsyncTask} when it has retrieved a {@link PaymentProduct}.
 	 *
-	 * @deprecated use {@link PaymentProductCallListener} instead to receive callbacks with
-	 * error information.
-	 *
-	 * Copyright 2017 Global Collect Services B.V
-	 *
+	 * @deprecated use {@link PaymentProductResponseListener} instead to also receive callbacks with error information.
 	 */
+	@Deprecated
 	public interface OnPaymentProductCallCompleteListener {
 		void onPaymentProductCallComplete(PaymentProduct paymentProduct);
 	}
 
 	/**
-	 * Updated interface for OnPaymentProductCallComplete listener
-	 * Is called from the PaymentProductAsyncTask when it has retrieved a PaymentProduct with fields
-	 * When there was an error and/or exception, the error callback will be invoked.
-	 * On success the complete callback will be invoked.
+	 * Callback Interface that is invoked when the Payment Product request completes.
+	 * In case of an error and/or exception, the {@link #onPaymentProductCallError(ErrorResponse)} callback will be invoked.
+	 * On success the {@link #onPaymentProductCallComplete(PaymentProduct)} callback will be invoked.
 	 *
-	 * Copyright 2020 Global Collect Services B.V
-	 *
+	 * @deprecated use {@link PaymentProductResponseListener} instead to also receive callbacks with error information.
 	 */
+	@Deprecated
 	public interface PaymentProductCallListener {
 
 		/**
-		 * Listener that is called when the PaymentProduct response has completed
+		 * Invoked when the request was successful and data is available.
 		 *
-		 * @param paymentProduct The PaymentProduct
+		 * @param paymentProduct the retrieved {@link PaymentProduct}
 		 */
 		void onPaymentProductCallComplete(@NonNull PaymentProduct paymentProduct);
 
 		/**
-		 * When async task failed due to an error and/or exception
-		 * @param error The error why PaymentProduct failed
+		 * Invoked when the request failed due to a network error.
+		 *
+		 * @param error Error object that contains more information about the error that occurred.
 		 */
 		void onPaymentProductCallError(ErrorResponse error);
 	}

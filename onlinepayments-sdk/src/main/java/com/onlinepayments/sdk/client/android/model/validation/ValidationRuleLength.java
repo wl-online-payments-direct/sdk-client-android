@@ -1,5 +1,8 @@
-package com.onlinepayments.sdk.client.android.model.validation;
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
 
+package com.onlinepayments.sdk.client.android.model.validation;
 
 import android.util.Log;
 
@@ -8,10 +11,7 @@ import com.onlinepayments.sdk.client.android.model.PaymentRequest;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Validation rule for length
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Validation rule for length.
  */
 public class ValidationRuleLength extends AbstractValidationRule {
 
@@ -23,6 +23,10 @@ public class ValidationRuleLength extends AbstractValidationRule {
 	private Integer maxLength;
 	private Integer maskedMaxLength;
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public ValidationRuleLength(Integer minLength, Integer maxLength, String errorMessage, ValidationType type) {
 
 		super(errorMessage, type);
@@ -32,9 +36,12 @@ public class ValidationRuleLength extends AbstractValidationRule {
 	}
 
 	/**
-	 * Validates that the text has the required length
-	 * @param text, the text to be validated
-     * @return True if the String is valid, false otherwise
+	 * Validates that the text has the required length.
+	 *
+	 * @param text the value of which the length should be checked, as a String
+	 *
+	 * @return true, if the supplied value has the correct length; false otherwise
+	 *
 	 * @deprecated use {@link #validate(PaymentRequest, String)} instead
      */
 	@Override
@@ -47,11 +54,12 @@ public class ValidationRuleLength extends AbstractValidationRule {
 	}
 
 	/**
-	 * Validates that the value has the desired length
-	 * @param paymentRequest The fully filled payment request that is ready for doing the payment
-	 * @param fieldId The ID of the field to which to apply the current validator
-	 * @return True if the value in the field with <code>fieldId</code> has the correct length; false
-	 * if it is not of the correct length or the fieldId could not be found.
+	 * Validates that the value has the desired length.
+	 *
+	 * @param paymentRequest the fully filled {@link PaymentRequest} that will be used for doing a payment
+	 * @param fieldId the ID of the field to which to apply the current validator
+	 *
+	 * @return true, if the value in the field with fieldId has the correct length; false, if it is not of the correct length or if the fieldId could not be found.
 	 */
 	@Override
 	public boolean validate(PaymentRequest paymentRequest, String fieldId) {

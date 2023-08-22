@@ -1,14 +1,14 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
 import java.io.Serializable;
 
 /**
- * POJO that represents an KeyValuePair object
- * This class is filled by deserialising a JSON string from the GC gateway
- * The KeyValuePairs contains the information from the account on file
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO that represents an KeyValuePair object.
+ * The KeyValuePairs contains the information from the account on file.
  */
 public class KeyValuePair implements Serializable {
 
@@ -16,9 +16,6 @@ public class KeyValuePair implements Serializable {
 
 	/**
 	 * Enum containing all the possible KeyValuePair statuses
-	 *
-	 * Copyright 2020 Global Collect Services B.V
-	 *
 	 */
 	public enum Status {
 
@@ -42,6 +39,11 @@ public class KeyValuePair implements Serializable {
 	private Status status;
 	private String mustWriteReason;
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public KeyValuePair() {}
 
 	public String getKey() {
 		return key;

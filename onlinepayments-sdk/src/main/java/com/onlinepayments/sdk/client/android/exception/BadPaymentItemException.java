@@ -1,10 +1,13 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.exception;
 
 /**
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * @deprecated In a future release, this class will be removed.
  */
+@Deprecated
 public class BadPaymentItemException extends RuntimeException {
 
 

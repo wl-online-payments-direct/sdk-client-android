@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.validation;
 
 import android.util.Log;
@@ -7,10 +11,7 @@ import com.onlinepayments.sdk.client.android.model.PaymentRequest;
 import java.util.List;
 
 /**
- * Validation rule for fixedlist
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Validation rule for fixed list.
  */
 public class ValidationRuleFixedList extends AbstractValidationRule {
 
@@ -20,6 +21,10 @@ public class ValidationRuleFixedList extends AbstractValidationRule {
 
 	private List<String> listValues;
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public ValidationRuleFixedList(List<String> listValues, String errorMessage, ValidationType type) {
 
 		super(errorMessage, type);
@@ -32,9 +37,12 @@ public class ValidationRuleFixedList extends AbstractValidationRule {
 
 	/**
 	 * Validates the value based on a list of possibilities.
-	 * @param text, the text to be validated
-	 * @return whether the field is valid
-	 * @deprecated use {@link #validate(PaymentRequest, String)} instead
+	 *
+	 * @param text the fixed list to be validated, as a String
+	 *
+	 * @return whether the fixed list is valid or not
+	 *
+	 * @deprecated use {@link #validate(PaymentRequest, String)} instead.
      */
 	@Override
 	@Deprecated
@@ -56,11 +64,12 @@ public class ValidationRuleFixedList extends AbstractValidationRule {
 	}
 
 	/**
-	 * Validates a field value based on a list of possibilities
-	 * @param paymentRequest The fully filled payment request that is ready for doing the payment
-	 * @param fieldId The ID of the field to which to apply the current validator
-	 * @return True if the value in the field with <code>fieldId</code> is a value in the list; false
-	 * if it is not in the lost or the fieldId could not be found.
+	 * Validates a field value based on a list of possibilities.
+	 *
+	 * @param paymentRequest the fully filled {@link PaymentRequest} that will be used for doing a payment
+	 * @param fieldId the ID of the field to which to apply the current validator
+	 *
+	 * @return true, if the value in the field with fieldId is a value in the list; false, if it is not in the lost or if the fieldId could not be found
 	 */
 	@Override
 	public boolean validate(PaymentRequest paymentRequest, String fieldId) {

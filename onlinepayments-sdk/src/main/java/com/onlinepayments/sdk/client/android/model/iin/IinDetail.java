@@ -1,12 +1,13 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.iin;
 
 import java.io.Serializable;
 
 /**
- * Pojo that contains IinDetail
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO that contains IinDetail.
  */
 public class IinDetail implements Serializable {
 
@@ -14,6 +15,12 @@ public class IinDetail implements Serializable {
 
     private String paymentProductId;
     private boolean isAllowedInContext;
+
+    /**
+     * @deprecated In a future release, this constructor will become internal to the SDK.
+     */
+    @Deprecated
+    public IinDetail() {}
 
     public String getPaymentProductId() {
         return paymentProductId;

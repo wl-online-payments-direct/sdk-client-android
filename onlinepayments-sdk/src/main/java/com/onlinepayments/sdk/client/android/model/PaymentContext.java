@@ -1,13 +1,14 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model;
 
 import java.io.Serializable;
 
-
 /**
- * Pojo that contains PaymentContext information
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO that contains PaymentContext information.
+ * It contains information about a payment, like its {@link AmountOfMoney} and countryCode.
  */
 public class PaymentContext implements Serializable {
 
@@ -16,6 +17,10 @@ public class PaymentContext implements Serializable {
     private AmountOfMoney amountOfMoney;
     private String countryCode;
     private boolean isRecurring;
+    /**
+     * @deprecated In a future release this field will be removed.
+     */
+    @Deprecated
     private Boolean forceBasicFlow;
 
     public PaymentContext() {}
@@ -42,9 +47,9 @@ public class PaymentContext implements Serializable {
     }
 
     /**
-     * @deprecated In the next major release, the type of countryCode will change to String.
      * Note that 'null' will be returned when an unknown String value was set.
-     * Use {@link #getCountryCodeString()} instead.
+     *
+     * @deprecated In the next major release, the type of countryCode will change to String. Use {@link #getCountryCodeString()} instead.
      */
     @Deprecated
     public CountryCode getCountryCode() {
@@ -56,6 +61,8 @@ public class PaymentContext implements Serializable {
     }
 
     /**
+     * @param countryCode the Country Code of the Country where the transaction will take place. The provided code should match the ISO-3166-alpha-2 standard.
+     * @see <a href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166 Country Codes</a>
      * @deprecated use {@link #setCountryCode(String)} instead.
      */
     @Deprecated
@@ -68,9 +75,8 @@ public class PaymentContext implements Serializable {
     }
 
     /**
-     * @param countryCode The Country Code of the Country where the transaction will take place. The
-     *     provided code should match the ISO-3166-alpha-2 standard.
-     *     @see <a href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166 Country Codes</a>
+     * @param countryCode the Country Code of the Country where the transaction will take place. The provided code should match the ISO-3166-alpha-2 standard.
+     * @see <a href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166 Country Codes</a>
      */
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
@@ -83,9 +89,17 @@ public class PaymentContext implements Serializable {
         this.isRecurring = isRecurring;
     }
 
+    /**
+     * @deprecated In a future release this method will be removed.
+     */
+    @Deprecated
     public Boolean isForceBasicFlow() {
         return forceBasicFlow;
     }
+    /**
+     * @deprecated In a future release this method will be removed.
+     */
+    @Deprecated
     public void setForceBasicFlow(Boolean forceBasicFlow) {
         this.forceBasicFlow = forceBasicFlow;
     }

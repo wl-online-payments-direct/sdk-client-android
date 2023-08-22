@@ -1,10 +1,11 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.validation;
 
 /**
- * Enum containing all the validation types
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Enum containing all the validation types.
  */
 public enum ValidationType {
 	EXPIRATIONDATE,

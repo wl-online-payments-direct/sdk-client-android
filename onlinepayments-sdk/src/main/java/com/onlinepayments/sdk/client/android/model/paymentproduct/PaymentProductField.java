@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
 import java.io.Serializable;
@@ -13,11 +17,7 @@ import com.onlinepayments.sdk.client.android.model.validation.ValidationErrorMes
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Represents a PaymentProductField object
- * This class is filled by deserialising a JSON string from the GC gateway
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Represents a PaymentProductField object.
  */
 public class PaymentProductField implements Serializable {
 
@@ -50,7 +50,7 @@ public class PaymentProductField implements Serializable {
 	// Id of this field
 	private String id;
 
-	// Type of this field for GC gateway
+	// Type of this field for Online Payments gateway
 	private Type type;
 
 	// Contains hints for rendering this field
@@ -65,8 +65,12 @@ public class PaymentProductField implements Serializable {
 	// List of all invalid field errormessages
 	private List<ValidationErrorMessage> errorMessageIds = new ArrayList<>();
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public PaymentProductField() {}
 
-	/** Getters **/
 	public String getId() {
 		return id;
 	}
@@ -92,10 +96,13 @@ public class PaymentProductField implements Serializable {
 
 
 	/**
-	 * Gets all errormessagecodes for this field's value.
-	 * This list is filled after doing isValid() on this field
-	 * @return A list of error messages that apply to this field. If the list is empty you can
-	 * assume that the field value is a valid value.
+	 * Gets all error message codes for the supplied value.
+	 * This list is filled after doing isValid() on this field.
+	 *
+	 * @param value the value that should be validated
+	 *
+	 * @return a list of error messages that apply to this field. If the list is empty you can assume that the field value is a valid value
+	 *
 	 * @deprecated use {@link #validateValue(PaymentRequest)} instead
 	 */
 	@Deprecated
@@ -126,12 +133,12 @@ public class PaymentProductField implements Serializable {
 	}
 
 	/**
-	 * Gets all errormessagecodes for this field's value.
-	 * This list is filled after doing isValid() on this field
-	 * @param paymentRequest, The fully filled PaymentRequest, that holds all the values that the payment
-	 *                        will be made with.
-	 * @return A list of error messages that apply to this field. If the list is empty you can
-	 * assume that the field value is a valid value.
+	 * Gets all error message codes for the {@link PaymentRequest}'s value.
+	 * This list is filled after doing isValid() on this field.
+	 *
+	 * @param paymentRequest the fully filled {@link PaymentRequest} which holds all the values that the payment will be made with
+	 *
+	 * @return a list of error messages that apply to this field. If the list is empty you can assume that the field value is a valid value
 	 */
 	public List<ValidationErrorMessage> validateValue(PaymentRequest paymentRequest) {
 
@@ -160,15 +167,17 @@ public class PaymentProductField implements Serializable {
 	}
 
 	/**
-	 * Applies a mask to a String, based on the previous value and splice information. The result
-	 * is a FormatResult object, that holds the masked String and the new cursor index. This masker is meant
-	 * for user input fields, where users are busy entering their information.
+	 * Applies a mask to a String, based on the previous value and splice information.
+	 * The result is a FormatResult object, that holds the masked String and the new cursor index.
+	 * This masker is meant for user input fields, where users are busy entering their information.
 	 *
-	 * @param newValue the value that the mask will be applied to.
-	 * @param oldValue the value that was in the edit text, before characters were removed or added.
-	 * @param start the index of the start of the change.
-	 * @param count the number of characters that were removed.
-	 * @param after the number of characters that were added.
+	 * @param newValue the value that the mask will be applied to
+	 * @param oldValue the value that was in the edit text, before characters were removed or added
+	 * @param start the index of the start of the change
+	 * @param count the number of characters that were removed
+	 * @param after the number of characters that were added
+	 *
+	 * @return {@link FormatResult} that contains the masked String and the new cursor index
 	 */
 	public FormatResult applyMask(String newValue, String oldValue, int start, int count, int after) {
 		String mask = displayHints.getMask();
@@ -179,13 +188,13 @@ public class PaymentProductField implements Serializable {
 	}
 
 	/**
-	 * Applies mask on a given string and calculates the new cursorindex for the given newValue and oldValue
+	 * Applies mask on a given String and calculates the new cursor index for the given newValue and oldValue.
 	 *
-	 * @param newValue the value in the textfield after the user typed a character
-	 * @param oldValue the value in the textfield before the user typed a character
-	 * @param cursorIndex the current cursorindex
+	 * @param newValue the value that the mask will be applied to
+	 * @param oldValue the value that was in the edit text, before characters were removed or added
+	 * @param cursorIndex the current cursor index
 	 *
-	 * @return FormatResult containing formatted string and cursorindex
+	 * @return {@link FormatResult} that contains the masked String and the new cursor index
 	 */
 	public FormatResult applyMask(String newValue, String oldValue, Integer cursorIndex) {
 		String mask = displayHints.getMask();
@@ -196,11 +205,11 @@ public class PaymentProductField implements Serializable {
 	}
 
 	/**
-	 * Applies mask on a given string
+	 * Applies mask on a given String.
 	 *
-	 * @param value the String that will be formatted
+	 * @param value the String that the mask will be applied to
 	 *
-	 * @return FormatResult containing formatted string and cursorindex
+	 * @return the masked String value
 	 */
 	public String applyMask(String value){
 		String mask = displayHints.getMask();
@@ -211,11 +220,11 @@ public class PaymentProductField implements Serializable {
 	}
 
 	/**
-	 * Removes mask on a given string
+	 * Removes mask on a given String.
 	 *
-	 * @param value the String for which the mask will be removed
+	 * @param value the value of which the mask will be removed
 	 *
-	 * @return String containing deFormatted string
+	 * @return the unmasked String value
 	 */
 	public String removeMask(String value){
 		String mask = displayHints.getMask();

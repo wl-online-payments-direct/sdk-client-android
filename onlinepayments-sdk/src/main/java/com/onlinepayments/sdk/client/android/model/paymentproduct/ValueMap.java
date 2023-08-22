@@ -1,15 +1,15 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * Pojo which holds the ValueMap data and it's PaymentProductFields
- * This class is filled by deserialising a JSON string from the GC gateway
- * Used for filling a list input field
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO which holds the ValueMap data and it's PaymentProductFields.
+ * If the {@link FormElement} is a list, ValueMap is used to display a value and its displayElements.
  */
 public class ValueMap implements Serializable{
 
@@ -21,15 +21,20 @@ public class ValueMap implements Serializable{
 	private String displayName;
 	private List<PaymentProductFieldDisplayElement> displayElements;
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public ValueMap() {}
 
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * Returns the displayName that can be used in the UI
-	 * @deprecated Use {@link #getDisplayElements()} instead. Where displayName is expected you can
-	 * get it from the displayElements List with id "displayName".
+	 * Returns the displayName that can be used in the UI.
+	 *
+	 * @deprecated Use {@link #getDisplayElements()} instead. Where displayName is expected you can get it from the displayElements List with id "displayName".
 	 */
 	@Deprecated
 	public String getDisplayName() {

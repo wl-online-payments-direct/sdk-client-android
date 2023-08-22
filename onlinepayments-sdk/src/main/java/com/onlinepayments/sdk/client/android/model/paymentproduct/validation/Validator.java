@@ -1,14 +1,14 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct.validation;
 
 import java.io.Serializable;
 
 /**
- * Pojo which holds the Validator data
- * This class is filled by deserialising a JSON string from the GC gateway
- * Containing all the validation types
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO which holds the Validator data.
+ * Containing all the validation types.
  */
 public class Validator implements Serializable {
 
@@ -24,7 +24,12 @@ public class Validator implements Serializable {
 	private RegularExpression regularExpression;
 	private TermsAndConditions termsAndConditions;
 
-	/** Getters **/
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public Validator() {}
+
 	public ExpirationDate getExpirationDate(){
 		return expirationDate;
 	}

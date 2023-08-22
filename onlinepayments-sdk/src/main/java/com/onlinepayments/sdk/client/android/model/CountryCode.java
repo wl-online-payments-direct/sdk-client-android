@@ -1,9 +1,11 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model;
 
 /**
  * This enum is a full list of all Country Codes supported by the Online Payments platform.
- *
- * Copyright 2020 Global Collect Services B.V
  *
  * @deprecated This enum will be removed. Use 2-letter Country Code Strings instead, adhering to the ISO 3166-1 alpha-2 standard.
  * @see <a href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166 Country Codes</a>

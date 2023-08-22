@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
 import java.io.Serializable;
@@ -9,10 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Pojo with convenience methods for getting BasicPaymentItem and AccountOnFile objects
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO with convenience methods for getting BasicPaymentItem and AccountOnFile objects.
  */
 public class BasicPaymentItems implements Serializable {
 
@@ -25,7 +26,10 @@ public class BasicPaymentItems implements Serializable {
 
     private Boolean hasBeenSorted = false;
 
-
+    /**
+     * @deprecated In a future release, this constructor will become internal to the SDK.
+     */
+    @Deprecated
     public BasicPaymentItems(List<BasicPaymentItem> basicPaymentItems, List<AccountOnFile> accountsOnFile) {
         this.basicPaymentItems = basicPaymentItems;
         this.accountsOnFile = accountsOnFile;
@@ -33,9 +37,9 @@ public class BasicPaymentItems implements Serializable {
     }
 
     /**
-     * Gets all paymentitems
+     * Gets all basicPaymentItems.
      *
-     * @return A sorted list of paymentProducts
+     * @return A sorted list of basicPaymentItems
      */
     public List<BasicPaymentItem> getBasicPaymentItems() {
         sortList();
@@ -67,10 +71,11 @@ public class BasicPaymentItems implements Serializable {
     }
 
     /**
-     * Gets a BasicPaymentItem by its id
+     * Gets a {@link BasicPaymentItem} by its id.
      *
-     * @param basicPaymentItemId, the id of BasicPaymentItem
-     * @return BasicPaymentItem, or null if not found
+     * @param basicPaymentItemId the id of the {@link BasicPaymentItem} that should be retrieved
+     *
+     * @return the retrieved {@link BasicPaymentItem}, or null if not found
      */
     public BasicPaymentItem getBasicPaymentItemById(String basicPaymentItemId) {
 
@@ -89,9 +94,9 @@ public class BasicPaymentItems implements Serializable {
 
 
     /**
-     * Gets all AccountsOnFile for all PaymentItems
+     * Gets all AccountsOnFile for all BasicPaymentItems.
      *
-     * @return all AccountsOnFile for all PaymentItems
+     * @return a list of all AccountsOnFile
      */
     public List<AccountOnFile> getAccountsOnFile() {
 

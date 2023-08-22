@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.validation;
 
 import android.util.Log;
@@ -7,10 +11,7 @@ import com.onlinepayments.sdk.client.android.model.PaymentRequest;
 import java.math.BigInteger;
 
 /**
- * Validation rule for IBAN
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Validation rule for IBAN.
  */
 public class ValidationRuleIBAN extends AbstractValidationRule {
 
@@ -20,16 +21,22 @@ public class ValidationRuleIBAN extends AbstractValidationRule {
 
 	private static final BigInteger IBANNUMBER_MODULO = new BigInteger("97");
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public ValidationRuleIBAN(String errorMessage, ValidationType type) {
 		super(errorMessage, type);
 	}
 
 	/**
 	 * Validates that the value in the IBAN-field is a valid IBAN.
-	 * @param newAccountNumber The ID of the field to which to apply the current validator
-	 * @return True if the value in the field with <code>fieldId</code> is a proper IBAN; false if it's not.
 	 *
-	 * @deprecated use {@link #validate(PaymentRequest, String)} instead
+	 * @param newAccountNumber the value which should be checked, as a String
+	 *
+	 * @return true if the provided value is a proper IBAN; false if it's not
+	 *
+	 * @deprecated use {@link #validate(PaymentRequest, String)} instead.
 	 */
 	@Override
 	@Deprecated
@@ -57,9 +64,11 @@ public class ValidationRuleIBAN extends AbstractValidationRule {
 
 	/**
 	 * Validates that the value in the field with ID fieldId is a valid IBAN.
-	 * @param paymentRequest The fully filled payment request that is ready for doing the payment
-	 * @param fieldId The ID of the field to which to apply the current validator
-	 * @return True if the value in the field with <code>fieldId</code> is a proper IBAN; false if it's not.
+	 *
+	 * @param paymentRequest the fully filled {@link PaymentRequest} that will be used for doing a payment
+	 * @param fieldId the ID of the field to which to apply the current validator
+	 *
+	 * @return true, if the value in the field with fieldId is a proper IBAN; false, if it is not or if the fieldId could not be found
 	 */
 	@Override
 	public boolean validate(PaymentRequest paymentRequest, String fieldId) {

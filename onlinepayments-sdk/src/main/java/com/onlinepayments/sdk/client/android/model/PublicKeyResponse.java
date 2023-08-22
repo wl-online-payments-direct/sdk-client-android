@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model;
 
 import java.nio.charset.StandardCharsets;
@@ -13,10 +17,7 @@ import android.util.Log;
 import com.onlinepayments.sdk.client.android.encryption.Encryptor;
 
 /**
- * Pojo that holds the PublicKey call response from the GC gateway
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO that holds the PublicKey call response from the Online Payments gateway.
  */
 public class PublicKeyResponse {
 
@@ -30,14 +31,18 @@ public class PublicKeyResponse {
 	private String publicKey;
 	private PublicKey parsedPublicKey;
 
-
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public PublicKeyResponse(String keyId, String publicKey) {
 		this.keyId = keyId;
 		this.publicKey = publicKey;
 	}
 
 	/**
-	 * Gets the keyId
+	 * Gets the keyId.
+	 *
 	 * @return String keyId
 	 */
 	public String getKeyId() {
@@ -45,7 +50,8 @@ public class PublicKeyResponse {
 	}
 
 	/**
-	 * Gets the PublicKey
+	 * Gets the PublicKey.
+	 *
 	 * @return PublicKey
 	 */
 	public PublicKey getPublicKey() {

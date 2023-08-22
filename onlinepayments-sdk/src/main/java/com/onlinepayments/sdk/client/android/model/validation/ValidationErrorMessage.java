@@ -1,13 +1,14 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.validation;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 
 /**
- * Contains errormessage information for one field
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Contains error message information for a specific field.
  */
 public class ValidationErrorMessage implements Serializable {
 

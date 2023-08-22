@@ -2,10 +2,13 @@ plugins {
     id 'com.android.library'
     id 'signing'
     id 'maven-publish'
-    id "org.sonarqube"
+    id 'org.sonarqube'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
+    namespace 'com.onlinepayments.sdk.client.android'
+
     compileSdkVersion 33
 
     defaultConfig {
@@ -21,7 +24,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    lintOptions {
+    lint {
         abortOnError false
         lintConfig file('lint.xml')
     }
@@ -39,11 +42,11 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.6.0'
 
     // Google pay
-    implementation 'com.google.android.gms:play-services-wallet:19.1.0'
+    implementation 'com.google.android.gms:play-services-wallet:19.2.0'
 
     testImplementation 'junit:junit:4.13.2'
 
-    testImplementation 'org.mockito:mockito-core:4.9.0'
+    testImplementation 'org.mockito:mockito-core:5.4.0'
 }
 
 task sourcesJar(type: Jar) {
@@ -52,7 +55,8 @@ task sourcesJar(type: Jar) {
 }
 
 task javadoc(type: Javadoc) {
-    failOnError false
+    dependsOn "generateReleaseRFile"
+    failOnError true
     configurations.implementation.setCanBeResolved(true)
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
@@ -65,6 +69,9 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 afterEvaluate {
+    javadoc.classpath += files(android.libraryVariants.collect { variant ->
+        variant.javaCompileProvider.get().classpath.files
+    })
     publishing {
         publications {
             mavenJava(MavenPublication) {

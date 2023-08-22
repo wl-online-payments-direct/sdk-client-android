@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.asynctask;
 
 import java.io.IOException;
@@ -15,25 +19,26 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 
 /**
- * AsyncTask which loads an Image from a given url
+ * AsyncTask which loads an Image from a given url.
  *
- * Copyright 2020 Global Collect Services B.V
- *
+ * @deprecated Use the provided resources that are available in the drawable properties of some of API responses. Otherwise use the provided URL to retrieve the resource.
  */
+@Deprecated
 public class LoadImageAsyncTask extends AsyncTask<String, Void, Drawable> {
 
-	// The listener which will be called by the AsyncTask
+	// The listener which will be called by the AsyncTask when the image is loaded
 	private OnImageLoadedListener listener;
 
-	// Image url which will be loaded
+	// Complete image url which will be loaded, contains the url where the assets are retrieved from
 	private String imageUrl;
 
-	// Product id used for callback
+	// Product id for which the image is loaded
 	private String productId;
 
 	// Product id used for callback
 	private Map<String, String> logoMapping;
 
+	// Url of the logo which will be loaded
 	private String url;
 
 	// Context needed for parsing image to drawable
@@ -41,12 +46,14 @@ public class LoadImageAsyncTask extends AsyncTask<String, Void, Drawable> {
 
 
 	/**
-	 * Constructor
+	 * Create LoadImageAsyncTask
 	 *
-	 * @param imageUrl, url which will be loaded
-	 * @param productId, used for callback
-	 * @param context, needed for parsing image to drawable
-	 * @param listener, listener which will be called by the AsyncTask
+	 * @param imageUrl complete url of the image which will be loaded, contains the url where the assets are retrieved from
+	 * @param productId id of the product for which the image is loaded
+	 * @param context needed for parsing the image to a drawable
+	 * @param logoMapping contains the product id with the corresponding logo url
+	 * @param url url of the logo which will be loaded
+	 * @param listener {@link OnImageLoadedListener} which will be called by the AsyncTask when the image is loaded
 	 */
     public LoadImageAsyncTask(String imageUrl, String productId, Context context, Map<String, String> logoMapping, String url, OnImageLoadedListener listener) {
 
@@ -77,7 +84,6 @@ public class LoadImageAsyncTask extends AsyncTask<String, Void, Drawable> {
         this.listener  = listener;
     }
 
-
     @Override
     protected Drawable doInBackground(String... params) {
 
@@ -100,11 +106,11 @@ public class LoadImageAsyncTask extends AsyncTask<String, Void, Drawable> {
 
 
     /**
-     * Interface for OnImageLoaded listener
-     *
-     * Copyright 2020 Global Collect Services B.V
-     *
+     * Callback Interface that is invoked when a resource request completes.
+	 *
+	 * @deprecated Use the provided resources that are available in the drawable properties of some of API responses. Otherwise use the provided URL to retrieve the resource.
      */
+	@Deprecated
     public interface OnImageLoadedListener {
         void onImageLoaded(Drawable image, String productId, Map<String, String> logoMapping, String url);
     }

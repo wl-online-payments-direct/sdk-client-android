@@ -1,3 +1,7 @@
+/*
+ * Copyright 2017 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.asynctask;
 
 import java.security.InvalidParameterException;
@@ -8,39 +12,41 @@ import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 
 import com.onlinepayments.sdk.client.android.communicate.C2sCommunicator;
+import com.onlinepayments.sdk.client.android.listener.PublicKeyResponseListener;
 import com.onlinepayments.sdk.client.android.model.PublicKeyResponse;
 import com.onlinepayments.sdk.client.android.model.api.ApiResponse;
 import com.onlinepayments.sdk.client.android.model.api.ErrorResponse;
 
 /**
- * AsyncTask which executes an publickey lookup call to the Online Payments platform
+ * AsyncTask which executes a public key lookup call to the Online Payments gateway.
  *
- * Copyright 2017 Global Collect Services B.V
- *
+ * @deprecated In a future release, this class will become internal to the SDK. Use {@link com.onlinepayments.sdk.client.android.session.Session#getPublicKey(Context, PublicKeyResponseListener)} to obtain a public key.
  */
+@Deprecated
 public class PublicKeyAsyncTask extends AsyncTask<String, Void, ApiResponse<PublicKeyResponse>> {
 
-	// The listener which will be called by the AsyncTask
-	private OnPublicKeyLoadedListener listener;
+	// The listener which will be called when a Public Key response is received, or an error occurs.
+	private PublicKeyResponseListener listener;
 
+	// The listener which will be called by the AsyncTask when a PublicKeyResponse is received
+	private OnPublicKeyLoadedListener onPublicKeyLoadedListener;
+	// The listener which will be called by the AsyncTask when a PublicKeyResponse is received
 	private PublicKeyListener callListener;
 
 	// Context needed for reading stubbed publickey data
 	private Context context;
 
-	// Communicator which does the communication to the GC gateway
+	// Communicator which does the communication to the Online Payments gateway
 	private C2sCommunicator communicator;
 
 	/**
-	 * Constructor
-	 * @deprecated use {@link #PublicKeyAsyncTask(Context, C2sCommunicator, PublicKeyListener)}
+	 * Create PublicKeyAsyncTask
 	 *
-	 * @param context, needed for reading stubbed publickey data
-	 * @param communicator, Communicator which does the communication to the GC gateway
-	 * @param listener, listener which will be called by the AsyncTask
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param communicator {@link C2sCommunicator} which does the communication to the Online Payments gateway
+	 * @param listener {@link PublicKeyResponseListener} which will be called by the AsyncTask when a {@link PublicKeyResponse} has been received
 	 */
-	public PublicKeyAsyncTask(Context context, C2sCommunicator communicator, OnPublicKeyLoadedListener listener) {
-
+	public PublicKeyAsyncTask(Context context, C2sCommunicator communicator, PublicKeyResponseListener listener) {
 		this(context, communicator);
 		if (listener == null) {
 			throw new InvalidParameterException("Error creating PublicKeyAsyncTask, listener may not be null");
@@ -49,10 +55,27 @@ public class PublicKeyAsyncTask extends AsyncTask<String, Void, ApiResponse<Publ
 	}
 
 	/**
-	 * Constructor
-	 * @param context, needed for reading stubbed publickey data
-	 * @param communicator, Communicator which does the communication to the GC gateway
-	 * @param listener, listener which will be called by the AsyncTask
+	 * Create PublicKeyAsyncTask
+	 *
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param communicator {@link C2sCommunicator} which does the communication to the Online Payments gateway
+	 * @param onPublicKeyLoadedListener {@link OnPublicKeyLoadedListener} which will be called by the AsyncTask when a {@link PublicKeyResponse} has been received
+	 */
+	public PublicKeyAsyncTask(Context context, C2sCommunicator communicator, OnPublicKeyLoadedListener onPublicKeyLoadedListener) {
+
+		this(context, communicator);
+		if (onPublicKeyLoadedListener == null) {
+			throw new InvalidParameterException("Error creating PublicKeyAsyncTask, listener may not be null");
+		}
+		this.onPublicKeyLoadedListener = onPublicKeyLoadedListener;
+	}
+
+	/**
+	 * Create PublicKeyAsyncTask
+	 *
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param communicator {@link C2sCommunicator} which does the communication to the Online Payments gateway
+	 * @param listener {@link PublicKeyListener} which will be called by the AsyncTask when a {@link PublicKeyResponse} has been received
 	 */
 	public PublicKeyAsyncTask(Context context, C2sCommunicator communicator, PublicKeyListener listener) {
 
@@ -64,9 +87,10 @@ public class PublicKeyAsyncTask extends AsyncTask<String, Void, ApiResponse<Publ
 	}
 
 	/**
-	 * Constructor
-	 * @param context, needed for reading stubbed publickey data
-	 * @param communicator, Communicator which does the communication to the GC gateway
+	 * Create PublicKeyAsyncTask
+	 *
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 * @param communicator {@link C2sCommunicator} which does the communication to the Online Payments gateway
 	 */
 	public PublicKeyAsyncTask(Context context, C2sCommunicator communicator) {
 
@@ -95,8 +119,8 @@ public class PublicKeyAsyncTask extends AsyncTask<String, Void, ApiResponse<Publ
 		PublicKeyResponse publicKeyResponse = response.data;
 
 		// Call listener callback
-		if (listener != null) {
-			listener.onPublicKeyLoaded(publicKeyResponse);
+		if (onPublicKeyLoadedListener != null) {
+			onPublicKeyLoadedListener.onPublicKeyLoaded(publicKeyResponse);
 		}
 
 		if (callListener != null) {
@@ -111,47 +135,63 @@ public class PublicKeyAsyncTask extends AsyncTask<String, Void, ApiResponse<Publ
 				callListener.onPublicKeyError(response.error);
 			}
 		}
+
+		if (listener != null) {
+			if (response.error == null) {
+				if (publicKeyResponse != null) {
+					listener.onSuccess(publicKeyResponse);
+				} else {
+					ErrorResponse error = new ErrorResponse("Empty Response without Error");
+					listener.onApiError(error);
+				}
+			} else {
+				if (response.error.throwable != null) {
+					listener.onException(response.error.throwable);
+				} else {
+					listener.onApiError(response.error);
+				}
+			}
+		}
 	}
 
 
 	/**
-	 * Interface for OnPublicKeyLoaded listener
-	 * Is called from the PublicKeyAsyncTask when it has the publickey
+	 * Callback Interface that is invoked when the Public key request completes.
 	 *
-	 * @deprecated use {@link PublicKeyListener} instead
-	 *
-	 * Copyright 2017 Global Collect Services B.V
-	 *
+	 * @deprecated use {@link PublicKeyResponseListener} instead.
 	 */
+	@Deprecated
 	public interface OnPublicKeyLoadedListener {
 
 		/**
-		 * Listener that is called when publickey is loaded
-		 * @param response, the PublicKeyResponse which contains the public key data
+		 * Listener that is called when publickey is loaded.
+		 *
+		 * @param response the {@link PublicKeyResponse} which contains the public key data
 		 */
 		void onPublicKeyLoaded(PublicKeyResponse response);
 	}
 
 	/**
-	 * Updated interface for OnPublicKeyLoaded listener
-	 * Is called from the PublicKeyAsyncTask when it has retrieved
-	 * a BasicPaymentProductGroup with fields, by invoking the complete callback.
-	 * When there was an error and/or exception, the error callback will be invoked.
+	 * Callback Interface that is invoked when the Public key request completes.
+	 * In case of an error and/or exception, the {@link #onPublicKeyError(ErrorResponse)} callback will be invoked.
+	 * On success the {@link #onPublicKeyLoaded(PublicKeyResponse)} callback will be invoked.
 	 *
-	 * Copyright 2020 Global Collect Services B.V
-	 *
+	 * @deprecated use {@link PublicKeyResponseListener} instead.
 	 */
+	@Deprecated
 	public interface PublicKeyListener {
 
 		/**
-		 * Listener that is called when publickey is loaded
-		 * @param response, the PublicKeyResponse which contains the public key data
+		 * Invoked when the request was successful and data is available.
+		 *
+		 * @param response the {@link PublicKeyResponse} which contains the public key data
 		 */
 		void onPublicKeyLoaded(@NonNull PublicKeyResponse response);
 
 		/**
-		 * When async task failed due to an error and/or exception
-		 * @param error The error why retrieving the public key failed
+		 * Invoked when the request failed due to a network error.
+		 *
+		 * @param error Error object that contains more information about the error that occurred.
 		 */
 		void onPublicKeyError(ErrorResponse error);
 	}

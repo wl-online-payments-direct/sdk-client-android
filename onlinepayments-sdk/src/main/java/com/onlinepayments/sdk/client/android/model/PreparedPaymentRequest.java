@@ -1,19 +1,23 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model;
 
 import java.security.InvalidParameterException;
 
 /**
- * Contains all encrypted paymentrequest data needed for doing a payment
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Contains all encrypted paymentrequest data needed for doing a payment.
  */
-
 public class PreparedPaymentRequest {
 
 	private String encryptedFields;
 	private String encodedClientMetaInfo;
 
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public PreparedPaymentRequest(String encryptedFields, String encodedClientMetaInfo) {
 
 		if (encryptedFields == null) {
@@ -26,7 +30,6 @@ public class PreparedPaymentRequest {
 		this.encryptedFields = encryptedFields;
 		this.encodedClientMetaInfo = encodedClientMetaInfo;
 	}
-
 
 	public String getEncodedClientMetaInfo() {
 		return encodedClientMetaInfo;

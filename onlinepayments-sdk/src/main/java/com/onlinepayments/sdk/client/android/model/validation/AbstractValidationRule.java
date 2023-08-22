@@ -1,13 +1,14 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.validation;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 
 /**
- * Abstract class which contains functionality to handle validation
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * Abstract class which contains functionality to handle validation.
  */
 public abstract class AbstractValidationRule implements Serializable, ValidationRule  {
 
@@ -19,7 +20,10 @@ public abstract class AbstractValidationRule implements Serializable, Validation
 	// Validationtype
 	private ValidationType type;
 
-
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
 	public AbstractValidationRule(String messageId, ValidationType type) {
 
 		if (messageId == null) {

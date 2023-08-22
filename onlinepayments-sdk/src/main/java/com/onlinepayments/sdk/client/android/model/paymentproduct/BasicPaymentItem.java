@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
 import com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints.DisplayHintsPaymentItem;
@@ -5,9 +9,6 @@ import com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints.D
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Copyright 2020 Global Collect Services B.V
- */
 public interface BasicPaymentItem extends Serializable {
 
     String getId();

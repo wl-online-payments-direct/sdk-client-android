@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.encryption;
 
 import java.io.IOException;
@@ -14,13 +18,14 @@ import com.google.gson.GsonBuilder;
 
 
 /**
- * Handles all Encryption related functionality
- * Uses the JOSE web encryption standard which can be found at
- * http://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-29
+ * Handles all Encryption related functionality.
+ * Uses the JOSE web encryption standard.
  *
- * Copyright 2020 Global Collect Services B.V
+ * @see <a href="http://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-29">JOSE web encryption standard</a>
  *
+ * @deprecated In a future release, this class and its functions will become internal to the SDK.
  */
+@Deprecated
 public class Encryptor {
 
 	// Tag used for logging
@@ -36,7 +41,7 @@ public class Encryptor {
 	private static final String PROTECTED_HEADER_ALG = "RSA-OAEP";
 	private static final String PROTECTED_HEADER_ENC = "A256CBC-HS512";
 
-    // PublicKeyResponse which holds the GC Gateway public key
+    // PublicKeyResponse which holds the Online Payments Gateway public key
  	private PublicKeyResponse publicKeyResponse;
 
  	// Helper class for Encryption
@@ -44,9 +49,9 @@ public class Encryptor {
 
 
 	/**
-	 * Constructor
+	 * Create Encryptor
 	 *
-	 * @param publicKeyResponse, contains the GC gateway public key
+	 * @param publicKeyResponse contains the Online Payments gateway public key
 	 */
 	public Encryptor(PublicKeyResponse publicKeyResponse) {
 		this.publicKeyResponse = publicKeyResponse;
@@ -54,9 +59,9 @@ public class Encryptor {
 
 
 	/**
-	 * Encrypts all paymentproductfield values for the given PaymentRequest
+	 * Encrypts all payment product field values for the given payment request as {@link EncryptData}.
 	 *
-	 * @param encryptData, EncryptData which contains all fieldvalues and variables required for making a paymentrequest
+	 * @param encryptData contains all field values and variables required for making a payment request
 	 *
 	 * @return encrypted String
 	 */
@@ -77,7 +82,7 @@ public class Encryptor {
 			// Create ContentEncryptionKey, is a random byte[]
 			byte[] contentEncryptionKey = encryptUtil.generateSecureRandomBytes(CONTENT_ENCRYPTION_KEY_SIZE);
 
-			// Encrypt the contentEncryptionKey with the GC gateway publickey and encode it with Base64 encoding
+			// Encrypt the contentEncryptionKey with the Online Payments gateway publickey and encode it with Base64 encoding
 			byte[] encryptedContentEncryptionKey = encryptUtil.encryptContentEncryptionKey(contentEncryptionKey, publicKeyResponse.getPublicKey());
 			String encodedEncryptedContentEncryptionKey = encryptUtil.base64UrlEncode(encryptedContentEncryptionKey);
 
@@ -120,15 +125,15 @@ public class Encryptor {
 
 
 	/**
-	 * Calculates HMAC over the data
+	 * Calculates HMAC over the data.
 	 *
-	 * @param macKey, unique random key
-	 * @param additionalAuthenticatedData
-	 * @param initializationVector
-	 * @param cipherText
-	 * @param al
+	 * @param macKey unique random key
+	 * @param additionalAuthenticatedData Additional Authenticated Data
+	 * @param initializationVector Initialization Vector
+	 * @param cipherText encrypted data
+	 * @param al Additional Authenticated Data Length
 	 *
-	 * @return encrypted
+	 * @return HMAC value
 	 */
 	private byte[] calculateHMAC(byte[] macKey, byte[] additionalAuthenticatedData, byte[] initializationVector, byte[] cipherText, byte[] al) throws IOException, EncryptDataException {
 		// Create HMAC Computation input
@@ -141,9 +146,9 @@ public class Encryptor {
 
 
 	/**
-	 * Creates Protected header string which determines the Algorithm and Encryption with which the payload will be encrypted
+	 * Creates Protected header string which determines the Algorithm and Encryption with which the payload will be encrypted.
 	 *
-	 * @return Protected header String
+	 * @return protected header String
 	 */
 	private String createProtectedHeader() {
 
@@ -158,9 +163,11 @@ public class Encryptor {
 
 
 	/**
-	 * Creates the CompactRespresentation of all the encrypted components
-	 * @param components, list of all components
-	 * @return CompactRespresentation of all the encrypted components
+	 * Creates the CompactRepresentation of all the encrypted components.
+	 *
+	 * @param components list of all components
+	 *
+	 * @return CompactRepresentation of all the encrypted components
 	 */
 	private String buildCompactRespresentation(String ... components) {
 
@@ -180,7 +187,7 @@ public class Encryptor {
 
 
 	/**
-	 * Calculate Additional Authenticated Data Length
+	 * Calculate Additional Authenticated Data Length.
 	 *
 	 * @return byte respresentation of the Additional Authenticated Data Length
 	 */

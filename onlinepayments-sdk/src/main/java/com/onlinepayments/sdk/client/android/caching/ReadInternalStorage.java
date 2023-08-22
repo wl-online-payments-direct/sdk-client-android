@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.caching;
 
 import java.io.File;
@@ -20,11 +24,11 @@ import com.onlinepayments.sdk.client.android.configuration.Constants;
 import com.onlinepayments.sdk.client.android.model.iin.IinDetailsResponse;
 
 /**
- * This class is responsible for reading files on disk who act as cache for certain data
+ * This class is responsible for reading files on disk that act as a cache for certain data.
  *
- * Copyright 2020 Global Collect Services B.V
- *
+ * @deprecated In a future release, this class and its functions will become internal to the SDK.
  */
+@Deprecated
 class ReadInternalStorage {
 
 	// Tag for logging
@@ -39,7 +43,7 @@ class ReadInternalStorage {
 
 
 	/**
-	 * Reads all iinResponses from the cache on disk
+	 * Reads all IinResponses from the cache on disk.
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, IinDetailsResponse> getIinResponsesFromCache() {
@@ -72,8 +76,14 @@ class ReadInternalStorage {
 		return iinResponses;
 	}
 
-
-
+	/**
+	 * Retrieves the logo from the cache on disk.
+	 *
+	 * @param paymentProductId, the id of the product of which the logo should be retrieved
+	 * @param resources used to create a BitmapDrawable from the retrieved image
+	 *
+	 * @return the image which is retrieved from the internal storage
+	 */
 	public Drawable getLogoFromInternalStorage(String paymentProductId, Resources resources) {
 
 		if (paymentProductId == null) {

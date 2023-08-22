@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Global Collect Services B.V
+ */
+
 package com.onlinepayments.sdk.client.android.model.paymentproduct;
 
 import android.graphics.drawable.Drawable;
@@ -7,12 +11,8 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 /**
- * Pojo that represents a Tooltip object
- * This class is filled by deserialising a JSON string from the GC gateway
- * Tooltips are used when showing tooltips payment product specific
- *
- * Copyright 2020 Global Collect Services B.V
- *
+ * POJO that represents a Tooltip object.
+ * Tooltips are payment product specific and are used to show extra information about an input field.
  */
 public class Tooltip implements Serializable {
 
@@ -22,6 +22,12 @@ public class Tooltip implements Serializable {
 	@SerializedName("image")
 	private String imageURL;
 	private transient Drawable imageDrawable;
+
+	/**
+	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 */
+	@Deprecated
+	public Tooltip() {}
 
 	public String getLabel(){
 		return label;
@@ -39,6 +45,12 @@ public class Tooltip implements Serializable {
 		return imageDrawable;
 	}
 
+	/**
+	 * When passing a {@link PaymentItem} via an {@link android.content.Intent}, the tooltip image cannot be retrieved via this function.
+	 * Instead you will need to retrieve the tooltip image in your own app using the URL returned from {@link #getImageURL()}.
+	 *
+	 * @return the tooltip image as a {@link Drawable}
+	 */
 	public Drawable getImageDrawable() {
 		return imageDrawable;
 	}
