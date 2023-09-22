@@ -1,0 +1,20 @@
+{
+  "surcharges": [
+    {
+      "paymentProductId": 2,
+      "result": "NO_SURCHARGE",
+      "netAmount": {
+        "amount": 1000,
+        "currencyCode": "EUR"
+      },
+      "surchargeAmount": {
+        "amount": 0,
+        "currencyCode": "EUR"
+      },
+      "totalAmount": {
+        "amount": 1000,
+        "currencyCode": "EUR"
+      }
+    }
+  ]
+}

@@ -19,8 +19,10 @@ import com.onlinepayments.sdk.client.android.asynctask.IinLookupAsyncTask.IinLoo
 import com.onlinepayments.sdk.client.android.asynctask.PaymentProductAsyncTask;
 import com.onlinepayments.sdk.client.android.asynctask.PaymentProductAsyncTask.OnPaymentProductCallCompleteListener;
 import com.onlinepayments.sdk.client.android.asynctask.BasicPaymentProductsAsyncTask.OnBasicPaymentProductsCallCompleteListener;
+import com.onlinepayments.sdk.client.android.asynctask.SurchargeCalculationNetworkTask;
 import com.onlinepayments.sdk.client.android.communicate.C2sCommunicator;
 import com.onlinepayments.sdk.client.android.communicate.C2sCommunicatorConfiguration;
+import com.onlinepayments.sdk.client.android.model.AmountOfMoney;
 import com.onlinepayments.sdk.client.android.exception.EncryptDataException;
 import com.onlinepayments.sdk.client.android.listener.BasicPaymentItemsResponseListener;
 import com.onlinepayments.sdk.client.android.listener.BasicPaymentProductsResponseListener;
@@ -29,6 +31,7 @@ import com.onlinepayments.sdk.client.android.listener.PaymentProductNetworkRespo
 import com.onlinepayments.sdk.client.android.listener.PaymentProductResponseListener;
 import com.onlinepayments.sdk.client.android.listener.PaymentRequestPreparedListener;
 import com.onlinepayments.sdk.client.android.listener.PublicKeyResponseListener;
+import com.onlinepayments.sdk.client.android.listener.SurchargeCalculationResponseListener;
 import com.onlinepayments.sdk.client.android.model.CountryCode;
 import com.onlinepayments.sdk.client.android.model.CurrencyCode;
 import com.onlinepayments.sdk.client.android.model.PaymentContext;
@@ -45,6 +48,9 @@ import com.onlinepayments.sdk.client.android.model.paymentproduct.PaymentItem;
 import com.onlinepayments.sdk.client.android.model.paymentproduct.PaymentProduct;
 import com.onlinepayments.sdk.client.android.model.paymentproduct.BasicPaymentItem;
 import com.onlinepayments.sdk.client.android.model.paymentproduct.BasicPaymentProducts;
+import com.onlinepayments.sdk.client.android.model.surcharge.request.Card;
+import com.onlinepayments.sdk.client.android.model.surcharge.request.CardSource;
+import com.onlinepayments.sdk.client.android.model.surcharge.response.SurchargeCalculationResponse;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
@@ -850,6 +856,52 @@ public class Session implements
                 listener.onFailure(new EncryptDataException("Exception while retrieving Public Key", t));
             }
         });
+    }
+
+    /**
+     * Retrieves the Surcharge Calculation as a {@link SurchargeCalculationResponse} for the provided amount of money, partial credit card number and payment product ID.
+     *
+     * @param context used for reading device metadata which is sent to the Online Payments gateway
+     * @param amountOfMoney contains the amount and currency code for which the Surcharge should be calculated
+     * @param partialCreditCardNumber the partial credit card number for which the Surcharge should be calculated
+     * @param paymentProductId the id of the product for which the Surcharge product type should be determined, can be null
+     * @param listener {@link SurchargeCalculationResponseListener} that will be called when the {@link SurchargeCalculationResponse} is retrieved
+     */
+    public void getSurchargeCalculation(Context context, AmountOfMoney amountOfMoney, String partialCreditCardNumber, Integer paymentProductId, SurchargeCalculationResponseListener listener) {
+
+        Map<String, Object> objectsToCheck = new HashMap();
+        objectsToCheck.put("context", context);
+        objectsToCheck.put("amountOfMoney", amountOfMoney);
+        objectsToCheck.put("partialCreditCardNumber", partialCreditCardNumber);
+        nullCheck("SurchargeCalculation", objectsToCheck);
+
+        Card card = new Card(partialCreditCardNumber, paymentProductId);
+        CardSource cardSource = new CardSource(card);
+
+        SurchargeCalculationNetworkTask task = new SurchargeCalculationNetworkTask(context, amountOfMoney, cardSource, communicator, listener);
+        task.getSurchargeCalculation();
+    }
+
+    /**
+     * Retrieves the Surcharge Calculation as a {@link SurchargeCalculationResponse} for the provided amount of money and token.
+     *
+     * @param context used for reading device metadata which is sent to the Online Payments gateway
+     * @param amountOfMoney contains the amount and currency code for which the Surcharge should be calculated
+     * @param token the token for which the Surcharge should be calculated
+     * @param listener {@link SurchargeCalculationResponseListener} that will be called when the {@link SurchargeCalculationResponse} is retrieved
+     */
+    public void getSurchargeCalculation(Context context, AmountOfMoney amountOfMoney, String token, SurchargeCalculationResponseListener listener) {
+
+        Map<String, Object> objectsToCheck = new HashMap();
+        objectsToCheck.put("context", context);
+        objectsToCheck.put("amountOfMoney", amountOfMoney);
+        objectsToCheck.put("token", token);
+        nullCheck("SurchargeCalculation", objectsToCheck);
+
+        CardSource cardSource = new CardSource(token);
+
+        SurchargeCalculationNetworkTask task = new SurchargeCalculationNetworkTask(context, amountOfMoney, cardSource, communicator, listener);
+        task.getSurchargeCalculation();
     }
 
     /**

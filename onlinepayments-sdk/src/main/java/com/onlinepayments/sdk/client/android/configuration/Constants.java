@@ -13,7 +13,7 @@ import com.onlinepayments.sdk.client.android.session.Session;
 public class Constants {
 
 	/** SDK version **/
-	public final static String SDK_IDENTIFIER = "OnlinePaymentsAndroidClientSDK/v2.1.0";
+	public final static String SDK_IDENTIFIER = "OnlinePaymentsAndroidClientSDK/v2.1.1";
 
 	/** SDK creator **/
 	public final static String SDK_CREATOR = "OnlinePayments";
@@ -24,6 +24,7 @@ public class Constants {
 	public final static String OP_GATEWAY_RETRIEVE_PAYMENTPRODUCT_NETWORKS_PATH = "[cid]/products/[pid]/networks";
 	public final static String OP_GATEWAY_IIN_LOOKUP_PATH = "[cid]/services/getIINdetails";
 	public final static String OP_GATEWAY_PUBLIC_KEY_PATH = "[cid]/crypto/publickey";
+	public final static String OP_GATEWAY_SURCHARGE_CALCULATION_PATH = "[cid]/services/surchargecalculation";
 
 	// SharedPreferences keys
 	public final static String PREFERENCES_NAME = "onlinepayments.sdk.client.android.preferences";

@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 
+import com.onlinepayments.sdk.client.android.model.AmountOfMoney;
 import com.onlinepayments.sdk.client.android.model.CountryCode;
 import com.onlinepayments.sdk.client.android.model.CurrencyCode;
 import com.onlinepayments.sdk.client.android.model.PaymentProductNetworkResponse;
@@ -33,6 +34,9 @@ import com.onlinepayments.sdk.client.android.model.paymentproduct.PaymentProduct
 import com.onlinepayments.sdk.client.android.model.paymentproduct.Tooltip;
 import com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints.DisplayHintsPaymentItem;
 import com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints.DisplayHintsProductFields;
+import com.onlinepayments.sdk.client.android.model.surcharge.request.CardSource;
+import com.onlinepayments.sdk.client.android.model.surcharge.request.SurchargeCalculationRequest;
+import com.onlinepayments.sdk.client.android.model.surcharge.response.SurchargeCalculationResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -544,6 +548,66 @@ public class C2sCommunicator implements Serializable {
 				}
 			} catch (IOException e) {
 				Log.i(TAG, "Error getting Public key response:" + e.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * Retrieves the Surcharge Calculation as a {@link SurchargeCalculationResponse} for the provided amount of money, partial credit card number and payment product ID.
+	 *
+	 * @param amountOfMoney contains the amount and currency code for which the Surcharge should be calculated
+	 * @param cardSource contains the card or token for which the Surcharge should be calculated
+	 * @param context used for reading device metadata which is sent to the Online Payments gateway
+	 *
+	 * @return {@link SurchargeCalculationResponse} which contains the result of the Surcharge Calculation, wrapped as {@link ApiResponse}, with errors if those occurred
+	 */
+	public ApiResponse<SurchargeCalculationResponse> getSurchargeCalculation(AmountOfMoney amountOfMoney, CardSource cardSource, Context context) {
+
+		if (amountOfMoney == null) {
+			throw new InvalidParameterException("Error getting surcharge calculation, amountOfMoney may not be null");
+		}
+		if (cardSource == null) {
+			throw new InvalidParameterException("Error getting surcharge calculation, cardSource may not be null");
+		}
+
+		HttpURLConnection connection = null;
+		ApiResponse<SurchargeCalculationResponse> response = new ApiResponse();
+
+		try {
+
+			// Construct the url for the Surcharge Calculation call
+			String surchargeCalculationPath = Constants.OP_GATEWAY_SURCHARGE_CALCULATION_PATH.replace("[cid]", configuration.getCustomerId());
+			String url = configuration.getBaseUrl() + surchargeCalculationPath;
+
+			// Serialise the SurchargeCalculationRequest to json, so it can be added to the postbody
+			SurchargeCalculationRequest surchargeCalculationRequest = new SurchargeCalculationRequest(amountOfMoney, cardSource);
+			String surchargeCalculationRequestJson = gson.toJson(surchargeCalculationRequest);
+
+			// Do the call and deserialise the result to SurchargeCalculationResponse
+			connection = doHTTPPostRequest(url, configuration.getClientSessionId(), configuration.getMetadata(context), surchargeCalculationRequestJson);
+			String responseBody = new Scanner(connection.getInputStream(), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
+
+			// Log the response
+			if (getLoggingEnabled()) {
+				logResponse(connection, responseBody);
+			}
+
+			response.data = gson.fromJson(responseBody, SurchargeCalculationResponse.class);
+
+			return response;
+
+		} catch (Exception e) {
+			Log.i(TAG, "Error getting SurchargeCalculation response:" + e.getMessage());
+			response.error = new ErrorResponse("Exception when retrieving SurchargeCalculation: " + e.getMessage());
+			return response;
+		} finally {
+			try {
+				if (connection != null) {
+					connection.getInputStream().close();
+					connection.disconnect();
+				}
+			} catch (IOException e) {
+				Log.i(TAG, "Error while getting SurchargeCalculation response:" + e.getMessage());
 			}
 		}
 	}
