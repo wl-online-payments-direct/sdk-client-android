@@ -71,4 +71,16 @@ public class IinDetailsResponseTest {
         assertNotNull(fstEmptyWithCodeUnknown);
         assertNotNull(fstEmptyWithCodeSupported);
     }
+
+    @Test
+    public void testCardType() {
+        assertEquals(fstNormalVisa.getCardType(), CardType.DEBIT);
+        assertEquals(fstMinimalVisa.getCardType(), CardType.DEBIT);
+        assertEquals(fstNormalResponseVisaNoCoBrands.getCardType(), CardType.DEBIT);
+        assertEquals(sndNormalVisa.getCardType(), CardType.DEBIT);
+        assertEquals(sndMinimalVisa.getCardType(), CardType.DEBIT);
+
+        assertEquals(fstNormalMC.getCardType(), CardType.CREDIT);
+        assertEquals(fstMinimalMC.getCardType(), CardType.CREDIT);
+    }
 }

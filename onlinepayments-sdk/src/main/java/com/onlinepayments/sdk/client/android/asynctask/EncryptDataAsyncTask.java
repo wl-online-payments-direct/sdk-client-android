@@ -77,16 +77,19 @@ public class EncryptDataAsyncTask extends AsyncTask<String, Void, String>{
     	for (PaymentProductField field : paymentRequest.getPaymentProduct().getPaymentProductFields()) {
 
     		String value = paymentRequest.getValue(field.getId());
+			if (value != null) {
+				String unmaskedValue = paymentRequest.getUnmaskedValue(field.getId(), value);
 
-    		// The date and expiry date are already in the correct format.
-    		// If the masks given by the Online Payments gateway are correct
-    		if (field.getType() != null && value != null){
-	    		if (field.getType().equals(PaymentProductField.Type.NUMERICSTRING)) {
-	    			formattedPaymentValues.put(field.getId(), value.replaceAll("[^\\d.]", ""));
-	    		} else {
-	    			formattedPaymentValues.put(field.getId(), value);
-	    		}
-    		}
+				// The date and expiry date are already in the correct format.
+				// If the masks given by the Online Payments gateway are correct
+				if (field.getType() != null && unmaskedValue != null) {
+					if (field.getType().equals(PaymentProductField.Type.NUMERICSTRING)) {
+						formattedPaymentValues.put(field.getId(), unmaskedValue.replaceAll("[^\\d.]", ""));
+					} else {
+						formattedPaymentValues.put(field.getId(), unmaskedValue);
+					}
+				}
+			}
     	}
 
     	encryptData.setPaymentValues(formattedPaymentValues);

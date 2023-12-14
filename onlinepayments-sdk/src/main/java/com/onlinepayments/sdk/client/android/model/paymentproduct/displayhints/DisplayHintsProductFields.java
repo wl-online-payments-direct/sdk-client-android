@@ -42,6 +42,10 @@ public class DisplayHintsProductFields implements Serializable {
 	private Integer displayOrder;
 	private String label;
 	private String placeholderLabel;
+	/**
+	 * @deprecated In a future release, this property will be removed since it is not returned from the API.
+	 */
+	@Deprecated
 	private String link;
 	private String mask;
 	private PreferredInputType preferredInputType;
@@ -70,6 +74,10 @@ public class DisplayHintsProductFields implements Serializable {
 		return placeholderLabel;
 	}
 
+	/**
+	 * @deprecated In a future release, this getter will be removed since its value is not returned from the API.
+	 */
+	@Deprecated
 	public String getLink() {
 		return link;
 	}

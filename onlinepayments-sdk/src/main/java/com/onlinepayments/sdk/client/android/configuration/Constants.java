@@ -13,7 +13,7 @@ import com.onlinepayments.sdk.client.android.session.Session;
 public class Constants {
 
 	/** SDK version **/
-	public final static String SDK_IDENTIFIER = "OnlinePaymentsAndroidClientSDK/v2.1.1";
+	public final static String SDK_IDENTIFIER = "OnlinePaymentsAndroidClientSDK/v2.2.1";
 
 	/** SDK creator **/
 	public final static String SDK_CREATOR = "OnlinePayments";

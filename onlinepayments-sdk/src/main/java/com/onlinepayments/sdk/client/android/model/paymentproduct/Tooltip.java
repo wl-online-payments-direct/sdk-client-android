@@ -19,8 +19,16 @@ public class Tooltip implements Serializable {
 	private static final long serialVersionUID = -317203058533669043L;
 
 	private String label;
+	/**
+	 * @deprecated In a future release, this property will be removed since it is not returned from the API.
+	 */
+	@Deprecated
 	@SerializedName("image")
 	private String imageURL;
+	/**
+	 * @deprecated In a future release, this property will be removed since it is not returned from the API.
+	 */
+	@Deprecated
 	private transient Drawable imageDrawable;
 
 	/**
@@ -33,12 +41,16 @@ public class Tooltip implements Serializable {
 		return label;
 	}
 
+	/**
+	 * @deprecated In a future release, this getter will be removed since its value is not returned from the API.
+	 */
+	@Deprecated
 	public String getImageURL(){
 		return imageURL;
 	}
 
 	/**
-	 * @deprecated use {@link #getImageDrawable()} instead.
+	 * @deprecated In a future release, this getter will be removed since Tooltip no longer contains an image.
 	 */
 	@Deprecated
 	public Drawable getImage(){
@@ -50,11 +62,18 @@ public class Tooltip implements Serializable {
 	 * Instead you will need to retrieve the tooltip image in your own app using the URL returned from {@link #getImageURL()}.
 	 *
 	 * @return the tooltip image as a {@link Drawable}
+	 *
+	 * @deprecated In a future release, this getter will be removed since Tooltip no longer contains an image.
 	 */
+	@Deprecated
 	public Drawable getImageDrawable() {
 		return imageDrawable;
 	}
 
+	/**
+	 * @deprecated In a future release, this getter will be removed since Tooltip no longer contains an image.
+	 */
+	@Deprecated
 	public void setImageDrawable(Drawable imageDrawable){
 		this.imageDrawable = imageDrawable;
 	}

@@ -22,7 +22,15 @@ public class ValidationRuleIBAN extends AbstractValidationRule {
 	private static final BigInteger IBANNUMBER_MODULO = new BigInteger("97");
 
 	/**
-	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 * @deprecated This constructor is for internal use only.
+	 */
+	@Deprecated
+	public ValidationRuleIBAN() {
+		super("iban", ValidationType.IBAN);
+	}
+
+	/**
+	 * @deprecated In a future release, this constructor will be removed.
 	 */
 	@Deprecated
 	public ValidationRuleIBAN(String errorMessage, ValidationType type) {

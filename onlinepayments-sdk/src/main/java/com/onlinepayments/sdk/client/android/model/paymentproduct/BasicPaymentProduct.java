@@ -23,11 +23,23 @@ public class BasicPaymentProduct implements BasicPaymentItem, Serializable {
 	private String id;
 	private String paymentMethod;
 	private String paymentProductGroup;
+	/**
+	 * @deprecated In a future release, this property will be removed since it is not returned from the API.
+	 */
+	@Deprecated
 	private Long minAmount;
+	/**
+	 * @deprecated In a future release, this property will be removed since it is not returned from the API.
+	 */
+	@Deprecated
 	private Long maxAmount;
 	private Boolean allowsRecurring;
 	private Boolean allowsTokenization;
 	private Boolean usesRedirectionTo3rdParty;
+	/**
+	 * @deprecated In a future release, this property will be removed since it is not returned from the API.
+	 */
+	@Deprecated
 	private MobileIntegrationLevel mobileIntegrationLevel;
 	@Deprecated
 	private DisplayHintsPaymentItem displayHints;
@@ -66,10 +78,18 @@ public class BasicPaymentProduct implements BasicPaymentItem, Serializable {
 		return allowsTokenization;
 	}
 
+	/**
+	 * @deprecated In a future release, this getter will be removed since its value is not returned from the API.
+	 */
+	@Deprecated
 	public Long getMinAmount(){
 		return minAmount;
 	}
 
+	/**
+	 * @deprecated In a future release, this getter will be removed since its value is not returned from the API.
+	 */
+	@Deprecated
 	public Long getMaxAmount(){
 		return maxAmount;
 	}
@@ -78,6 +98,10 @@ public class BasicPaymentProduct implements BasicPaymentItem, Serializable {
 		return usesRedirectionTo3rdParty;
 	}
 
+	/**
+	 * @deprecated In a future release, this getter will be removed since its value is not returned from the API.
+	 */
+	@Deprecated
 	public MobileIntegrationLevel mobileIntegrationLevel(){
 		return mobileIntegrationLevel;
 	}

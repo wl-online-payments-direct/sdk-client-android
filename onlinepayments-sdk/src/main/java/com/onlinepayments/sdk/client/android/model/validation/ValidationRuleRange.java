@@ -23,7 +23,26 @@ public class ValidationRuleRange extends AbstractValidationRule {
 	private Integer maxValue;
 
 	/**
-	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 * @deprecated This constructor is for internal use only.
+	 */
+	@Deprecated
+	public ValidationRuleRange(Integer minValue, Integer maxValue) {
+		super("range", ValidationType.RANGE);
+
+		if (minValue == null) {
+			throw new InvalidParameterException("Error initialising ValidationRuleRange, minValue may not be null");
+		}
+
+		if (maxValue == null) {
+			throw new InvalidParameterException("Error initialising ValidationRuleRange, maxValue may not be null");
+		}
+
+		this.minValue = minValue;
+		this.maxValue = maxValue;
+	}
+
+	/**
+	 * @deprecated In a future release, this constructor will be removed.
 	 */
 	@Deprecated
 	public ValidationRuleRange(Integer minValue, Integer maxValue, String errorMessage, ValidationType type) {

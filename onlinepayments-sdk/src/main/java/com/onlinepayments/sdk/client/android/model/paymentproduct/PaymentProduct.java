@@ -33,6 +33,10 @@ public class PaymentProduct extends BasicPaymentProduct implements PaymentItem, 
 		return fields;
 	}
 
+	/**
+	 * @deprecated In a future release, this setter will become internal to the SDK.
+	 */
+	@Deprecated
 	public void setPaymentProductFields(List<PaymentProductField> paymentProductFields) {
 		this.fields = paymentProductFields;
 		sortList();

@@ -21,6 +21,7 @@ public class IinDetailsResponse implements Serializable {
 	private boolean isAllowedInContext;
 	private List<IinDetail> coBrands;
 	private IinStatus status;
+	private CardType cardType;
 
 	/**
 	 @deprecated In a future release, this constructor will become internal to the SDK.
@@ -44,6 +45,10 @@ public class IinDetailsResponse implements Serializable {
 
 	public void setStatus(IinStatus status) {
 		this.status = status;
+	}
+
+	public CardType getCardType() {
+		return cardType;
 	}
 
 	/**

@@ -285,14 +285,26 @@ public class StringFormatter implements Serializable {
 			return new FormatResult(value, null);
 		}
 
-		// Get value and new CursorIndex
-		String maskedValue = (String) getMaskOrGetCursorIndex(mask, value, oldCursorIndex, true);
-		int newCursorIndex = (Integer) getMaskOrGetCursorIndex(mask, value, oldCursorIndex, false);
-
-		return new FormatResult(maskedValue, newCursorIndex);
+		return getFormatResult(mask, value, oldCursorIndex);
 	}
 
+	/**
+	 * Will apply a mask and returns a {@link FormatResult} that holds the masked String and the new cursor index.
+	 *
+	 * @param mask the mask that will be applied
+	 * @param value the value that the mask will be applied to
+	 * @param cursorIndex the cursorIndex before applying the changes
+	 *
+	 * @return {@link FormatResult}, containing the formatted value and the new cursor index
+	 */
+	public FormatResult applyMask(String mask, String value, Integer cursorIndex) {
 
+		if (mask == null || value == null) {
+			return null;
+		}
+
+		return getFormatResult(mask, value, cursorIndex);
+	}
 
 	/**
 	 * Method calculates the masked value and the cursorIndex.
@@ -300,12 +312,10 @@ public class StringFormatter implements Serializable {
 	 * @param mask the mask that will be applied
 	 * @param value the String that the mask will be applied to
 	 * @param cursorIndex the cursorIndex before applying the changes
-	 * @param getMask indicates whether the masked value should be returned
 	 *
-	 * @return mask or cursorIndex
+	 * @return {@link FormatResult}, containing the formatted value and the cursor index
 	 */
-	private Object getMaskOrGetCursorIndex(String mask, String value, int cursorIndex, boolean getMask){
-
+	private FormatResult getFormatResult(String mask, String value, int cursorIndex) {
 		if (mask == null || value == null) {
 			return null;
 		}
@@ -371,11 +381,7 @@ public class StringFormatter implements Serializable {
 			}
 		}
 
-		if(getMask){
-			return newValue;
-		} else {
-			return cursorIndex;
-		}
+		return new FormatResult(newValue, cursorIndex);
 	}
 
 	/**
@@ -388,7 +394,7 @@ public class StringFormatter implements Serializable {
 	 */
 	public String applyMask(String mask, String value){
 
-		return (String) getMaskOrGetCursorIndex(mask, value, 0, true);
+		return getFormatResult(mask, value, 0).getFormattedResult();
 	}
 
 	/**
@@ -436,6 +442,39 @@ public class StringFormatter implements Serializable {
 
 
 		return newValue;
+	}
+
+	/**
+	 * Relaxes the given mask, meaning it will also mask characters not corresponding to the initial mask.
+	 *
+	 * @param mask the mask that should be relaxed
+	 *
+	 * @return the relaxed mask
+	 */
+	public String relaxMask(String mask) {
+		boolean replaceCharacters = false;
+		StringBuilder relaxedMask = new StringBuilder();
+
+		// loop over the mask characters
+		for(int i = 0; i < mask.length(); i++){
+			Character maskCharacter = mask.charAt(i);
+			if (maskCharacter.equals('}')) {
+				replaceCharacters = false;
+				relaxedMask.append("}");
+			} else if (maskCharacter.equals('{')) {
+				replaceCharacters = true;
+				relaxedMask.append("{");
+			} else {
+				// if between {{ and }}, replace the character with a *
+				if (replaceCharacters) {
+					relaxedMask.append("*");
+				} else {
+					relaxedMask.append(" ");
+				}
+			}
+		}
+
+		return relaxedMask.toString();
 	}
 
 

@@ -18,7 +18,7 @@ public abstract class AbstractValidationRule implements Serializable, Validation
 	private String messageId;
 
 	// Validationtype
-	private ValidationType type;
+	private ValidationType validationType;
 
 	/**
 	 * @deprecated In a future release, this constructor will become internal to the SDK.
@@ -33,7 +33,7 @@ public abstract class AbstractValidationRule implements Serializable, Validation
 			throw new InvalidParameterException("Error initialising ValidationRule, type may not be null");
 		}
 		this.messageId = messageId;
-		this.type = type;
+		this.validationType = type;
 	}
 
 
@@ -42,7 +42,7 @@ public abstract class AbstractValidationRule implements Serializable, Validation
 	}
 
 	public ValidationType getType() {
-		return type;
+		return validationType;
 	}
 
 }

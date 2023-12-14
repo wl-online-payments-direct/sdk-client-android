@@ -94,6 +94,9 @@ public class PaymentProductField implements Serializable {
 		return value.isEmpty();
 	}
 
+	public void setValidationRules() {
+		dataRestrictions.setValidationRules();
+	}
 
 	/**
 	 * Gets all error message codes for the supplied value.
@@ -102,10 +105,7 @@ public class PaymentProductField implements Serializable {
 	 * @param value the value that should be validated
 	 *
 	 * @return a list of error messages that apply to this field. If the list is empty you can assume that the field value is a valid value
-	 *
-	 * @deprecated use {@link #validateValue(PaymentRequest)} instead
 	 */
-	@Deprecated
 	public List<ValidationErrorMessage> validateValue(String value) {
 
 		// Remove possible existing errors first

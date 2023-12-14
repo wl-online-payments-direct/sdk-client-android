@@ -41,12 +41,6 @@ public class PaymentProductNetworkAsyncTask extends AsyncTask<String, Void, ApiR
     private C2sCommunicator communicator;
     // Product id for which the network must be retrieved
     private String productId;
-    // Customer id for which the network must be retrieved
-    private String customerId;
-    // Currency code for which the network must be retrieved
-    private String currencyCode;
-    // Country code for which the network must be retrieved
-    private String countryCode;
 
     /**
      * Create a PaymentProductNetworkAsyncTask
@@ -59,7 +53,10 @@ public class PaymentProductNetworkAsyncTask extends AsyncTask<String, Void, ApiR
      * @param context {@link Context} used for reading device metadata which is sent to the Online Payments gateway
      * @param paymentContext {@link PaymentContext} which contains all necessary payment data for doing a call to the Online Payments gateway to get the {@link PaymentProductNetworkResponse}
      * @param listener {@link PaymentProductNetworkListener} which will be called by the AsyncTask when the {@link PaymentProductNetworkResponse} is retrieved
+     *
+     * @deprecated use {@link #PaymentProductNetworkAsyncTask(String, C2sCommunicator, Context, PaymentContext, PaymentProductNetworkResponseListener)} instead.
      */
+    @Deprecated
     public PaymentProductNetworkAsyncTask(String productId, String customerId, CurrencyCode currencyCode, CountryCode countryCode,
                                           C2sCommunicator communicator, Context context, PaymentContext paymentContext, PaymentProductNetworkListener listener) {
         this(productId, customerId, currencyCode.toString(), countryCode.toString(), communicator, context, paymentContext, listener);
@@ -76,7 +73,10 @@ public class PaymentProductNetworkAsyncTask extends AsyncTask<String, Void, ApiR
      * @param context {@link Context} used for reading device metadata which is sent to the Online Payments gateway
      * @param paymentContext {@link PaymentContext} which contains all necessary payment data for doing a call to the Online Payments gateway to get the {@link PaymentProductNetworkResponse}
      * @param listener {@link PaymentProductNetworkListener} which will be called by the AsyncTask when the {@link PaymentProductNetworkResponse} is retrieved
+     *
+     * @deprecated use {@link #PaymentProductNetworkAsyncTask(String, C2sCommunicator, Context, PaymentContext, PaymentProductNetworkResponseListener)} instead.
      */
+    @Deprecated
     public PaymentProductNetworkAsyncTask(String productId, String customerId, String currencyCode, String countryCode,
                                           C2sCommunicator communicator, Context context, PaymentContext paymentContext, PaymentProductNetworkListener listener) {
         if (productId == null) {

@@ -9,7 +9,10 @@ import java.io.Serializable;
 /**
  * POJO that represents an KeyValuePair object.
  * The KeyValuePairs contains the information from the account on file.
+ *
+ * @deprecated In a future release, this class will be removed, please use {@link AccountOnFileAttribute} instead.
  */
+@Deprecated
 public class KeyValuePair implements Serializable {
 
 	private static final long serialVersionUID = -8520100614239969197L;
@@ -37,6 +40,11 @@ public class KeyValuePair implements Serializable {
 	private String key;
 	private String value;
 	private Status status;
+
+	/**
+	 * @deprecated In a future release, this property will be removed since it is not returned from the API.
+	 */
+	@Deprecated
 	private String mustWriteReason;
 
 	/**
@@ -44,6 +52,23 @@ public class KeyValuePair implements Serializable {
 	 */
 	@Deprecated
 	public KeyValuePair() {}
+
+	protected KeyValuePair(String key, String value, AccountOnFileAttribute.Status status) {
+		this.key = key;
+		this.value = value;
+
+		switch (status) {
+			case READ_ONLY:
+				this.status = Status.READ_ONLY;
+				break;
+			case CAN_WRITE:
+				this.status = Status.CAN_WRITE;
+				break;
+			case MUST_WRITE:
+				this.status = Status.MUST_WRITE;
+				break;
+		}
+	}
 
 	public String getKey() {
 		return key;
@@ -69,10 +94,18 @@ public class KeyValuePair implements Serializable {
 		this.status = status;
 	}
 
+	/**
+	 * @deprecated In a future release, this getter will be removed since it is not returned from the API.
+	 */
+	@Deprecated
 	public String getMustWriteReason() {
 		return mustWriteReason;
 	}
 
+	/**
+	 * @deprecated In a future release, this setter will be removed.
+	 */
+	@Deprecated
 	public void setMustWriteReason(String mustWriteReason) {
 		this.mustWriteReason = mustWriteReason;
 	}

@@ -171,20 +171,41 @@ public class PaymentRequest implements Serializable {
 	public FormatResult getMaskedValue(String paymentProductFieldId, String newValue, String oldValue, Integer cursorIndex) {
 
 		if (paymentProductFieldId == null) {
-			throw new InvalidParameterException("Error getting maskedvalue from PaymentRequest, paymentProductFieldId may not be null");
+			throw new InvalidParameterException("Error getting masked value from PaymentRequest, paymentProductFieldId may not be null");
 		}
 		if (newValue == null) {
-			throw new InvalidParameterException("Error getting maskedvalue from PaymentRequest, newValue may not be null");
+			throw new InvalidParameterException("Error getting masked value from PaymentRequest, newValue may not be null");
 		}
 		if (oldValue == null) {
-			throw new InvalidParameterException("Error getting maskedvalue from PaymentRequest, oldValue may not be null");
+			throw new InvalidParameterException("Error getting masked value from PaymentRequest, oldValue may not be null");
 		}
 
-		// Loop trough all fields and format the matching field value.
-		for (PaymentProductField field : paymentProduct.getPaymentProductFields()) {
-			if (field.getId().equals(paymentProductFieldId)) {
-				return field.applyMask(newValue, oldValue, cursorIndex);
-			}
+		PaymentProductField field = getPaymentProductField(paymentProductFieldId);
+		if (field != null) {
+			return field.applyMask(newValue, oldValue, cursorIndex);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the masked value for the given payment product field id.
+	 *
+	 * @param paymentProductFieldId the id of the {@link PaymentProductField} whose masked value should be returned
+	 *
+	 * @return String which is the masked value of the provided payment product field.
+	 */
+	public String getMaskedValue(String paymentProductFieldId) {
+
+		if (paymentProductFieldId == null) {
+			throw new InvalidParameterException("Error getting masked value from PaymentRequest, paymentProductFieldId may not be null");
+		}
+
+
+		PaymentProductField field = getPaymentProductField(paymentProductFieldId);
+		if (field != null) {
+			String value = getValue(paymentProductFieldId);
+			return field.applyMask(value);
 		}
 
 		return null;
@@ -198,18 +219,49 @@ public class PaymentRequest implements Serializable {
 	 *
 	 * @return String with unmaskedValue, or null if there is no {@link PaymentProductField} found
 	 */
-	public String getUnmaskedValue(String paymentProductFieldId, String value){
+	public String getUnmaskedValue(String paymentProductFieldId, String value) {
 		if (paymentProductFieldId == null) {
-			throw new InvalidParameterException("Error getting maskedvalue from PaymentRequest, paymentProductFieldId may not be null");
+			throw new InvalidParameterException("Error getting unmasked value from PaymentRequest, paymentProductFieldId may not be null");
 		}
 		if (value == null) {
-			throw new InvalidParameterException("Error getting maskedvalue from PaymentRequest, value may not be null");
+			throw new InvalidParameterException("Error getting unmasked value from PaymentRequest, value may not be null");
 		}
 
-		// Loop through all fields and deformat the matching field value.
+		PaymentProductField field = getPaymentProductField(paymentProductFieldId);
+		if (field != null) {
+			return field.removeMask(value);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the unmasked value for the given payment product field id.
+	 *
+	 * @param paymentProductFieldId the id of the {@link PaymentProductField} whose unmasked value should be returned
+	 *
+	 * @return String which is the unmasked value of the provided payment product field.
+	 */
+	public String getUnmaskedValue(String paymentProductFieldId) {
+
+		if (paymentProductFieldId == null) {
+			throw new InvalidParameterException("Error getting unmasked value from PaymentRequest, paymentProductFieldId may not be null");
+		}
+
+		PaymentProductField field = getPaymentProductField(paymentProductFieldId);
+		if (field != null) {
+			String value = getValue(paymentProductFieldId);
+			return field.removeMask(value);
+		}
+
+		return null;
+	}
+
+	private PaymentProductField getPaymentProductField(String paymentProductFieldId) {
+		// Loop through all fields to get the corresponding payment product field
 		for (PaymentProductField field : paymentProduct.getPaymentProductFields()) {
 			if (field.getId().equals(paymentProductFieldId)) {
-				return field.removeMask(value);
+				return field;
 			}
 		}
 

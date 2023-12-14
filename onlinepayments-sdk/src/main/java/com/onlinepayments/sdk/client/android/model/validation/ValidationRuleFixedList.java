@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.onlinepayments.sdk.client.android.model.PaymentRequest;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 /**
@@ -22,12 +23,26 @@ public class ValidationRuleFixedList extends AbstractValidationRule {
 	private List<String> listValues;
 
 	/**
-	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 * @deprecated This constructor is for internal use only.
+	 */
+	@Deprecated
+	public ValidationRuleFixedList(List<String> listValues) {
+		super("fixedList", ValidationType.FIXEDLIST);
+
+		if (listValues == null) {
+			throw new InvalidParameterException("Error initialising ValidationRuleFixedList, listValues may not be null");
+		}
+
+		this.listValues = listValues;
+	}
+
+	/**
+	 * @deprecated In a future release, this constructor will be removed.
 	 */
 	@Deprecated
 	public ValidationRuleFixedList(List<String> listValues, String errorMessage, ValidationType type) {
-
 		super(errorMessage, type);
+
 		this.listValues = listValues;
 	}
 

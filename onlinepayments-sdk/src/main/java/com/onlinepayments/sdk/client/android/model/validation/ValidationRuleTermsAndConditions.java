@@ -20,7 +20,15 @@ public class ValidationRuleTermsAndConditions extends AbstractValidationRule {
     private static final String TAG = ValidationRuleTermsAndConditions.class.getName();
 
     /**
-     * @deprecated In a future release, this constructor will become internal to the SDK.
+     * @deprecated This constructor is for internal use only.
+     */
+    @Deprecated
+    public ValidationRuleTermsAndConditions() {
+        super("termsAndConditions", ValidationType.TERMSANDCONDITIONS);
+    }
+
+    /**
+     * @deprecated In a future release, this constructor will be removed.
      */
     @Deprecated
     public ValidationRuleTermsAndConditions(String errorMessage, ValidationType type) {

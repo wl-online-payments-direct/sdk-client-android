@@ -10,7 +10,10 @@ import java.util.List;
 /**
  * POJO which holds the ValueMap data and it's PaymentProductFields.
  * If the {@link FormElement} is a list, ValueMap is used to display a value and its displayElements.
+ *
+ * @deprecated In a future release, this class will be removed since it is not returned from the API.
  */
+@Deprecated
 public class ValueMap implements Serializable{
 
 	private static final long serialVersionUID = -8334806247597370688L;

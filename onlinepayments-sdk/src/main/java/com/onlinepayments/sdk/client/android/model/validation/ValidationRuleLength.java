@@ -10,6 +10,8 @@ import com.onlinepayments.sdk.client.android.model.PaymentRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.security.InvalidParameterException;
+
 /**
  * Validation rule for length.
  */
@@ -21,10 +23,33 @@ public class ValidationRuleLength extends AbstractValidationRule {
 
 	private Integer minLength;
 	private Integer maxLength;
+	/**
+	 * @deprecated In a future release, this property will be removed since it is not returned from the API.
+	 */
+	@Deprecated
 	private Integer maskedMaxLength;
 
 	/**
-	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 * @deprecated This constructor is for internal use only.
+	 */
+	@Deprecated
+	public ValidationRuleLength(Integer minLength, Integer maxLength) {
+		super("length", ValidationType.LENGTH);
+
+		if (minLength == null) {
+			throw new InvalidParameterException("Error initialising ValidationRuleLength, minLength may not be null");
+		}
+
+		if (maxLength == null) {
+			throw new InvalidParameterException("Error initialising ValidationRuleLength, maxLength may not be null");
+		}
+
+		this.minLength = minLength;
+		this.maxLength = maxLength;
+	}
+
+	/**
+	 * @deprecated In a future release, this constructor will be removed.
 	 */
 	@Deprecated
 	public ValidationRuleLength(Integer minLength, Integer maxLength, String errorMessage, ValidationType type) {
@@ -88,6 +113,10 @@ public class ValidationRuleLength extends AbstractValidationRule {
 		return minLength;
 	}
 
+	/**
+	 * @deprecated In a future release, this getter will be removed since its value is not returned from the API.
+	 */
+	@Deprecated
 	public Integer getMaskedMaxLength(){
 		return maskedMaxLength;
 	}

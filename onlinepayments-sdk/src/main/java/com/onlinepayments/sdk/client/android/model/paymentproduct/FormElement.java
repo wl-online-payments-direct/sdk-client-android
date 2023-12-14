@@ -19,7 +19,31 @@ public class FormElement implements Serializable {
 
 	private static final long serialVersionUID = 7081218270681792356L;
 
+	/**
+	 * Enum containing all the possible input types for a {@link PaymentProductField}.
+	 */
+	public enum Type {
+		@SerializedName("text")
+		TEXT,
 
+		@SerializedName("list")
+		LIST,
+
+		@SerializedName("currency")
+		CURRENCY,
+
+		@SerializedName("date")
+		DATE,
+
+		@SerializedName("boolean")
+		BOOLEAN,
+		;
+	}
+
+	/**
+	 * @deprecated In a future release, this enum will be removed. Use {@link Type} instead.
+	 */
+	@Deprecated
 	public enum ListType {
 		@SerializedName("text")
 		TEXT,
@@ -38,7 +62,12 @@ public class FormElement implements Serializable {
 		;
 	}
 
-	private ListType type;
+	private Type type;
+
+	/**
+	 * @deprecated In a future release, this getter will be removed since it is not returned from the API.
+	 */
+	@Deprecated
 	private List<ValueMap> valueMapping = new ArrayList<>();
 
 	/**
@@ -47,8 +76,23 @@ public class FormElement implements Serializable {
 	@Deprecated
 	public FormElement() {}
 
-	public ListType getType(){
+	public Type getFormElementType(){
 		return type;
+	}
+
+	/**
+	 * @deprecated In a future release, this getter will be removed since its object type has been changed to {@link Type}. Use {{@link #getFormElementType()}} instead.
+	 */
+	@Deprecated
+	public ListType getType() {
+		switch (type) {
+			case DATE: return ListType.DATE;
+			case BOOLEAN: return ListType.BOOLEAN;
+			case LIST: return ListType.LIST;
+			case TEXT: return ListType.TEXT;
+			case CURRENCY: return ListType.CURRENCY;
+			default: return null;
+		}
 	}
 
 	/**
@@ -57,10 +101,14 @@ public class FormElement implements Serializable {
 	 *
 	 * @param type the new type for this FormElement
 	 */
-	public void setType(ListType type) {
+	public void setType(Type type) {
 		this.type = type;
 	}
 
+	/**
+	 * @deprecated In a future release, this getter will be removed since its value is not returned from the API.
+	 */
+	@Deprecated
 	public List<ValueMap> getValueMapping(){
 		return valueMapping;
 	}

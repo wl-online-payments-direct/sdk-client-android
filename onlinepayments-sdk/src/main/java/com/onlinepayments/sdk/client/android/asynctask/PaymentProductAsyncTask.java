@@ -227,8 +227,8 @@ public class PaymentProductAsyncTask extends AsyncTask<String, Void, ApiResponse
 			// If this is the expiry date field, change the mask and possibly the type
 			if (EXPIRY_DATE.equals(field.getId())) {
 				// Change the type if it is LIST
-				if (field.getDisplayHints().getFormElement().getType() == FormElement.ListType.LIST) {
-					field.getDisplayHints().getFormElement().setType(FormElement.ListType.TEXT);
+				if (field.getDisplayHints().getFormElement().getFormElementType() == FormElement.Type.LIST) {
+					field.getDisplayHints().getFormElement().setType(FormElement.Type.TEXT);
 				}
 				// Add the mask, if it's null or empty
 				if (field.getDisplayHints().getMask() == null || field.getDisplayHints().getMask().isEmpty()) {

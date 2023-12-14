@@ -15,6 +15,7 @@ public class IinDetail implements Serializable {
 
     private String paymentProductId;
     private boolean isAllowedInContext;
+    private CardType cardType;
 
     /**
      * @deprecated In a future release, this constructor will become internal to the SDK.
@@ -28,6 +29,10 @@ public class IinDetail implements Serializable {
 
     public boolean isAllowedInContext() {
         return isAllowedInContext;
+    }
+
+    public CardType getCardType() {
+        return cardType;
     }
 
     @Override

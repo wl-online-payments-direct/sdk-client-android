@@ -20,6 +20,9 @@ public class MaskTest {
 
 	private final String maskExpiryDate = "{{99}}-{{99}}";
 	private final String maskCardNumber = "{{9999}} {{9999}} {{9999}} {{9999}} {{999}}";
+	private final String maskNumbers = "{{99}} {{99}} {{99}} {{99}} {{99}}";
+	private final String maskWildcards = "{{**}} {{**}} {{**}} {{**}} {{**}}";
+	private final String maskAlpha = "{{aa}} {{aa}} {{aa}} {{aa}} {{aa}}";
 
 	private final String emptyString		= "";
 
@@ -28,6 +31,9 @@ public class MaskTest {
 	private final String maskTestString3 = "1234";
 	private final String maskTestString4 = "1234567890123456789";
 	private final String maskTestString5 = "12-34";
+	private final String maskNumbersString = "1234567890";
+	private final String maskWildcardsString = "!!!!!!!!!!";
+	private final String maskAlphaString = "abcdefghij";
 
 	@Test
 	public void testMaskingSingleCharacterInclCursor() {
@@ -76,6 +82,35 @@ public class MaskTest {
 		StringFormatter formatter = new StringFormatter();
 		String maskedValue = formatter.applyMask(maskExpiryDate, maskTestString4);
 		assertEquals("12-34", maskedValue);
+	}
+
+	@Test
+	public void testMaskNumbers() {
+		StringFormatter formatter = new StringFormatter();
+		String maskedValue = formatter.applyMask(maskNumbers, maskNumbersString);
+		assertEquals("12 34 56 78 90", maskedValue);
+	}
+
+	@Test
+	public void testMaskWildcards() {
+		StringFormatter formatter = new StringFormatter();
+		String maskedValue = formatter.applyMask(maskWildcards, maskWildcardsString);
+		assertEquals("!! !! !! !! !!", maskedValue);
+	}
+
+	@Test
+	public void testMaskAlpha() {
+		StringFormatter formatter = new StringFormatter();
+		String maskedValue = formatter.applyMask(maskAlpha, maskAlphaString);
+		assertEquals("ab cd ef gh ij", maskedValue);
+	}
+
+	@Test
+	public void testMaskWithCursorPosition() {
+		StringFormatter formatter = new StringFormatter();
+		FormatResult formatResult = formatter.applyMask(maskAlpha, maskAlphaString, 1);
+		assertEquals("ab cd ef gh ij", formatResult.getFormattedResult());
+		assertEquals(1, formatResult.getCursorIndex().intValue());
 	}
 
 	@Test

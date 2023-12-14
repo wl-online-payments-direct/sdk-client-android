@@ -67,7 +67,8 @@ Session session = new Session(
     "https://clientapi.com", // client API URL
     "https://assets.com", // asset URL
     false, // states if the environment is production, this property is used to determine the Google Pay environment
-    "Android Example Application/v2.0.4" // application identifier
+    "Android Example Application/v2.0.4", // application identifier
+    true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
 );
 ```
 3. Configure your payment context.
@@ -83,37 +84,47 @@ PaymentContext paymentContext = new PaymentContext(
     false // true, if it is a recurring payment
 );
 ```
-4. Retrieve the available Payment Products. To handle retrieving the Payment Products and any possible errors, you will have to use the `BasicPaymentItemsAsyncTask.BasicPaymentItemsCallListener`. You can either let your class implement this listener or declare the listener as a property of your class. After successfully retrieving the Payment Products, display the `BasicPaymentItem` and `AccountOnFile` lists and request your customer to select one.
+4. Retrieve the available Payment Products. To handle retrieving the Payment Products and any possible errors, you will have to declare and use a `BasicPaymentItemsResponseListener`. After successfully retrieving the Payment Products, display the `BasicPaymentItem` and `AccountOnFile` lists and request your customer to select one.
 ```java
-private BasicPaymentItemsAsyncTask.BasicPaymentItemsCallListener basicPaymentItemsCallListener = new BasicPaymentItemsAsyncTask.BasicPaymentItemsCallListener() {
+private BasicPaymentItemsResponseListener basicPaymentItemsResponseListener = new BasicPaymentItemsResponseListener() {
     @Override
-    public void onBasicPaymentItemsCallComplete(@NonNull BasicPaymentItems basicPaymentItems) {
+    public void onSuccess(@NonNull BasicPaymentItems basicPaymentItems) {
         // Display the contents of basicPaymentItems & accountsOnFile to your customer
     }
 
     @Override
-    public void onBasicPaymentItemsCallError(ErrorResponse error) {
-        // Inform the customer that something went wrong while retrieving the available Payment Products
+    public void onApiError(ErrorResponse errorResponse) {
+        // Handle API failure of retrieving the available Payment Products
+    }
+    
+    @Override
+    public void onException(Throwable throwable) {
+        // Handle failure of retrieving the available Payment Products
     }
 };
 
 session.getBasicPaymentItems(
     context, // Context, used for retrieving device metadata
     paymentContext, // PaymentContext
-    basicPaymentItemsCallListener, // listener to be called when payment items are retrieved or an error occured
-    groupPaymentProducts // states if the retrieved payment items will be grouped, will always be false
+    groupPaymentProducts, // states if the retrieved payment items will be grouped, will always be false
+    basicPaymentItemsResponseListener // listener to be called when payment items are retrieved or an error occured
 );
 ```
-5. Once the customer has selected the desired payment product, retrieve the enriched `PaymentProduct` detailing what information the customer needs to provide to authorize the payment. To handle retrieving the enriched `PaymentProduct` and any possible errors, you will have to use the `PaymentProductAsyncTask.PaymentProductCallListener`. You can either let your class implement this listener or declare the listener as a property of your class. After successfully retrieving the `PaymentProduct`, display the required information fields to your customer.
+5. Once the customer has selected the desired payment product, retrieve the enriched `PaymentProduct` detailing what information the customer needs to provide to authorize the payment. To handle retrieving the enriched `PaymentProduct` and any possible errors, you will have to declare and use a `PaymentProductResponseListener`. After successfully retrieving the `PaymentProduct`, display the required information fields to your customer.
 ```java
-private PaymentProductAsyncTask.PaymentProductCallListener paymentProductCallListener = new PaymentProductAsyncTask.PaymentProductCallListener() {
+private PaymentProductResponseListener paymentProductResponseListener = new PaymentProductResponseListener() {
     @Override
-    public void onPaymentProductCallComplete(PaymentProduct paymentProduct) {
+    public void onSuccess(@NonNull PaymentProduct paymentProduct) {
         // Display the fields to your customer
     }
 
     @Override
-    public void onPaymentProductCallError(ErrorResponse error) {
+    public void onApiError(ErrorResponse errorResponse) {
+        // Handle API failure of retrieving a Payment Product by id
+    }
+    
+    @Override
+    public void onException(Throwable throwable) {
         // Handle failure of retrieving a Payment Product by id
     }
 };
@@ -122,7 +133,7 @@ session.getPaymentProduct(
     context, // Context, used for retrieving device metadata
     "1", // id of the payment product you want to retrieve
     paymentContext, // PaymentContext
-    paymentProductCallListener // listener to be called when the payment product is retrieved or an error occured
+    paymentProductResponseListener // listener to be called when the payment product is retrieved or an error occured
 );
 ```
 6. Save the customer's input for the required information fields in a `PaymentRequest`.
@@ -131,17 +142,22 @@ PaymentRequest paymentRequest = new PaymentRequest();
 
 paymentRequest.setValue(
     "cardNumber", // field id
-    "1245 1254 4575 45" // value
+    "12451254457545" // unmasked value
 );
 paymentRequest.setValue("cvv", "123");
-paymentRequest.setValue("expiryDate", "12/25");
+paymentRequest.setValue("expiryDate", "1225");
 ```
-7. Validate and encrypt the payment request. To handle encrypting the `PaymentRequest`, you will have to use the `OnPaymentRequestPreparedListener`. You can either let your class implement this listener or declare the listener as a property of your class. After successfully encrypting the `PaymentRequest`, you will have access to the encrypted version, `PreparedPaymentRequest`. The encrypted customer data should then be sent to your server.
+7. Validate and encrypt the payment request. To handle encrypting the `PaymentRequest`, you will have to declare and use a `PaymentRequestPreparedListener`. After successfully encrypting the `PaymentRequest`, you will have access to the encrypted version, `PreparedPaymentRequest`. The encrypted customer data should then be sent to your server.
 ```java
-private OnPaymentRequestPreparedListener paymentRequestPreparedListener = new OnPaymentRequestPreparedListener() {
+private PaymentRequestPreparedListener paymentRequestPreparedListener = new PaymentRequestPreparedListener() {
     @Override
     public void onPaymentRequestPrepared(PreparedPaymentRequest preparedPaymentRequest) {
         // Forward the encryptedFields to your server
+    }
+    
+    @Override
+    public void onFailure(EncryptDataException e) {
+        // Handle failure of encrypting a PaymentRequest
     }
 };
 
@@ -165,10 +181,10 @@ Session session = new Session(
     "https://assets.com", // asset URL
     false, // states if the environment is production, this property is used to determine the Google Pay environment
     "Android Example Application/v2.0.4", // application identifier
-    true // states whether you would like to enable logging of requests made to the server and responses received from the server
+    true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
 );
 ```
-Almost all methods that are offered by `Session` are simple wrappers around the Client API. They make the request and convert the response to Java objects that may contain convenience functions.
+Almost all methods that are offered by `Session` are simple wrappers around the Client API. They create the request and convert the response to Java objects that may contain convenience functions.
 
 #### Logging of requests and responses
 You are able to log requests made to the server and responses received from the server. By default logging is disabled, and it is important to always disable it in production. You are able to enable the logging in two ways. Either by setting its value when creating a Session - as shown in the code fragment above - or by setting its value after the Session was already created.
@@ -188,29 +204,34 @@ public class PaymentContext {
 ```
 
 ### PaymentItems
-This object contains the available Payment Items for the current payment. Use the `session.getBasicPaymentItems` function to request the data. To handle retrieving the Payment Products and any possible errors, you will have to use the `BasicPaymentItemsAsyncTask.BasicPaymentItemsCallListener`. You can either let your class implement this listener or declare the listener as a property of your class.
+This object contains the available Payment Items for the current payment. Use the `session.getBasicPaymentItems` function to request the data. To handle retrieving the Payment Products and any possible errors, you will have to use a `BasicPaymentItemsResponseListener`.
 
 The object you will receive is `BasicPaymentItems`, which contains two lists. One for all available `BasicPaymentItem`s and one for all available `AccountOnFile`s.
 
 The code fragment below shows how to get the `BasicPaymentItems` instance.
 ```java
-private BasicPaymentItemsAsyncTask.BasicPaymentItemsCallListener basicPaymentItemsCallListener = new BasicPaymentItemsAsyncTask.BasicPaymentItemsCallListener() {
+private BasicPaymentItemsResponseListener basicPaymentItemsResponseListener = new BasicPaymentItemsResponseListener() {
     @Override
-    public void onBasicPaymentItemsCallComplete(@NonNull BasicPaymentItems basicPaymentItems) {
+    public void onSuccess(@NonNull BasicPaymentItems basicPaymentItems) {
         // Display the contents of basicPaymentItems & accountsOnFile to your customer
     }
 
     @Override
-    public void onBasicPaymentItemsCallError(ErrorResponse error) {
-        // Inform the customer that something went wrong while retrieving the available Payment Products
+    public void onApiError(ErrorResponse errorResponse) {
+        // Handle API failure of retrieving the available Payment Products
+    }
+    
+    @Override
+    public void onException(Throwable throwable) {
+        // Handle failure of retrieving the available Payment Products
     }
 };
 
 session.getBasicPaymentItems(
-    context(), // Context, used for retrieving device metadata
+    context, // Context, used for retrieving device metadata
     paymentContext, // PaymentContext
-    basicPaymentItemsCallListener, // listener to be called when payment items are retrieved or an error occured
-    groupPaymentProducts // states if the retrieved payment items will be grouped, will always be false
+    groupPaymentProducts, // states if the retrieved payment items will be grouped, will always be false
+    basicPaymentItemsResponseListener // listener to be called when payment items are retrieved or an error occured
 );
 ```
 
@@ -249,44 +270,31 @@ for (AccountOnFile aof : basicPaymentProduct.getAccountsOnFile()) {
 
 // Shows a mask based formatted value for the obfuscated cardNumber.
 // The mask that is used is defined in the displayHints of this accountOnFile
-// If the mask is {{9999}} {{9999}} {{9999}} {{9999}} {{999}}, then the result would be **** **** **** 7412
-String fieldToMask = "cardNumber";
-String fieldValue = null;
-String mask = null;
-
-for (AccountOnFileDisplay aofDisplay : accountOnFile.getDisplayHints().getLabelTemplate()) {
-    if (Objects.equals(aofDisplay.getKey(), fieldToMask)) {
-        mask = aofDisplay.getMask();
-        break;
-    }
-}
-
-for (KeyValuePair attribute : accountOnFile.getAttributes()) {
-    if (Objects.equals(attribute.getKey(), fieldToMask)) {
-        fieldValue = attribute.getValue();
-        break;
-    }
-}
-StringFormatter stringFormatter = new StringFormatter();
-String maskedValue = stringFormatter.applyMask(mask, fieldValue);
+// If the mask for the "cardNumber" field is {{9999}} {{9999}} {{9999}} {{9999}} {{999}}, then the result would be **** **** **** 7412
+String maskedValue = accountOnFile.getMaskedValue("cardNumber");
 ```
 
 ### PaymentProduct
 
 `BasicPaymentProduct` only contains the information required by a customer to distinguish one payment product from another. However, once a payment product or an account on file has been selected, the customer must provide additional information, such as a bank account number, a credit card number, or an expiry date, before a payment can be processed. Each payment product can have several fields that need to be completed to process a payment. Instances of `BasicPaymentProduct` do not contain any information about these fields.
 
-Information about the fields of payment products are represented by instances of `PaymentProductField`, which are contained in instances of `PaymentProduct`. The class `PaymentProductField` is described further down below. To handle retrieving the desired `PaymentProduct` and any possible errors, you will have to use the `PaymentProductAsyncTask.PaymentProductCallListener`. You can either let your class implement this listener or declare the listener as a property of your class.
+Information about the fields of payment products are represented by instances of `PaymentProductField`, which are contained in instances of `PaymentProduct`. The class `PaymentProductField` is described further down below. To handle retrieving the desired `PaymentProduct` and any possible errors, you will have to use a `PaymentProductResponseListener`.
 
 The `Session` instance can be used to retrieve instances of `PaymentProduct`, as shown in the following code fragment.
 ```java
-private PaymentProductAsyncTask.PaymentProductCallListener paymentProductCallListener = new PaymentProductAsyncTask.PaymentProductCallListener() {
+private PaymentProductResponseListener paymentProductResponseListener = new PaymentProductResponseListener() {
     @Override
-    public void onPaymentProductCallComplete(PaymentProduct paymentProduct) {
+    public void onSuccess(@NonNull PaymentProduct paymentProduct) {
         // Display the fields to your customer
     }
 
     @Override
-    public void onPaymentProductCallError(ErrorResponse error) {
+    public void onApiError(ErrorResponse errorResponse) {
+        // Handle API failure of retrieving a Payment Product by id
+    }
+    
+    @Override
+    public void onException(Throwable throwable) {
         // Handle failure of retrieving a Payment Product by id
     }
 };
@@ -295,7 +303,7 @@ session.getPaymentProduct(
     context, // Context, used for retrieving device metadata
     "1", // id of the payment product you want to retrieve
     paymentContext, // PaymentContext
-    paymentProductCallListener // listener to be called when the payment product is retrieved or an error occured
+    paymentProductResponseListener // listener to be called when the payment product is retrieved or an error occured
 );
 ```
 
@@ -320,7 +328,7 @@ paymentRequest.setPaymentProduct(paymentProduct);
 ```
 
 #### Tokenize payment request
-A `PaymentProduct` has a property `tokenize`, which is used to indicate whether a payment request should be stored as an account on file. The code fragment below shows how a payment request should be constructed when the request should *not* be stored as an account on file. By default, `tokenize` is set to `false`.
+A `PaymentProduct` has a property `tokenize`, which is used to indicate whether a payment request should be stored as an account on file. The code fragment below shows how a payment request should be constructed when the request should be stored as an account on file. By default, `tokenize` is set to `false`.
 ```java
 PaymentRequest paymentRequest = new PaymentRequest(); // tokenize is false by default
 paymentRequest.setPaymentProduct(paymentProduct);
@@ -346,10 +354,10 @@ PaymentRequest paymentRequest = new PaymentRequest();
 
 paymentRequest.setValue(
     "cardNumber", // field id
-    "1245 1254 4575 45" // value
+    "12451254457545" // unmasked value
 );
 paymentRequest.setValue("cvv", "123");
-paymentRequest.setValue("expiryDate", "12/25");
+paymentRequest.setValue("expiryDate", "1225");
 ```
 
 #### Validate payment request
@@ -376,12 +384,17 @@ for (ValidationErrorMessage validationResult : errorMessages) {
 
 #### Encrypt payment request
 
-The `PaymentRequest` is ready for encryption once the `PaymentProduct` is set, the `PaymentProductField` values have been provided and validated, and potentially the selected `AccountOnFile` or `tokenize` properties have been set. The `PaymentRequest` encryption is done by using `session.prepare`. To handle the result of the encrypted `PaymentRequest`, you will have to use the `OnPaymentRequestPreparedListener`. You can either let your class implement this listener or declare the listener as a property of your class. After successfully encrypting the `PaymentRequest`, you will have access to the encrypted version, `PreparedPaymentRequest` which contains the encrypted payment request fields and encoded client meta info.
+The `PaymentRequest` is ready for encryption once the `PaymentProduct` is set, the `PaymentProductField` values have been provided and validated, and potentially the selected `AccountOnFile` or `tokenize` properties have been set. The `PaymentRequest` encryption is done by using `session.prepare`. To handle the result of the encrypted `PaymentRequest`, you will have to use the `PaymentRequestPreparedListener`. After successfully encrypting the `PaymentRequest`, you will have access to the encrypted version, `PreparedPaymentRequest` which contains the encrypted payment request fields and encoded client meta info.
 ```java
-private OnPaymentRequestPreparedListener paymentRequestPreparedListener = new OnPaymentRequestPreparedListener() {
+private PaymentRequestPreparedListener paymentRequestPreparedListener = new PaymentRequestPreparedListener() {
     @Override
     public void onPaymentRequestPrepared(PreparedPaymentRequest preparedPaymentRequest) {
         // Forward the encryptedFields to your server
+    }
+    
+    @Override
+    public void onFailure(EncryptDataException e) {
+        // Handle failure of encrypting a PaymentRequest
     }
 };
 
@@ -407,17 +420,22 @@ The `IinDetailsResponse` has a status property represented through the `IinStatu
 - `NOT_ENOUGH_DIGITS` indicates that fewer than six digits have been provided and that the IIN check cannot be performed.
 - `EXISTING_BUT_NOT_ALLOWED` indicates that the provided IIN is recognized, but that the corresponding product is not allowed for the current payment.
 
-To handle retrieving the desired `IinDetailsResponse` and any possible errors, you will have to use the `IinLookupAsyncTask.IinLookupCompleteListener`. You can either let your class implement this listener or declare the listener as a property of your class.
+To handle retrieving the desired `IinDetailsResponse` and any possible errors, you will have to declare and use the `IinLookupResponseListener`.
 ```java
-private IinLookupAsyncTask.IinLookupCompleteListener iinLookupCompleteListener = new IinLookupAsyncTask.IinLookupCompleteListener() {
+private IinLookupResponseListener iinLookupResponseListener = new IinLookupResponseListener() {
     @Override
-    public void onIinLookupComplete(IinDetailsResponse response) {
+    public void onSuccess(@NonNull IinDetailsResponse response) {
         // check the status of the associated payment product
         IinStatus iinStatus = response.getStatus();
     }
 
     @Override
-    public void onIinLookupError(ErrorResponse error) {
+    public void onApiError(ErrorResponse errorResponse) {
+        // Handle API failure of retrieving IIN details
+    }
+    
+    @Override
+    public void onException(Throwable throwable) {
         // Handle failure of retrieving IIN details
     }
 };
@@ -425,7 +443,7 @@ private IinLookupAsyncTask.IinLookupCompleteListener iinLookupCompleteListener =
 session.getIinDetails(
     context, // Context, used for retrieving device metadata
     "123456", // partial credit card number
-    iinLookupCompleteListener, // listener to be called when iin details are retrieved or an error occured
+    iinLookupResponseListener, // listener to be called when iin details are retrieved or an error occured
     paymentContext // PaymentContext
 );
 ```
@@ -463,7 +481,8 @@ Session session = new Session(
     "https://clientapi.com", // client API URL
     "https://assets.com", // asset URL
     false, // states if the environment is production, this property is used to determine the Google Pay environment
-    "Android Example Application/v2.0.4" // application identifier
+    "Android Example Application/v2.0.4", // application identifier
+    true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
 );
 
 AmountOfMoney amountOfMoney = new AmountOfMoney(
@@ -491,23 +510,28 @@ PaymentContext paymentContext = new PaymentContext(
 
 Retrieve the payment products and accounts on file that can be used for this payment. Your application can use this data to create the payment product selection screen.
 ```java
-private BasicPaymentItemsAsyncTask.BasicPaymentItemsCallListener basicPaymentItemsCallListener = new BasicPaymentItemsAsyncTask.BasicPaymentItemsCallListener() {
+private BasicPaymentItemsResponseListener basicPaymentItemsResponseListener = new BasicPaymentItemsResponseListener() {
     @Override
-    public void onBasicPaymentItemsCallComplete(@NonNull BasicPaymentItems basicPaymentItems) {
+    public void onSuccess(@NonNull BasicPaymentItems basicPaymentItems) {
         // Display the contents of basicPaymentItems & accountsOnFile to your customer
     }
 
     @Override
-    public void onBasicPaymentItemsCallError(ErrorResponse error) {
-        // Inform the customer that something went wrong while retrieving the available Payment Products
+    public void onApiError(ErrorResponse errorResponse) {
+        // Handle API failure of retrieving the available Payment Products
+    }
+    
+    @Override
+    public void onException(Throwable throwable) {
+        // Handle failure of retrieving the available Payment Products
     }
 };
 
 session.getBasicPaymentItems(
     context, // Context, used for retrieving device metadata
     paymentContext, // PaymentContext
-    basicPaymentItemsCallListener, // listener to be called when payment items are retrieved or an error occured
-    groupPaymentProducts // states if the retrieved payment items will be grouped, will always be false
+    groupPaymentProducts, // states if the retrieved payment items will be grouped, will always be false
+    basicPaymentItemsResponseListener // listener to be called when payment items are retrieved or an error occured
 );
 ```
 
@@ -519,14 +543,19 @@ If the customer wishes to use an existing `AccountOnFile` for a payment, the sel
 
 Retrieve all the details about the payment product - including it's fields - that the customer needs to provide based on the selected payment product or account on file. Your app can use this information to create the payment product details screen.
 ```java
-private PaymentProductAsyncTask.PaymentProductCallListener paymentProductCallListener = new PaymentProductAsyncTask.PaymentProductCallListener() {
+private PaymentProductResponseListener paymentProductResponseListener = new PaymentProductResponseListener() {
     @Override
-    public void onPaymentProductCallComplete(PaymentProduct paymentProduct) {
+    public void onSuccess(@NonNull PaymentProduct paymentProduct) {
         // Display the fields to your customer
     }
 
     @Override
-    public void onPaymentProductCallError(ErrorResponse error) {
+    public void onApiError(ErrorResponse errorResponse) {
+        // Handle API failure of retrieving a Payment Product by id
+    }
+    
+    @Override
+    public void onException(Throwable throwable) {
         // Handle failure of retrieving a Payment Product by id
     }
 };
@@ -535,7 +564,7 @@ session.getPaymentProduct(
     context, // Context, used for retrieving device metadata
     "1", // id of the payment product you want to retrieve
     paymentContext, // PaymentContext
-    paymentProductCallListener // listener to be called when the payment product is retrieved or an error occured
+    paymentProductResponseListener // listener to be called when the payment product is retrieved or an error occured
 );
 ```
 
@@ -545,10 +574,15 @@ Once the customer has selected a payment product or stored account on file, the 
 
 Encrypt all the provided payment information in the `PaymentRequest` using `session.preparePaymentRequest`. This function will return a `PreparedPaymentRequest` which contains the encrypted payment request fields and encoded client meta info. The encrypted fields result is in a format that can be processed by the Server API. The only thing you need to provide to the SDK are the values the customer provided in your screens. Once you have retrieved the encrypted fields String from the `PreparedPaymentRequest`, your application should send it to your server, which in turn should forward it to the Server API.
 ```java
-private OnPaymentRequestPreparedListener paymentRequestPreparedListener = new OnPaymentRequestPreparedListener() {
+private PaymentRequestPreparedListener paymentRequestPreparedListener = new PaymentRequestPreparedListener() {
     @Override
     public void onPaymentRequestPrepared(PreparedPaymentRequest preparedPaymentRequest) {
         // Forward the encryptedFields to your server
+    }
+    
+    @Override
+    public void onFailure(EncryptDataException e) {
+        // Handle failure of encrypting a PaymentRequest
     }
 };
 
@@ -564,4 +598,4 @@ All the heavy lifting, such as requesting a public key from the Client API, perf
 From your server, make a create payment request, providing the encrypted data in the `encryptedCustomerInput` field.
 
 ### 5. Response from the Server API call
-It is up to you and your application to show the customer the correct screens based on the response of the Server API call. In some cases, the payment has not finished yet since the customer must be redirected to a third party (such as a bank or PayPayl) to authorise the payment. See the Server API documentation on what kinds of responses the Server API can return. The Client API has no part in the remainder of the payment.
+It is up to you and your application to show the customer the correct screens based on the response of the Server API call. In some cases, the payment has not finished yet since the customer must be redirected to a third party (such as a bank or PayPal) to authorise the payment. See the Server API documentation on what kinds of responses the Server API can return. The Client API has no part in the remainder of the payment.

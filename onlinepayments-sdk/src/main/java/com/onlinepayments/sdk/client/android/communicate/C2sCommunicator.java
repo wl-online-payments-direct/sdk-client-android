@@ -273,6 +273,7 @@ public class C2sCommunicator implements Serializable {
 
 			for(PaymentProductField paymentProductField : response.data.getPaymentProductFields()) {
 				setImageForTooltip(paymentProductField.getDisplayHints(), context);
+				paymentProductField.setValidationRules();
 			}
 
 			return response;
@@ -315,7 +316,7 @@ public class C2sCommunicator implements Serializable {
 	 *
 	 * @return {@link PaymentProduct}, wrapped as {@link ApiResponse}, with errors if those occurred
 	 *
-	 * @deprecated use {@link #getPaymentProductNetwork(String, String, String, String, Context, PaymentContext)} instead
+	 * @deprecated use {@link #getPaymentProductNetwork(String, Context, PaymentContext)} instead
 	 */
 	@Deprecated
 	public ApiResponse<PaymentProductNetworkResponse> getPaymentProductNetwork(String customerId, String productId, CurrencyCode currencyCode, CountryCode countryCode, Context context, PaymentContext paymentContext) {

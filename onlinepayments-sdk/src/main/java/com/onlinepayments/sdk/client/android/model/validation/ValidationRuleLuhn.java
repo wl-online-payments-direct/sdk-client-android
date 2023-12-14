@@ -18,7 +18,15 @@ public class ValidationRuleLuhn extends AbstractValidationRule {
 	private static final String TAG = ValidationRuleLuhn.class.getName();
 
 	/**
-	 * @deprecated In a future release, this constructor will become internal to the SDK.
+	 * @deprecated This constructor is for internal use only.
+	 */
+	@Deprecated
+	public ValidationRuleLuhn() {
+		super("luhn", ValidationType.LUHN);
+	}
+
+	/**
+	 * @deprecated In a future release, this constructor will be removed.
 	 */
 	@Deprecated
 	public ValidationRuleLuhn(String errorMessage, ValidationType type) {

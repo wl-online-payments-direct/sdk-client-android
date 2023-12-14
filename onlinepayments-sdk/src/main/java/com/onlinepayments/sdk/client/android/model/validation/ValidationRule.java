@@ -14,14 +14,12 @@ public interface ValidationRule {
 	/**
 	 * Validate method which validates a text.
 	 *
-	 * @param text the text to be validated
+	 * @param value the text to be validated
 	 *
 	 * @return true, if the text is valid; false, if the text is invalid
 	 *
-	 * @deprecated use {@link #validate(PaymentRequest, String)} instead.
 	 */
-	@Deprecated
-    boolean validate(String text);
+    boolean validate(String value);
 
 	boolean validate(PaymentRequest paymentRequest, String fieldId);
 

@@ -571,9 +571,6 @@ public class Session implements
         objectToCheck.put("context", context);
         objectToCheck.put("listener", listener);
         objectToCheck.put("productId", productId);
-        objectToCheck.put("customerId", customerId);
-        objectToCheck.put("countryCode", countryCode);
-        objectToCheck.put("currencyCode", currencyCode);
         objectToCheck.put("paymentContext", paymentContext);
 
         PaymentProductNetworkAsyncTask task = new PaymentProductNetworkAsyncTask(productId, customerId, currencyCode, countryCode, communicator, context, paymentContext, listener);
@@ -1045,6 +1042,10 @@ public class Session implements
         // Not needed for the Session object, leave it to the external listener to act upon
     }
 
+    /**
+     * @deprecated In a future release, this function will be made private.
+     */
+    @Deprecated
     public void cacheBasicPaymentItems(BasicPaymentItems basicPaymentItems) {
         // Store the loaded basicPaymentItems in the cache
         for (BasicPaymentItem basicPaymentItem : basicPaymentItems.getBasicPaymentItems()) {
@@ -1052,6 +1053,10 @@ public class Session implements
         }
     }
 
+    /**
+     * @deprecated In a future release, this function will be made private.
+     */
+    @Deprecated
     public void cacheBasicPaymentProducts(BasicPaymentProducts basicPaymentProducts) {
         // Store the loaded basicPaymentProducts in the cache
         for (BasicPaymentProduct paymentProduct : basicPaymentProducts.getBasicPaymentProducts()) {

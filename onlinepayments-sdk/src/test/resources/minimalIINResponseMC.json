@@ -1,4 +1,5 @@
 {
   "countryCode" : "US",
-  "paymentProductId" : 3
+  "paymentProductId" : 3,
+  "cardType": "Credit"
 }
