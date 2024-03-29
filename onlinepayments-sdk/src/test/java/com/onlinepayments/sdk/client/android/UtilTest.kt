@@ -41,7 +41,7 @@ class UtilTest {
 
         private const val expectedEncodedMetadata = "eyJwbGF0Zm9ybUlkZW50aWZpZXIiOiJBbmRyb2lkLzAuMC4xIiwiY" +
                 "XBwSWRlbnRpZmllciI6IkFQUF9JREVOVElGSUVSX1VUSUxfVEVTVCIsInNka0lkZW50aWZpZXIiOiJPbmxpbmVQYX" +
-                "ltZW50c0FuZHJvaWRDbGllbnRTREsvdjAuMC4xIiwic2RrQ3JlYXRvciI6Ik9ubGluZVBheW1lbnRzIiwic2NyZWV" +
+                "ltZW50c0FuZHJvaWRDbGllbnRTREsvdjIuMy4wIiwic2RrQ3JlYXRvciI6Ik9ubGluZVBheW1lbnRzIiwic2NyZWV" +
                 "uU2l6ZSI6IjI0MDB4MTA4MCIsImRldmljZUJyYW5kIjoiR29vZ2xlIiwiZGV2aWNlVHlwZSI6IlBpeGVsIn0"
 
         @BeforeClass
