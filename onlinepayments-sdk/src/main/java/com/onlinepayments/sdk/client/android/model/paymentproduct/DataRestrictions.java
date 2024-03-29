@@ -19,7 +19,6 @@ import com.onlinepayments.sdk.client.android.model.validation.ValidationRuleLuhn
 import com.onlinepayments.sdk.client.android.model.validation.ValidationRuleRange;
 import com.onlinepayments.sdk.client.android.model.validation.ValidationRuleRegex;
 import com.onlinepayments.sdk.client.android.model.validation.ValidationRuleTermsAndConditions;
-import com.onlinepayments.sdk.client.android.model.validation.ValidationType;
 
 
 /**

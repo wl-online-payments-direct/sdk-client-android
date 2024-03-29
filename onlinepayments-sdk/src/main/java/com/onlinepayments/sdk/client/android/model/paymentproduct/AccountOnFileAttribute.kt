@@ -7,6 +7,10 @@ data class AccountOnFileAttribute internal constructor(
     val value: String,
     val status: Status
 ) : Serializable {
+    companion object {
+        private const val serialVersionUID = -31120L
+    }
+
     /**
      * Enum containing all the possible AccountOnFileAttribute statuses
      */

@@ -4,8 +4,6 @@
 
 package com.onlinepayments.sdk.client.android.model.iin;
 
-import com.onlinepayments.sdk.client.android.model.CountryCode;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -25,6 +23,7 @@ public class IinDetailsResponse implements Serializable {
 
 	/**
 	 @deprecated In a future release, this constructor will become internal to the SDK.
+	 This constructor is only called in case of an invalid IIN response.
 	 */
 	@Deprecated
 	public IinDetailsResponse(IinStatus status) {
@@ -33,6 +32,7 @@ public class IinDetailsResponse implements Serializable {
 		isAllowedInContext = false;
 		coBrands = null;
 		this.status = status;
+		this.cardType = CardType.CREDIT;
 	}
 
 	public String getPaymentProductId() {
@@ -51,21 +51,13 @@ public class IinDetailsResponse implements Serializable {
 		return cardType;
 	}
 
-	/**
-	 * Note that 'null' will be returned when an unknown String value was set.
-	 *
-	 * @deprecated In the next major release, the type of countryCode will change to String.
-	 * Use {@link #getCountryCodeString()} instead.
-	 */
-	@Deprecated
-	public CountryCode getCountryCode() {
-		try {
-			return CountryCode.valueOf(countryCode);
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
+	public String getCountryCode() {
+		return countryCode;
 	}
 
+	/**
+	 * @deprecated In a future release, this function will be removed. Use {@link #getCountryCode()} instead.
+	 */
 	public String getCountryCodeString() {
 		return countryCode;
 	}

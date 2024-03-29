@@ -31,4 +31,9 @@ public class ErrorResponse {
     public ErrorResponse(String message) {
         this.message = message;
     }
+
+    public ErrorResponse(String message, @Nullable Throwable throwable) {
+        this.message = message;
+        this.throwable = throwable;
+    }
 }

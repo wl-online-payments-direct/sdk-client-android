@@ -1,0 +1,13 @@
+complexity:
+  TooManyFunctions:
+    thresholdInClasses: 20
+    
+exceptions:
+  SwallowedException:
+    active: false
+  TooGenericExceptionCaught:
+    active: false
+    
+style:
+  MaxLineLength:
+    excludeCommentStatements: true

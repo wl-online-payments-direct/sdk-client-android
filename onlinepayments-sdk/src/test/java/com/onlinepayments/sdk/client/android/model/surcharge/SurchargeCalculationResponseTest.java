@@ -21,7 +21,6 @@ import org.mockito.junit.MockitoJUnitRunner;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SurchargeCalculationResponseTest {
-
     private final SurchargeCalculationResponse scWithSurcharge = GsonHelper.fromResourceJson("scWithSurcharge.json", SurchargeCalculationResponse.class);
     private final SurchargeCalculationResponse scWithNoSurcharge = GsonHelper.fromResourceJson("scWithNoSurcharge.json", SurchargeCalculationResponse.class);
 
@@ -34,11 +33,11 @@ public class SurchargeCalculationResponseTest {
         assertEquals(surcharge.getPaymentProductId(), 1);
         assertEquals(surcharge.getResult(), SurchargeResult.OK);
         assertEquals(surcharge.getNetAmount().getAmount(), Long.valueOf(1000));
-        assertEquals(surcharge.getNetAmount().getCurrencyCodeString(), "EUR");
+        assertEquals(surcharge.getNetAmount().getCurrencyCode(), "EUR");
         assertEquals(surcharge.getSurchargeAmount().getAmount(), Long.valueOf(366));
-        assertEquals(surcharge.getSurchargeAmount().getCurrencyCodeString(), "EUR");
+        assertEquals(surcharge.getSurchargeAmount().getCurrencyCode(), "EUR");
         assertEquals(surcharge.getTotalAmount().getAmount(), Long.valueOf(1366));
-        assertEquals(surcharge.getTotalAmount().getCurrencyCodeString(), "EUR");
+        assertEquals(surcharge.getTotalAmount().getCurrencyCode(), "EUR");
         assertNotNull(surcharge.getSurchargeRate());
         assertEquals(surcharge.getSurchargeRate().getSurchargeProductTypeId(), "PAYMENT_PRODUCT_TYPE_ID");
         assertEquals(surcharge.getSurchargeRate().getSurchargeProductTypeVersion(), "1a2b3c-4d5e-6f7g8h-9i0j");
@@ -55,11 +54,11 @@ public class SurchargeCalculationResponseTest {
         assertEquals(surcharge.getPaymentProductId(), 2);
         assertEquals(surcharge.getResult(), SurchargeResult.NO_SURCHARGE);
         assertEquals(surcharge.getNetAmount().getAmount(), Long.valueOf(1000));
-        assertEquals(surcharge.getNetAmount().getCurrencyCodeString(), "EUR");
+        assertEquals(surcharge.getNetAmount().getCurrencyCode(), "EUR");
         assertEquals(surcharge.getSurchargeAmount().getAmount(), Long.valueOf(0));
-        assertEquals(surcharge.getSurchargeAmount().getCurrencyCodeString(), "EUR");
+        assertEquals(surcharge.getSurchargeAmount().getCurrencyCode(), "EUR");
         assertEquals(surcharge.getTotalAmount().getAmount(), Long.valueOf(1000));
-        assertEquals(surcharge.getTotalAmount().getCurrencyCodeString(), "EUR");
+        assertEquals(surcharge.getTotalAmount().getCurrencyCode(), "EUR");
         assertNull(surcharge.getSurchargeRate());
     }
 }

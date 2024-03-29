@@ -17,21 +17,8 @@ public class PaymentContext implements Serializable {
     private AmountOfMoney amountOfMoney;
     private String countryCode;
     private boolean isRecurring;
-    /**
-     * @deprecated In a future release this field will be removed.
-     */
-    @Deprecated
-    private Boolean forceBasicFlow;
 
     public PaymentContext() {}
-
-    /**
-     * @deprecated use {@link #PaymentContext(AmountOfMoney, String, boolean)} instead.
-     */
-    @Deprecated
-    public PaymentContext(AmountOfMoney amountOfMoney, CountryCode countryCode, boolean isRecurring) {
-        this(amountOfMoney, countryCode.toString(), isRecurring);
-    }
 
     public PaymentContext(AmountOfMoney amountOfMoney, String countryCode, boolean isRecurring) {
         this.countryCode = countryCode;
@@ -46,30 +33,13 @@ public class PaymentContext implements Serializable {
         this.amountOfMoney = amountOfMoney;
     }
 
-    /**
-     * Note that 'null' will be returned when an unknown String value was set.
-     *
-     * @deprecated In the next major release, the type of countryCode will change to String. Use {@link #getCountryCodeString()} instead.
-     */
-    @Deprecated
-    public CountryCode getCountryCode() {
-        try {
-            return CountryCode.valueOf(countryCode);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+    public String getCountryCode() {
+        return countryCode;
     }
 
     /**
-     * @param countryCode the Country Code of the Country where the transaction will take place. The provided code should match the ISO-3166-alpha-2 standard.
-     * @see <a href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166 Country Codes</a>
-     * @deprecated use {@link #setCountryCode(String)} instead.
+     * @deprecated In a future release, this function will be removed. Use {@link #getCountryCode()} instead.
      */
-    @Deprecated
-    public void setCountryCode(CountryCode countryCode) {
-        this.countryCode = countryCode.name();
-    }
-
     public String getCountryCodeString() {
         return countryCode;
     }
@@ -87,20 +57,5 @@ public class PaymentContext implements Serializable {
     }
     public void setIsRecurring(Boolean isRecurring) {
         this.isRecurring = isRecurring;
-    }
-
-    /**
-     * @deprecated In a future release this method will be removed.
-     */
-    @Deprecated
-    public Boolean isForceBasicFlow() {
-        return forceBasicFlow;
-    }
-    /**
-     * @deprecated In a future release this method will be removed.
-     */
-    @Deprecated
-    public void setForceBasicFlow(Boolean forceBasicFlow) {
-        this.forceBasicFlow = forceBasicFlow;
     }
 }

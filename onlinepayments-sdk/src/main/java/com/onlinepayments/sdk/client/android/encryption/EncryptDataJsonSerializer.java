@@ -20,7 +20,7 @@ class EncryptDataJsonSerializer implements JsonSerializer<EncryptData> {
 
 		JsonObject jsonObject = new JsonObject();
 		
-		if (encryptData.getTokenize() != null && encryptData.getTokenize()) {
+		if (encryptData.getTokenize()) {
 			jsonObject.addProperty("tokenize", encryptData.getTokenize());
 		}
 		
@@ -32,11 +32,11 @@ class EncryptDataJsonSerializer implements JsonSerializer<EncryptData> {
 			jsonObject.addProperty("accountOnFileId", encryptData.getAccountOnFileId());
 		}
 		
-		if (encryptData.getClientSessionId() != null && !encryptData.getClientSessionId().isEmpty()) {
+		if (!encryptData.getClientSessionId().isEmpty()) {
 			jsonObject.addProperty("clientSessionId", encryptData.getClientSessionId());
 		}
 		
-		if (encryptData.getNonce() != null && !encryptData.getNonce().isEmpty()) {
+		if (!encryptData.getNonce().isEmpty()) {
 			jsonObject.addProperty("nonce", encryptData.getNonce());
 		}
 

@@ -14,15 +14,13 @@ import java.security.spec.X509EncodedKeySpec;
 import android.util.Base64;
 import android.util.Log;
 
-import com.onlinepayments.sdk.client.android.encryption.Encryptor;
-
 /**
  * POJO that holds the PublicKey call response from the Online Payments gateway.
  */
 public class PublicKeyResponse {
 
 	// Tag used for logging
-	private static final String TAG = Encryptor.class.getName();
+	private static final String TAG = PublicKeyResponse.class.getName();
 
 	// Algorithm type for converting publicKey string to publicKey object
 	private final String RSA_ALGORITHM_TYPE = "RSA";
