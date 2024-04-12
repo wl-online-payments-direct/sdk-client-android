@@ -7,6 +7,7 @@
 package com.onlinepayments.sdk.client.android.session
 
 import android.content.Context
+import com.onlinepayments.sdk.client.android.configuration.Constants
 import com.onlinepayments.sdk.client.android.util.Util
 import com.onlinepayments.sdk.client.android.encryption.EncryptData
 import com.onlinepayments.sdk.client.android.encryption.Encryptor
@@ -41,7 +42,10 @@ internal class SessionEncryptionHelper(
             )
         } else {
             paymentRequestPreparedListener.onPaymentRequestPrepared(
-                PreparedPaymentRequest(encryptedData, Util.getBase64EncodedMetadata(context, null))
+                PreparedPaymentRequest(
+                    encryptedData,
+                    Util.getBase64EncodedMetadata(context, null, Constants.SDK_IDENTIFIER)
+                )
             )
         }
     }

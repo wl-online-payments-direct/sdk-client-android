@@ -38,11 +38,12 @@ class UtilTest {
         private val mockWindowMetrics = mock(WindowMetrics::class.java)
         private val mockRect = mock(Rect::class.java)
         private const val appIdentifier = "APP_IDENTIFIER_UTIL_TEST"
+        private const val sdkIdentifier = "UtilTestSdkIdentifier/v1.0.0"
 
         private const val expectedEncodedMetadata = "eyJwbGF0Zm9ybUlkZW50aWZpZXIiOiJBbmRyb2lkLzAuMC4xIiwiY" +
-                "XBwSWRlbnRpZmllciI6IkFQUF9JREVOVElGSUVSX1VUSUxfVEVTVCIsInNka0lkZW50aWZpZXIiOiJPbmxpbmVQYX" +
-                "ltZW50c0FuZHJvaWRDbGllbnRTREsvdjIuMy4wIiwic2RrQ3JlYXRvciI6Ik9ubGluZVBheW1lbnRzIiwic2NyZWV" +
-                "uU2l6ZSI6IjI0MDB4MTA4MCIsImRldmljZUJyYW5kIjoiR29vZ2xlIiwiZGV2aWNlVHlwZSI6IlBpeGVsIn0"
+                "XBwSWRlbnRpZmllciI6IkFQUF9JREVOVElGSUVSX1VUSUxfVEVTVCIsInNka0lkZW50aWZpZXIiOiJVdGlsVGVzdF" +
+                "Nka0lkZW50aWZpZXIvdjEuMC4wIiwic2RrQ3JlYXRvciI6Ik9ubGluZVBheW1lbnRzIiwic2NyZWVuU2l6ZSI6IjI" +
+                "0MDB4MTA4MCIsImRldmljZUJyYW5kIjoiR29vZ2xlIiwiZGV2aWNlVHlwZSI6IlBpeGVsIn0"
 
         @BeforeClass
         @JvmStatic
@@ -76,12 +77,12 @@ class UtilTest {
 
     @Test
     fun testGetMetadata() {
-        val metaData = Util.getMetadata(mockContext, appIdentifier)
+        val metaData = Util.getMetadata(mockContext, appIdentifier, sdkIdentifier)
 
         assertEquals("Pixel", metaData["deviceType"])
-        assertEquals(Constants.SDK_IDENTIFIER, metaData["sdkIdentifier"])
+        assertEquals(sdkIdentifier, metaData["sdkIdentifier"])
         assertEquals("2400x1080", metaData["screenSize"])
-        assertEquals("APP_IDENTIFIER_UTIL_TEST", metaData["appIdentifier"])
+        assertEquals(appIdentifier, metaData["appIdentifier"])
         assertEquals("OnlinePayments", metaData["sdkCreator"])
         assertEquals("Android/0.0.1", metaData["platformIdentifier"])
         assertEquals("Google", metaData["deviceBrand"])
@@ -90,14 +91,14 @@ class UtilTest {
     @Test
     @PrepareForTest(Base64::class)
     fun testGetBase64EncodedMetadata() {
-        val encodedMetadata = Util.getBase64EncodedMetadata(mockContext, appIdentifier).lines().joinToString("")
+        val encodedMetadata = Util.getBase64EncodedMetadata(mockContext, appIdentifier, sdkIdentifier).lines().joinToString("")
 
         assertEquals(expectedEncodedMetadata, encodedMetadata)
     }
 
     @Test
     fun testGetBase64EncodedMetadataWithMetadata() {
-        val metaData = Util.getMetadata(mockContext, appIdentifier)
+        val metaData = Util.getMetadata(mockContext, appIdentifier, sdkIdentifier)
         val encodedMetadata = Util.getBase64EncodedMetadata(metaData).lines().joinToString("")
 
         assertEquals(expectedEncodedMetadata, encodedMetadata)

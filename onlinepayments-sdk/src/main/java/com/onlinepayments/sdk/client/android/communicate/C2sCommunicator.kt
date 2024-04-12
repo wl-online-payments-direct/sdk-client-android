@@ -465,7 +465,7 @@ internal class C2sCommunicator(
 
     @JvmSynthetic
     fun getMetadata(context: Context): Map<String, String> {
-        return Util.getMetadata(context, configuration.appIdentifier)
+        return Util.getMetadata(context, configuration.appIdentifier, configuration.sdkIdentifier)
     }
 
     private fun createCacheBusterParameter(): String {

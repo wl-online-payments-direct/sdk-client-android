@@ -50,9 +50,9 @@ Add a dependency to the SDK in your app's `build.gradle` file, where `x.y.z` is 
         implementation 'com.worldline-solutions:sdk-client-android:x.y.z'
     }
 
-## Example app
+## Example apps
 
-For your convenience, the SDK comes with an example app that you can use as a basis for your own implementation. If you are fine with the look-and-feel of the example app, you do not need to make any changes at all. The example app can be found [here](https://github.com/wl-online-payments-direct/sdk-client-android-example).
+For your convenience, the SDK comes with an example app in both Kotlin and Java that you can use as a basis for your own implementation. The Kotlin example app offers a Jetpack Compose implementation as well as a traditional XML based implementation, whereas the Java example app offers only a traditional XML implementation. If you are fine with the look-and-feel of the example app, you do not need to make any changes at all. Take a look at the [Kotlin](https://github.com/wl-online-payments-direct/sdk-client-android-example-kotlin) or [Java](https://github.com/wl-online-payments-direct/sdk-client-android-example) example apps.
 
 ## Getting started
 

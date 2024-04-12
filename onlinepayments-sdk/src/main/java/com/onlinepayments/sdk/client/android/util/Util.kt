@@ -38,7 +38,7 @@ internal object Util {
      * @return a Map containing key/values of metadata
      */
     @JvmSynthetic
-    fun getMetadata(context: Context, appIdentifier: String?): Map<String, String> {
+    fun getMetadata(context: Context, appIdentifier: String?, sdkIdentifier: String): Map<String, String> {
         val metaData = mutableMapOf<String, String>()
 
         // Add OS + build version
@@ -52,7 +52,7 @@ internal object Util {
         }
 
         // Add SDK version
-        metaData[METADATA_SDK_IDENTIFIER] = Constants.SDK_IDENTIFIER
+        metaData[METADATA_SDK_IDENTIFIER] = sdkIdentifier
         metaData[METADATA_SDK_CREATOR] = Constants.SDK_CREATOR
 
         // Add screen size
@@ -93,8 +93,8 @@ internal object Util {
      * @return String containing base64 url of json representation of the metadata
      */
     @JvmSynthetic
-    fun getBase64EncodedMetadata(context: Context, appIdentifier: String?): String {
-        val jsonMetadata = Gson().toJson(getMetadata(context, appIdentifier))
+    fun getBase64EncodedMetadata(context: Context, appIdentifier: String?, sdkIdentifier: String): String {
+        val jsonMetadata = Gson().toJson(getMetadata(context, appIdentifier, sdkIdentifier))
 
         return encode(jsonMetadata)
     }

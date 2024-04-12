@@ -8,6 +8,7 @@ import android.content.Context
 import android.util.Log
 import com.onlinepayments.sdk.client.android.communicate.C2sCommunicatorConfiguration
 import com.onlinepayments.sdk.client.android.communicate.C2sCommunicator
+import com.onlinepayments.sdk.client.android.configuration.Constants
 import com.onlinepayments.sdk.client.android.exception.EncryptDataException
 import com.onlinepayments.sdk.client.android.listener.BasicPaymentItemsResponseListener
 import com.onlinepayments.sdk.client.android.listener.BasicPaymentProductsResponseListener
@@ -55,7 +56,8 @@ class Session(
     private val assetBaseUrl: String,
     private val environmentIsProduction: Boolean,
     private val appIdentifier: String,
-    private var loggingEnabled: Boolean = false
+    private var loggingEnabled: Boolean = false,
+    private val sdkIdentifier: String
 ): Serializable {
     companion object {
         private const val serialVersionUID = -4386453L
@@ -77,10 +79,30 @@ class Session(
             clientApiUrl,
             assetBaseUrl,
             environmentIsProduction,
-            appIdentifier
+            appIdentifier,
+            sdkIdentifier
         )
         this.communicator = C2sCommunicator(configuration, loggingEnabled)
     }
+
+    constructor(
+        clientSessionId: String,
+        customerId: String,
+        clientApiUrl: String,
+        assetBaseUrl: String,
+        environmentIsProduction: Boolean,
+        appIdentifier: String,
+        loggingEnabled: Boolean = false
+    ): this(
+        clientSessionId,
+        customerId,
+        clientApiUrl,
+        assetBaseUrl,
+        environmentIsProduction,
+        appIdentifier,
+        loggingEnabled,
+        Constants.SDK_IDENTIFIER
+    )
 
     fun getLoggingEnabled(): Boolean {
         return communicator.loggingEnabled
@@ -369,7 +391,8 @@ class Session(
             clientApiUrl,
             assetBaseUrl,
             environmentIsProduction,
-            appIdentifier
+            appIdentifier,
+            sdkIdentifier
         )
         this.communicator = C2sCommunicator(configuration, loggingEnabled)
     }

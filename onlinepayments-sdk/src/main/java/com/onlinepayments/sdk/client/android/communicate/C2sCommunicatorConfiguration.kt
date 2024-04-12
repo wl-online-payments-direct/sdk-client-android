@@ -4,8 +4,8 @@
 
 package com.onlinepayments.sdk.client.android.communicate
 
+import com.onlinepayments.sdk.client.android.configuration.Constants
 import com.onlinepayments.sdk.client.android.extensions.appendIf
-import java.util.Locale
 
 /**
  * Contains all configuration parameters needed for communicating with the Online Payments gateway.
@@ -17,12 +17,17 @@ internal data class C2sCommunicatorConfiguration(
     private val _clientApiUrl: String,
     val assetUrl: String,
     val environmentIsProduction: Boolean,
-    val appIdentifier: String
+    val appIdentifier: String,
+    private val _sdkIdentifier: String
 ) {
     private val clientApiUrl: String = createClientUrl(_clientApiUrl)
 
+    val sdkIdentifier = getValidSdkIdentifier(_sdkIdentifier)
+
     companion object {
         private const val API_BASE = "client/"
+        private const val SDK_IDENTIFIER_PARTS = 2
+        private const val SDK_IDENTIFIER_VERSION_PARTS = 3
     }
 
     internal fun getClientApiUrl(apiVersion: ApiVersion, apiPath: String): String {
@@ -34,5 +39,23 @@ internal data class C2sCommunicatorConfiguration(
             .appendIf({ !it.endsWith("/") }, "/")
             .appendIf({ !it.endsWith(API_BASE, true) }, API_BASE)
             .toString()
+    }
+
+    private fun getValidSdkIdentifier(identifier: String): String {
+        val identifierParts = identifier.split("/")
+
+        if (identifierParts.size == SDK_IDENTIFIER_PARTS
+            && identifierParts.first() == "FlutterClientSDK"
+            && identifierParts.last().startsWith("v")) {
+            val versionParts = identifierParts.last().replace("v", "").split(".")
+
+            if (versionParts.size == SDK_IDENTIFIER_VERSION_PARTS
+                && versionParts.all { it.toIntOrNull() != null }
+            ) {
+                return identifier
+            }
+        }
+
+        return Constants.SDK_IDENTIFIER
     }
 }

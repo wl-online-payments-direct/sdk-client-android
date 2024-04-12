@@ -9,7 +9,7 @@ package com.onlinepayments.sdk.client.android.configuration
 internal object Constants {
     // SDK version
     @JvmSynthetic
-    const val SDK_IDENTIFIER = "OnlinePaymentsAndroidClientSDK/v2.3.0"
+    const val SDK_IDENTIFIER = "OnlinePaymentsAndroidClientSDK/v2.3.1"
 
     // SDK creator
     @JvmSynthetic
