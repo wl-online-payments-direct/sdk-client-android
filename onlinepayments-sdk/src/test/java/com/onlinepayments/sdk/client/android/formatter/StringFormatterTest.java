@@ -35,27 +35,6 @@ public class StringFormatterTest {
 	private final String maskAlphaString = "abcdefghij";
 
 	@Test
-	public void testMaskingSingleCharacterInclCursor() {
-		StringFormatter formatter = new StringFormatter();
-		FormatResult maskedValue = formatter.applyMask(maskExpiryDate, maskTestString1, emptyString, 0);
-		assertEquals("1", maskedValue.getFormattedResult());
-	}
-
-	@Test
-	public void testMaskingTwoCharactersInclCursor() {
-		StringFormatter formatter = new StringFormatter();
-		FormatResult maskedValue = formatter.applyMask(maskExpiryDate, maskTestString2, emptyString, 1);
-		assertEquals("12-", maskedValue.getFormattedResult());
-	}
-
-	@Test
-	public void testInsertCharacterInStringInclCursor() {
-		StringFormatter formatter = new StringFormatter();
-		FormatResult maskedValue = formatter.applyMask(maskExpiryDate, "11-22", maskTestString2, 1);
-		assertEquals("11-22", maskedValue.getFormattedResult());
-	}
-
-	@Test
 	public void testMaskSingleCharacter() {
 		StringFormatter formatter = new StringFormatter();
 		String maskedValue = formatter.applyMask(maskExpiryDate, maskTestString1);

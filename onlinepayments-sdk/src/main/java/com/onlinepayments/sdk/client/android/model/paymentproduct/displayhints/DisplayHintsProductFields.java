@@ -91,6 +91,7 @@ public class DisplayHintsProductFields implements Serializable {
 	 *
 	 * @deprecated Do not use this method. This method is intended for a temporary internal fix, and will be removed when no longer required.
 	 */
+	@Deprecated
 	public void setMask(String mask) { this.mask = mask; }
 
 	public Boolean getAlwaysShow() {

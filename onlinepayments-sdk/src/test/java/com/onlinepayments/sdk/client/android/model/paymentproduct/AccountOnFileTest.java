@@ -47,6 +47,7 @@ public class AccountOnFileTest {
     @Test
     public void testMaskingValue() {
         assertEquals("4111 11XX XXXX 1111 ", accountOnFile.getMaskedValue("alias"));
+        assertEquals("4111 11XX XXXX 1111 ", accountOnFile.getLabel());
     }
 }
 

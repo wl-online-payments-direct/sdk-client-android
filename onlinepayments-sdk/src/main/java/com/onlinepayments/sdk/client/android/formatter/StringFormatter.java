@@ -260,34 +260,6 @@ public class StringFormatter implements Serializable {
 		return finalResult;
 	}
 
-
-	/**
-	 * Will apply a mask and returns a {@link FormatResult} that holds the masked String and the new cursor index.
-	 *
-	 * @param mask the mask that will be applied
-	 * @param value the value that the mask will be applied to
-	 * @param oldValue the value that was in previously in the editText
-	 * @param oldCursorIndex the cursorIndex before applying the changes
-	 *
-	 * @return {@link FormatResult}, containing the formatted value and the new cursor index
-	 *
-	 * @deprecated the masking behaviour that is provided by {@link #applyMask(String, String, String, int, int, int)} provides a better user experience.
-	 */
-	@Deprecated
-	public FormatResult applyMask(String mask, String value, String oldValue, Integer oldCursorIndex) {
-
-		if (mask == null || value == null || oldValue == null){
-			return null;
-		}
-
-		// if users press the backspace button
-		if (oldValue.length() > value.length()) {
-			return new FormatResult(value, null);
-		}
-
-		return getFormatResult(mask, value, oldCursorIndex);
-	}
-
 	/**
 	 * Will apply a mask and returns a {@link FormatResult} that holds the masked String and the new cursor index.
 	 *

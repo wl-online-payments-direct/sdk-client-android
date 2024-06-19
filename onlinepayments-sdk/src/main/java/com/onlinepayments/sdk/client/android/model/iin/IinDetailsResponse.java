@@ -58,6 +58,7 @@ public class IinDetailsResponse implements Serializable {
 	/**
 	 * @deprecated In a future release, this function will be removed. Use {@link #getCountryCode()} instead.
 	 */
+	@Deprecated
 	public String getCountryCodeString() {
 		return countryCode;
 	}

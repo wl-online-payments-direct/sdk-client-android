@@ -372,7 +372,7 @@ class Session(
 
         apiErrorItems?.let {
             for (apiErrorItem in apiErrorItems) {
-                errorList += "\nApiErrorItem code: ${apiErrorItem.code} \nmessage: ${apiErrorItem.message}"
+                errorList += "\nApiErrorItem errorCode: ${apiErrorItem.errorCode} \nmessage: ${apiErrorItem.message}"
             }
         }
 

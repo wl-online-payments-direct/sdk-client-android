@@ -33,6 +33,7 @@ The SDK's main function is to establish a secure channel between your Android ap
       - [Validate payment request](#validate-payment-request)
       - [Encrypt payment request](#encrypt-payment-request)
     - [IINDetails](#iindetails)
+    - [Masking](#masking)
     - [StringFormatter](#stringformatter)
   - [Payment Steps](#payment-steps)
     - [1. Initialize the Android SDK for this payment](#1-initialize-the-android-sdk-for-this-payment)
@@ -270,7 +271,7 @@ for (AccountOnFile aof : basicPaymentProduct.getAccountsOnFile()) {
 
 // Shows a mask based formatted value for the obfuscated cardNumber.
 // The mask that is used is defined in the displayHints of this accountOnFile
-// If the mask for the "cardNumber" field is {{9999}} {{9999}} {{9999}} {{9999}} {{999}}, then the result would be **** **** **** 7412
+// If the mask for the "cardNumber" field is {{9999}} {{9999}} {{9999}} {{9999}}, then the result would be **** **** **** 7412
 String maskedValue = accountOnFile.getMaskedValue("cardNumber");
 ```
 
@@ -323,27 +324,22 @@ Boolean shouldObfuscate = ccvField.getDisplayHints().isObfuscate(); // state if 
 
 Once a payment product has been selected and an instance of `PaymentProduct` has been retrieved, a payment request can be constructed. This class must be used as a container for all the values the customer provides.
 ```java
-PaymentRequest paymentRequest = new PaymentRequest();
-paymentRequest.setPaymentProduct(paymentProduct);
+PaymentRequest paymentRequest = new PaymentRequest(paymentProduct);
 ```
 
 #### Tokenize payment request
 A `PaymentProduct` has a property `tokenize`, which is used to indicate whether a payment request should be stored as an account on file. The code fragment below shows how a payment request should be constructed when the request should be stored as an account on file. By default, `tokenize` is set to `false`.
 ```java
-PaymentRequest paymentRequest = new PaymentRequest(); // tokenize is false by default
-paymentRequest.setPaymentProduct(paymentProduct);
+// you can supply tokenize via the constructor
+PaymentRequest paymentRequest = new PaymentRequest(paymentProduct, true);
 
-// you can set the request's tokenize property after having initialized the paymentRequest
+// Or you can set the request's tokenize property after having initialized the paymentRequest
 paymentRequest.setTokenize(true);
 ```
 
 If the customer selected an account on file, both the account on file and the corresponding payment product must be supplied while constructing the payment request, as shown in the code fragment below. Instances of `AccountOnFile` can be retrieved from instances of `BasicPaymentProduct` and `PaymentProduct`.
 ```java
-PaymentRequest paymentRequest = new PaymentRequest(); // accountOnFile is null by default
-paymentRequest.setPaymentProduct(paymentProduct);
-
-// you can set the request's accountOnFile property after having initialized the paymentRequest
-paymentRequest.setAccountOnFile(accountOnFile);
+PaymentRequest paymentRequest = new PaymentRequest(paymentProduct, accountOnFile); // when you do not pass an accountOnFile argument, it will be null
 ```
 
 #### Set field values to payment request
@@ -450,14 +446,29 @@ session.getIinDetails(
 
 Some cards are dual branded and could be processed as either a local card _(with a local brand)_ or an international card _(with an international brand)_. In case you are not setup to process these local cards, this API call will not return that card type in its response.
 
+### Masking
+
+To help in formatting field values based on masks, the SDK offers a base set of masking functions, as well as some Android specific ones to leverage Android OS capabilities. 
+Besides the base masking functions in `PaymentRequest`, `PaymentProductField` and `AccountOnFile`, the Android SDK offers the following additional functions:
+
+```java
+// PaymentRequest
+public FormatResult applyMask(String newValue, String oldValue, Integer cursorIndex) {}
+// PaymentProductField
+public FormatResult applyMask(String newValue, String oldValue, int start, int count, int after) {}
+public FormatResult applyMask(String newValue, String oldValue, Integer cursorIndex) {}
+```
+
+This set of masking functions all make use of the `StringFormatter` class to apply the actual logic, which is also publicly available in the SDK.
+
 ### StringFormatter
 
-To help in formatting field values based on masks, the SDK offers the `OPStringFormatter` class. It allows you to format field values and apply and unapply masks on a string.
+To help in formatting field values based on masks, the SDK offers the `StringFormatter` class. It allows you to format field values and apply and unapply masks on a string.
 
 ```java
 let formatter = StringFormatter()
 
-let mask = "{{9999}} {{9999}} {{9999}} {{9999}} {{999}}"
+let mask = "{{9999}} {{9999}} {{9999}} {{9999}}"
 let value = "1234567890123456"
 
 // apply masked value

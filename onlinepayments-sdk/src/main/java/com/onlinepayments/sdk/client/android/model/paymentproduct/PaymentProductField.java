@@ -182,7 +182,13 @@ public class PaymentProductField implements Serializable {
 	public FormatResult applyMask(String newValue, String oldValue, int start, int count, int after) {
 		String mask = displayHints.getMask();
 		if (mask == null) {
-			return new FormatResult(newValue, (start - count) + after);
+			if (after == 0) {
+				// If after is 0, it means a String with count characters was deleted at index start. The cursor should point at the start index
+				return new FormatResult(newValue, start);
+			} else {
+				// Otherwise the cursorIndex is the starting point minus the affected string length plus the new string length.
+				return new FormatResult(newValue, (start - count) + after);
+			}
 		}
 		return formatter.applyMask(mask, newValue, oldValue, start, count, after);
 	}
@@ -197,11 +203,10 @@ public class PaymentProductField implements Serializable {
 	 * @return {@link FormatResult} that contains the masked String and the new cursor index
 	 */
 	public FormatResult applyMask(String newValue, String oldValue, Integer cursorIndex) {
-		String mask = displayHints.getMask();
-		if (mask == null) {
-			return new FormatResult(newValue, cursorIndex);
-		}
-		return formatter.applyMask(mask, newValue, oldValue, cursorIndex);
+		int count = oldValue.substring(cursorIndex).length();
+		int after = newValue.substring(cursorIndex).length();
+
+		return applyMask(newValue, oldValue, cursorIndex, count, after);
 	}
 
 	/**

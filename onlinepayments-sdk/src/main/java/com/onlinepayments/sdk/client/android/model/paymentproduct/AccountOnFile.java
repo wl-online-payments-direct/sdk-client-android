@@ -29,6 +29,8 @@ public class AccountOnFile implements Serializable {
 	// Used for masking fields
 	private StringFormatter formatter = new StringFormatter();
 
+	private String label;
+
 	/**
 	 * @deprecated In a future release, this constructor will become internal to the SDK.
 	 */
@@ -65,20 +67,22 @@ public class AccountOnFile implements Serializable {
 
 	/**
 	 * Gets the label of this AccountOnFile based on the DisplayHints and the Attributes values
+	 * If a corresponding mask is present, it will applied to the label.
 	 *
 	 * @return the label which can be displayed on an AccountOnFile selection screen
 	 */
 	public String getLabel() {
+		if (label == null) {
+			return determineLabel();
+		} else {
+			return label;
+		}
+	}
 
-		String label = "";
+	private String determineLabel() {
 		if (getDisplayHints().getLabelTemplate().get(0) != null) {
 			AccountOnFileDisplay display = getDisplayHints().getLabelTemplate().get(0);
-
-			for (AccountOnFileAttribute pair : attributes) {
-				if (display.getKey().equals(pair.getKey())) {
-					label = pair.getValue();
-				}
-			}
+			label = getMaskedValue(display.getKey());
 		}
 
 		return label;

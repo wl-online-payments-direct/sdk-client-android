@@ -91,7 +91,11 @@ class UtilTest {
     @Test
     @PrepareForTest(Base64::class)
     fun testGetBase64EncodedMetadata() {
-        val encodedMetadata = Util.getBase64EncodedMetadata(mockContext, appIdentifier, sdkIdentifier).lines().joinToString("")
+        val encodedMetadata = Util.getBase64EncodedMetadata(
+            mockContext,
+            appIdentifier,
+            sdkIdentifier
+        ).lines().joinToString("")
 
         assertEquals(expectedEncodedMetadata, encodedMetadata)
     }

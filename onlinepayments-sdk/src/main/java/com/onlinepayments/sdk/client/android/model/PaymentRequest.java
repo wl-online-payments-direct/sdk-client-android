@@ -23,7 +23,6 @@ import com.onlinepayments.sdk.client.android.model.validation.ValidationErrorMes
  */
 public class PaymentRequest implements Serializable {
 
-
 	private static final long serialVersionUID = 1553481971640554760L;
 
 	// Paymentproduct which the customer is using
@@ -39,7 +38,7 @@ public class PaymentRequest implements Serializable {
 	private List<ValidationErrorMessage> errorMessageIds = new ArrayList<>();
 
 	// Used for storing account on file (true is storing)
-	private Boolean tokenize = false;
+	private Boolean tokenize;
 
 	/**
 	 * Get the value of tokenize.
@@ -56,6 +55,28 @@ public class PaymentRequest implements Serializable {
 	 * @param tokenize the new value of tokenize
 	 */
 	public void setTokenize(Boolean tokenize){
+		this.tokenize = tokenize;
+	}
+
+	public PaymentRequest() {
+		this(null, null, false);
+	}
+
+	public PaymentRequest(PaymentProduct paymentProduct) {
+		this(paymentProduct, null, false);
+	}
+
+	public PaymentRequest(PaymentProduct paymentProduct, AccountOnFile accountOnFile) {
+		this(paymentProduct, accountOnFile, false);
+	}
+
+	public PaymentRequest(PaymentProduct paymentProduct, boolean tokenize) {
+		this(paymentProduct, null, tokenize);
+	}
+
+	public PaymentRequest(PaymentProduct paymentProduct, AccountOnFile accountOnFile, boolean tokenize) {
+		this.paymentProduct = paymentProduct;
+		this.accountOnFile = accountOnFile;
 		this.tokenize = tokenize;
 	}
 
@@ -157,6 +178,25 @@ public class PaymentRequest implements Serializable {
 		fieldValues.remove(paymentProductFieldId);
 	}
 
+	private PaymentProductField getPaymentProductField(String paymentProductFieldId) {
+		// Loop through all fields to get the corresponding payment product field
+		for (PaymentProductField field : paymentProduct.getPaymentProductFields()) {
+			if (field.getId().equals(paymentProductFieldId)) {
+				return field;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets the map with all field values.
+	 *
+	 * @return a Map of the {@link PaymentProductField} id and their corresponding values
+	 */
+	public Map<String, String> getValues() {
+		return fieldValues;
+	}
 
 	/**
 	 * Gets masked value for the given newValue and oldValue with the mask of the {@link PaymentProductField} with the corresponding paymentProductFieldId.
@@ -257,27 +297,6 @@ public class PaymentRequest implements Serializable {
 		return null;
 	}
 
-	private PaymentProductField getPaymentProductField(String paymentProductFieldId) {
-		// Loop through all fields to get the corresponding payment product field
-		for (PaymentProductField field : paymentProduct.getPaymentProductFields()) {
-			if (field.getId().equals(paymentProductFieldId)) {
-				return field;
-			}
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * Gets the map with all field values.
-	 *
-	 * @return a Map of the {@link PaymentProductField} id and their corresponding values
-	 */
-	public Map<String, String> getValues() {
-		return fieldValues;
-	}
-
 	/**
 	 * Gets the map with all unmasked field values.
 	 *
@@ -306,7 +325,6 @@ public class PaymentRequest implements Serializable {
 		}
 		return unMaskedFieldValues;
 	}
-
 
 	/**
 	 * Gets the map with all masked field values.
@@ -339,7 +357,9 @@ public class PaymentRequest implements Serializable {
 	 * Merges existing field values map with the current {@link PaymentProduct} values.
 	 *
 	 * @param paymentProduct the {@link PaymentProduct} for which the field values should be merged with fieldValues
+	 * @deprecated This method will be removed from the SDK in a later release.
 	 */
+	@Deprecated
 	public void mergePaymentRequest(PaymentProduct paymentProduct) {
 
 		if (paymentProduct == null) {
@@ -377,7 +397,6 @@ public class PaymentRequest implements Serializable {
 		}
 		this.paymentProduct = paymentProduct;
 	}
-
 
 	/**
 	 * Sets which {@link AccountOnFile} is selected on the {@link PaymentProduct} selection page.

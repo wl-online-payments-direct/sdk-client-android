@@ -1,0 +1,10 @@
+{
+  "errorCode": "123456",
+  "category": "PAYMENT_PLATFORM_ERROR",
+  "code": "123456",
+  "httpStatusCode": 404,
+  "id": "1",
+  "message": "The product could not be found",
+  "propertyName": "productId",
+  "retriable": false
+}

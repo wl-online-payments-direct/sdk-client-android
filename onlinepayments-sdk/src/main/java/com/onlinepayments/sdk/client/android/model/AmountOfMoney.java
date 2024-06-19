@@ -39,6 +39,7 @@ public class AmountOfMoney implements Serializable{
     /**
      * @deprecated In a future release, this function will be removed. Use {@link #getCurrencyCode()} instead.
      */
+    @Deprecated
     public String getCurrencyCodeString() {
         return currencyCode;
     }

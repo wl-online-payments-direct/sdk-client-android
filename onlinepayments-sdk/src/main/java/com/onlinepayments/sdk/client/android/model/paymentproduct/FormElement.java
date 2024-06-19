@@ -101,6 +101,7 @@ public class FormElement implements Serializable {
 	 *
 	 * @param type the new type for this FormElement
 	 */
+	@Deprecated
 	public void setType(Type type) {
 		this.type = type;
 	}
