@@ -1,0 +1,27 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints/DisplayHintsProductFields.PreferredInputType///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/displayhints/DisplayHintsProductFields.PreferredInputType.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/AccountOnFileAttribute.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/AccountOnFileAttribute.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/AccountOnFileAttribute.Status///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/AccountOnFileAttribute.Status.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/FormElement.ListType///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/FormElement.ListType.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/FormElement.Type///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/FormElement.Type.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/KeyValuePair.Status///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/KeyValuePair.Status.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/PaymentProductField.Type///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/PaymentProductField.Type.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/PaymentProductFieldDisplayElement.PaymentProductFieldDisplayElementType///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/PaymentProductFieldDisplayElement.PaymentProductFieldDisplayElementType.html
+$dokka.location:com.onlinepayments.sdk.client.android.session/Session.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/session/Session.Companion.html
+com.onlinepayments.sdk.client.android.communicate
+com.onlinepayments.sdk.client.android.exception
+com.onlinepayments.sdk.client.android.formatter
+com.onlinepayments.sdk.client.android.listener
+com.onlinepayments.sdk.client.android.model
+com.onlinepayments.sdk.client.android.model.api
+com.onlinepayments.sdk.client.android.model.currencyconversion
+com.onlinepayments.sdk.client.android.model.iin
+com.onlinepayments.sdk.client.android.model.paymentproduct
+com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints
+com.onlinepayments.sdk.client.android.model.paymentproduct.specificdata
+com.onlinepayments.sdk.client.android.model.paymentproduct.validation
+com.onlinepayments.sdk.client.android.model.surcharge.response
+com.onlinepayments.sdk.client.android.model.validation
+com.onlinepayments.sdk.client.android.session
+
