@@ -11,7 +11,7 @@ package com.onlinepayments.sdk.client.android.encryption
  */
 internal class EncryptData(
     @JvmSynthetic
-    val accountOnFileId: Int?,
+    val accountOnFileId: String?,
     @JvmSynthetic
     val clientSessionId: String,
     @JvmSynthetic

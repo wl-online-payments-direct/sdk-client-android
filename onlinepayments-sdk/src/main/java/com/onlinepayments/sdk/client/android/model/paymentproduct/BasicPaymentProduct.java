@@ -117,7 +117,7 @@ public class BasicPaymentProduct implements BasicPaymentItem, Serializable {
 		}
 
 		for (AccountOnFile accountOnFile : accountsOnFile) {
-			if (accountOnFile.getId().toString().equals(accountOnFileId)) {
+			if (accountOnFile.getId().equals(accountOnFileId)) {
 				return accountOnFile;
 			}
 		}

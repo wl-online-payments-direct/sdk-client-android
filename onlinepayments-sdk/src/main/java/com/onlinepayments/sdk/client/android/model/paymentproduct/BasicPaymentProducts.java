@@ -119,7 +119,7 @@ public class BasicPaymentProducts implements Serializable {
 	 *
 	 * @return the retrieved {@link BasicPaymentProduct}, or null if not found
 	 */
-	public BasicPaymentProduct getBasicPaymentProductByAccountOnFileId(Integer accountOnFileId) {
+	public BasicPaymentProduct getBasicPaymentProductByAccountOnFileId(String accountOnFileId) {
 
 		if (accountOnFileId == null) {
 			throw new InvalidParameterException("Error getting paymentproduct by accountonfile id, accountOnFileId may not be null");

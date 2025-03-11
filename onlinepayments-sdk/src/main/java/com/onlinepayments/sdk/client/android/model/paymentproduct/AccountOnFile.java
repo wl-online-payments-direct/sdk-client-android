@@ -37,8 +37,8 @@ public class AccountOnFile implements Serializable {
 	@Deprecated
 	public AccountOnFile() {}
 
-	public Integer getId() {
-		return Integer.valueOf(id);
+	public String getId() {
+		return id;
 	}
 
 	public String getPaymentProductId() {
