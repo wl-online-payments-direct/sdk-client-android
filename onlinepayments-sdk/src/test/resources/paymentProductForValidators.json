@@ -1,0 +1,352 @@
+{
+  "allowsRecurring": true,
+  "allowsTokenization": false,
+  "displayHints": {
+    "displayOrder": 30,
+    "label": "SepaDirectDebit",
+    "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/SepaDirectDebit.gif"
+  },
+  "displayHintsList": [
+    {
+      "displayOrder": 30,
+      "label": "SepaDirectDebit",
+      "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/SepaDirectDebit.gif"
+    }
+  ],
+  "fields": [
+    {
+      "dataRestrictions": {
+        "isRequired": true,
+        "validators": {
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 0,
+        "formElement": {
+          "type": "list"
+        },
+        "label": "Title",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "HonorificPrefix",
+      "type": "numericstring"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": true,
+        "validators": {
+          "length": {
+            "maxLength": 15,
+            "minLength": 0
+          },
+          "regularExpression": {
+            "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßŠšŽžŸÿęĘ \\\\-_'æÆœŒß~0-9,\\\\.\\\\(\\\\)]*\\$"
+          }
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 1,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "First name",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "FirstName",
+      "type": "string"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": true,
+        "validators": {
+          "length": {
+            "maxLength": 55,
+            "minLength": 0
+          },
+          "regularExpression": {
+            "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßŠšŽžŸÿęĘ \\\\-_'æÆœŒß~0-9,\\\\.\\\\(\\\\)]*\\$"
+          }
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 2,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "Name",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "LastName",
+      "type": "string"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": true,
+        "validators": {
+          "regularExpression": {
+            "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßŠšŽžŸÿęĘ \\\\-_'æÆœŒß~]*\\$"
+          }
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 3,
+        "formElement": {
+          "type": "list"
+        },
+        "label": "Country",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "Country",
+      "type": "numericstring"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": true,
+        "validators": {
+          "length": {
+            "maxLength": 50,
+            "minLength": 0
+          },
+          "regularExpression": {
+            "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßŠšŽžŸÿęĘ \\\\-_'æÆœŒß~0-9,\\\\.\\\\(\\\\)]*\\$"
+          }
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 4,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "Street",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "Street",
+      "type": "string"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": true,
+        "validators": {
+          "length": {
+            "maxLength": 10,
+            "minLength": 3
+          }
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 5,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "Postcode",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "PostalCode",
+      "type": "string"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": true,
+        "validators": {
+          "length": {
+            "maxLength": 35,
+            "minLength": 0
+          },
+          "regularExpression": {
+            "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßŠšŽžŸÿęĘ \\\\-_'æÆœŒß~]*\\$"
+          }
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 6,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "City",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "City",
+      "type": "string"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": true,
+        "validators": {
+          "iban": {
+          }
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 7,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "IBAN",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "Iban",
+      "type": "string"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": false,
+        "validators": {
+          "length": {
+            "maxLength": 70,
+            "minLength": 0
+          },
+          "regularExpression": {
+            "regularExpression": "^\\$|^([-a-zA-Z0-9!#\\\\\\\\\\$%&\\\\*\\\\+/=\\\\?^_'`|~]+(?:\\\\.[-a-zA-Z0-9!#\\\\\\\\\\$%&\\\\*\\\\+/=\\\\?^_'`|~]+)*)@((?:[-a-zA-Z0-9!#\\\\\\\\\\$%&\\\\*\\\\+/=\\\\?^_'`|~]+\\\\.)*\\\\w[\\\\w-]{0,66})\\\\.([a-zA-Z]{2,}(?:\\\\.[a-zA-Z]{2})?)([;]([-a-zA-Z0-9!#\\\\\\\\\\$%&\\\\*\\\\+/=\\\\?^_`'|~]+(?:\\\\.[-a-zA-Z0-9!#\\\\\\\\\\$%&\\\\*\\\\+/=\\\\?^_`'|~]+)*)@((?:[-a-zA-Z0-9!#\\\\\\\\\\$%&\\\\*\\\\+/=\\\\?^_`'|~]+\\\\.)*\\\\w[\\\\w-]{0,66})\\\\.([a-zA-Z]{2,6}(?:\\\\.[a-zA-Z]{2})?))*\\$"
+          }
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 8,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "E-mail",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "Email",
+      "type": "string"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": false,
+        "validators": {
+          "length": {
+            "maxLength": 40,
+            "minLength": 0
+          },
+          "regularExpression": {
+            "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßŠšŽžŸÿęĘ \\\\-_'æÆœŒß~0-9,\\\\.\\\\(\\\\)]*\\$"
+          }
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 9,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "Company name",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "CompanyName",
+      "type": "string"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": false,
+        "validators": {
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 11,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "NoAliasCreation",
+      "type": "string"
+    },
+    {
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 12,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "dataRestrictions": {
+        "validators": {
+          "range": {
+            "minValue": 10,
+            "maxValue": 100
+          }
+        }
+      },
+      "id": "Range",
+      "type": "string"
+    }
+  ],
+  "id": 771,
+  "paymentMethod": "directDebit",
+  "usesRedirectionTo3rdParty": true,
+  "allowsAuthentication": false
+}

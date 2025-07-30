@@ -1,0 +1,141 @@
+{
+  "accountsOnFile": [],
+  "allowsRecurring": true,
+  "allowsTokenization": true,
+  "displayHints": {
+    "displayOrder": 0,
+    "label": "American Express",
+    "logo": "https://assets.test.cdn.v-psp.com/hpp/1fc169b1efe6311a0789/images/pm/American Express.gif"
+  },
+  "displayHintsList": [
+    {
+      "displayOrder": 0,
+      "label": "American Express",
+      "logo": "https://assets.test.cdn.v-psp.com/hpp/1fc169b1efe6311a0789/images/pm/American Express.gif"
+    }
+  ],
+  "fields": [
+    {
+      "dataRestrictions": {
+        "isRequired": true,
+        "validators": {
+          "length": {
+            "maxLength": 15,
+            "minLength": 15
+          },
+          "luhn": {},
+          "regularExpression": {
+            "regularExpression": "^[0-9]*$"
+          }
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 0,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "Card number",
+        "mask": "{{9999}} {{999999}} {{99999}}",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "cardNumber",
+      "type": "numericstring"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": true,
+        "validators": {
+          "length": {
+            "maxLength": 50,
+            "minLength": 2
+          },
+          "regularExpression": {
+            "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßẞŠšŽžŸÿčČďĎěĚľĽĺĹňŇřŘšťŠŤůŮžŽęĘłŁśŚźŹżŻáÁäÄďĎéÉíÍĺĹľĽňŇóÓôÔŕŔšŠťŤúÚýÝ0-9 +_.=,:\\-\\[\\]\\/\\(\\)']*$"
+          }
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 1,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "Cardholder's name",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "cardholderName",
+      "type": "string"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": true,
+        "validators": {
+          "expirationDate": {}
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 2,
+        "formElement": {
+          "type": "list"
+        },
+        "label": "Expiry date",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        }
+      },
+      "id": "expiryDate",
+      "type": "expirydate"
+    },
+    {
+      "dataRestrictions": {
+        "isRequired": true,
+        "validators": {
+          "length": {
+            "maxLength": 4,
+            "minLength": 4
+          },
+          "regularExpression": {
+            "regularExpression": "^[0-9]*$"
+          }
+        }
+      },
+      "displayHints": {
+        "alwaysShow": false,
+        "displayOrder": 4,
+        "formElement": {
+          "type": "text"
+        },
+        "label": "Card verification code",
+        "mask": "{{9999}}",
+        "obfuscate": false,
+        "placeholderLabel": "",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": "4 digit code on the front of the card"
+        }
+      },
+      "id": "cvv",
+      "type": "numericstring"
+    }
+  ],
+  "id": 2,
+  "paymentMethod": "card",
+  "paymentProductGroup": "Cards",
+  "usesRedirectionTo3rdParty": false,
+  "allowsAuthentication": true
+}

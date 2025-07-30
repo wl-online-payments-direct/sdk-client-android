@@ -1,20 +1,11 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in D:\android\adt-bundle-windows-x86_64-20131030\sdk/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
 #
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Do not remove or alter the notices in this preamble.
+#
+# Copyright © 2025 Worldline and/or its affiliates.
+#
+# All rights reserved. License grant and user rights and obligations according to the applicable license agreement.
+#
+# Please contact Worldline for questions regarding license and user rights.
 
-# Add any project specific keep options here:
-
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
-# The line below ensures that JSON deserialisation succeeds when using obfuscation in your app.
+# The line below ensures that JSON deserialisation succeeds when using obfuscation.
 -keep class com.onlinepayments.sdk.client.android.model.** { *; }

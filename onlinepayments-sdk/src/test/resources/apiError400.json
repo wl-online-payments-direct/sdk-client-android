@@ -1,0 +1,15 @@
+{
+  "errorId": "15eabcd5-30b3-479b-ae03-67bb351c07e6-00000092",
+  "errors": [
+    {
+      "errorCode": 50001130,
+      "category": "PAYMENT_PLATFORM_ERROR",
+      "code": 50001130,
+      "httpStatusCode": 400,
+      "id": "UNKNOWN_PAYMENT_ID",
+      "message": "Authorisation declined",
+      "propertyName": "paymentId",
+      "retriable": true
+    }
+  ]
+}
