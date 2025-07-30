@@ -9,15 +9,16 @@
  */
 @file:Suppress("UnstableApiUsage")
 
+import org.gradle.api.tasks.bundling.Zip
 import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
     id("com.android.library")
+    id("org.jetbrains.kotlin.android")
     id("signing")
     id("maven-publish")
     id("org.sonarqube")
-    id("org.jetbrains.kotlin.android")
 }
 
 java {
@@ -118,7 +119,7 @@ val POM_SCM_URL: String by project
 afterEvaluate {
     publishing {
         publications {
-            create<MavenPublication>("mavenJava") {
+            create<MavenPublication>("release") {
                 from(components["release"])
 
                 groupId = POM_GROUP_ID
@@ -167,19 +168,13 @@ afterEvaluate {
 
         repositories {
             maven {
-                name = "sonatype"
-                val releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-                val snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-                url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+                name = "central"
+                url = uri("https://central.sonatype.com/api/v1/publisher/upload")
+            }
 
-                authentication {
-                    create<BasicAuthentication>("basic")
-                }
-
-                credentials {
-                    username = localProperties.getProperty("sonatypeUsername", System.getenv("SONATYPE_USERNAME"))
-                    password = localProperties.getProperty("sonatypePassword", System.getenv("SONATYPE_PASSWORD"))
-                }
+            maven {
+                name = "stagingDir"
+                url = layout.buildDirectory.dir("staging").get().asFile.toURI()
             }
         }
     }
@@ -189,6 +184,15 @@ afterEvaluate {
             decodedSigningKey,
             localProperties.getProperty("signingPassword", System.getenv("SIGNING_PASSWORD"))
         )
-        sign(publishing.publications["mavenJava"])
+        sign(publishing.publications["release"])
     }
+}
+
+tasks.register<Zip>("prepareForRelease") {
+    group = "publishing"
+    description = "Builds, signs, and bundles artifacts for manual upload to OSSRH/Central"
+    dependsOn("publishReleasePublicationToStagingDirRepository")
+    from(layout.buildDirectory.dir("staging"))
+    archiveFileName.set("${project.name}-${POM_VERSION}.zip")
+    destinationDirectory.set(layout.buildDirectory)
 }
