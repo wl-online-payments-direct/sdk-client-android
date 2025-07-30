@@ -1,15 +1,58 @@
 $dokka.format:javadoc-v1
 $dokka.linkExtension:html
+$dokka.location:com.onlinepayments.sdk.client.android.communicate.interceptors/LoggingInterceptor.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/communicate/interceptors/LoggingInterceptor.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.communicate.interceptors/ResponseInterceptor.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/communicate/interceptors/ResponseInterceptor.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.exception/CommunicationException.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/exception/CommunicationException.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.exception/EncryptDataException.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/exception/EncryptDataException.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.formatter/StringFormatter.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/formatter/StringFormatter.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.api/ApiError.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/api/ApiError.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.api/ApiErrorItem.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/api/ApiErrorItem.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.iin/IinDetail.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/iin/IinDetail.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.iin/IinDetailsRequest.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/iin/IinDetailsRequest.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.iin/IinDetailsResponse.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/iin/IinDetailsResponse.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints/DisplayHintsAccountOnFile.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/displayhints/DisplayHintsAccountOnFile.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints/DisplayHintsPaymentItem.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/displayhints/DisplayHintsPaymentItem.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints/DisplayHintsProductFields.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/displayhints/DisplayHintsProductFields.Companion.html
 $dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints/DisplayHintsProductFields.PreferredInputType///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/displayhints/DisplayHintsProductFields.PreferredInputType.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct.specificdata/PaymentProduct302SpecificData.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/specificdata/PaymentProduct302SpecificData.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct.specificdata/PaymentProduct320SpecificData.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/specificdata/PaymentProduct320SpecificData.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct.validation/FixedList.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/validation/FixedList.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct.validation/Length.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/validation/Length.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct.validation/Range.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/validation/Range.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct.validation/RegularExpression.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/validation/RegularExpression.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct.validation/Validator.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/validation/Validator.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/AccountOnFile.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/AccountOnFile.Companion.html
 $dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/AccountOnFileAttribute.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/AccountOnFileAttribute.Companion.html
 $dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/AccountOnFileAttribute.Status///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/AccountOnFileAttribute.Status.html
-$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/FormElement.ListType///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/FormElement.ListType.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/AccountOnFileDisplay.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/AccountOnFileDisplay.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/BasicPaymentItems.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/BasicPaymentItems.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/BasicPaymentProduct.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/BasicPaymentProduct.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/BasicPaymentProducts.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/BasicPaymentProducts.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/DataRestrictions.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/DataRestrictions.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/FormElement.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/FormElement.Companion.html
 $dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/FormElement.Type///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/FormElement.Type.html
-$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/KeyValuePair.Status///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/KeyValuePair.Status.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/PaymentProduct.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/PaymentProduct.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/PaymentProductField.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/PaymentProductField.Companion.html
 $dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/PaymentProductField.Type///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/PaymentProductField.Type.html
-$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/PaymentProductFieldDisplayElement.PaymentProductFieldDisplayElementType///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/PaymentProductFieldDisplayElement.PaymentProductFieldDisplayElementType.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.paymentproduct/Tooltip.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/paymentproduct/Tooltip.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.validation/AbstractValidationRule.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/validation/AbstractValidationRule.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.validation/ValidationErrorMessage.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/validation/ValidationErrorMessage.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.validation/ValidationRuleEmailAddress.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/validation/ValidationRuleEmailAddress.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.validation/ValidationRuleExpirationDate.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/validation/ValidationRuleExpirationDate.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.validation/ValidationRuleFixedList.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/validation/ValidationRuleFixedList.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.validation/ValidationRuleIBAN.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/validation/ValidationRuleIBAN.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.validation/ValidationRuleLength.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/validation/ValidationRuleLength.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.validation/ValidationRuleLuhn.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/validation/ValidationRuleLuhn.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.validation/ValidationRuleRange.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/validation/ValidationRuleRange.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.validation/ValidationRuleRegex.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/validation/ValidationRuleRegex.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model.validation/ValidationRuleTermsAndConditions.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/validation/ValidationRuleTermsAndConditions.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model/AmountOfMoney.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/AmountOfMoney.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model/PaymentContext.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/PaymentContext.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model/PaymentRequest.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/PaymentRequest.Companion.html
+$dokka.location:com.onlinepayments.sdk.client.android.model/PublicKeyResponse.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/model/PublicKeyResponse.Companion.html
 $dokka.location:com.onlinepayments.sdk.client.android.session/Session.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/session/Session.Companion.html
 com.onlinepayments.sdk.client.android.communicate
+com.onlinepayments.sdk.client.android.communicate.interceptors
 com.onlinepayments.sdk.client.android.exception
 com.onlinepayments.sdk.client.android.formatter
 com.onlinepayments.sdk.client.android.listener
@@ -23,5 +66,7 @@ com.onlinepayments.sdk.client.android.model.paymentproduct.specificdata
 com.onlinepayments.sdk.client.android.model.paymentproduct.validation
 com.onlinepayments.sdk.client.android.model.surcharge.response
 com.onlinepayments.sdk.client.android.model.validation
+com.onlinepayments.sdk.client.android.providers
 com.onlinepayments.sdk.client.android.session
+com.onlinepayments.sdk.client.android.util
 
