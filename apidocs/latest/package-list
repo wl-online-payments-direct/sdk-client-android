@@ -1,7 +1,6 @@
 $dokka.format:javadoc-v1
 $dokka.linkExtension:html
 $dokka.location:com.onlinepayments.sdk.client.android.communicate.interceptors/LoggingInterceptor.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/communicate/interceptors/LoggingInterceptor.Companion.html
-$dokka.location:com.onlinepayments.sdk.client.android.communicate.interceptors/ResponseInterceptor.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/communicate/interceptors/ResponseInterceptor.Companion.html
 $dokka.location:com.onlinepayments.sdk.client.android.exception/CommunicationException.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/exception/CommunicationException.Companion.html
 $dokka.location:com.onlinepayments.sdk.client.android.exception/EncryptDataException.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/exception/EncryptDataException.Companion.html
 $dokka.location:com.onlinepayments.sdk.client.android.formatter/StringFormatter.Companion///PointingToDeclaration/com/onlinepayments/sdk/client/android/formatter/StringFormatter.Companion.html
