@@ -111,7 +111,7 @@ class SessionTest {
         // After filtering we get 29 products
         assertTrue(products.count() == 29)
 
-        val resultIds = products.map {it.getId() }
+        val resultIds = products.map { it.getId() }
         val filteredIds = listOf("117", "5700", "5772", "5784")
 
         filteredIds.forEach { filteredId ->

@@ -334,10 +334,10 @@ class PaymentRequestTest {
         Assert.assertEquals("Mismatch in ID for product: " + actualAccountOnFile.id,
             actualAccountOnFile.displayHints?.labelTemplate?.stream()
                 ?.map<String?>((Function { accountOnFileDisplay: AccountOnFileDisplay? -> accountOnFileDisplay!!.getKey() + ":" + accountOnFileDisplay.mask }
-                        ))?.collect(Collectors.toList()),
+                    ))?.collect(Collectors.toList()),
             expectedAccountOnFile.displayHints?.labelTemplate?.stream()
                 ?.map<String?>((Function { accountOnFileDisplay: AccountOnFileDisplay? -> accountOnFileDisplay!!.getKey() + ":" + accountOnFileDisplay.mask }
-                        ))?.collect(Collectors.toList())
+                    ))?.collect(Collectors.toList())
         )
     }
 

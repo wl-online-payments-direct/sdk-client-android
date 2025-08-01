@@ -80,7 +80,7 @@ class Session @JvmOverloads constructor(
     private var loggingEnabled: Boolean = false,
     private val sdkIdentifier: String,
     private val context: Context,
-    private var sessionScope: CoroutineScope = CoroutineScope(SupervisorJob().plus(Dispatchers.Main))
+    private var sessionScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 ) : Serializable {
 
     private val logger: Logger = LoggerProvider.logger

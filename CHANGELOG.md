@@ -1,10 +1,8 @@
 ## 4.0.1
 
-* Broken release package has been fixed. This release makes the previous one obsolete.
+Fix broken release package.
 
 ## 4.0.0
-
-**NOTE: This release is broken in the Maven Central. Please use version 4.0.1.
 
 The whole SDK is converted to Kotlin. For the clarity of code, some getters are removed and
 instead, properties are used.

@@ -12,7 +12,6 @@ package com.onlinepayments.sdk.client.android.communicate
 
 import android.content.Context
 import com.google.gson.Gson
-import com.onlinepayments.sdk.client.android.communicate.interceptors.ResponseInterceptor
 import com.onlinepayments.sdk.client.android.util.Util
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -63,7 +62,6 @@ internal object HttpServiceFactory {
             .sslSocketFactory(tlsSocketFactory, getSystemTrustManager())
             .addInterceptor(sessionInterceptor)
             .addInterceptor(ApiLogger.getInterceptor())
-            .addInterceptor(ResponseInterceptor())
             .build()
 
         // 4. Build the Retrofit instance

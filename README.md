@@ -137,11 +137,12 @@ section [Payment Steps](#payment-steps) for more details on these steps.
    display the `BasicPaymentItem` and `AccountOnFile` lists and request your customer to select one.\
    **Note:** each session call can throw errors. Wrap your code into the try/catch block.\
    **Note 2:** Since Kotlin methods are asynchronous (using coroutines), there are synchronous overloads with `Sync`
-   suffixes.
+   suffixes that you can use in Java, but be aware they will block the main thread. For async calls in Java, you can use
+   the listener-based approach. We give an example for this here, and you can use the same approach for other calls.
 
    **_java:_**
    ```java
-   // sync call
+   // sync call - blocks the main thread
    try {
        BasicPaymentItems basicPaymentItems = session.getBasicPaymentItemsSync(paymentContext);
 
@@ -154,32 +155,26 @@ section [Payment Steps](#payment-steps) for more details on these steps.
        // Handle any other unhandled exception.
    }
 
-   // async call
-   session.getBasicPaymentItems(paymentContext, new Continuation<BasicPaymentItems>() {
-       @Override
-       public CoroutineContext getContext() {
-           return EmptyCoroutineContext.INSTANCE;
-       }
-   
-       @Override
-       public void resumeWith(Object result) {
-           if (result instanceof Result.Failure) {
-               Throwable exception = ((Result.Failure) result).getException();
-               // Check for specific exception types
-               if (exception instanceof ApiException) {
-                   // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
-               } else if (exception instanceof CommunicationException) {
-                   // Handle the communication exception - it can happen when the API call could not be established.
-               } else {
-                   // Handle any other unhandled exceptions.
-               }
-           } else {
-               // Successful result. Continue with the code execution.
-               BasicPaymentProducts products = (BasicPaymentProducts) result;
-               // Display the contents of basicPaymentItems & accountsOnFile to your customer.
+   // *** Listener-based async call ****
+   session.getBasicPaymentItems(
+       paymentContext, // PaymentContext
+       new BasicPaymentItemsResponseListener() {
+           @Override
+           public void onSuccess(@NonNull BasicPaymentItems basicPaymentItems) {
+              // Display the contents of basicPaymentItems & accountsOnFile to your customer
+           }
+
+           @Override
+           public void onApiError(ErrorResponse errorResponse) {
+               // Handle API failure of retrieving the available Payment Products
+           }
+
+           @Override
+           public void onException(Throwable throwable) {
+               // Handle failure of retrieving the available Payment Products
            }
        }
-   });
+   );
    ```
 
    **_kotlin:_**

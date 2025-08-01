@@ -11,6 +11,8 @@
 package com.onlinepayments.sdk.client.android.communicate
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.onlinepayments.sdk.client.android.configuration.Constants
 import com.onlinepayments.sdk.client.android.exception.ApiException
 import com.onlinepayments.sdk.client.android.exception.CommunicationException
@@ -19,6 +21,7 @@ import com.onlinepayments.sdk.client.android.model.CardSource
 import com.onlinepayments.sdk.client.android.model.PaymentContext
 import com.onlinepayments.sdk.client.android.model.PaymentProductNetworkResponse
 import com.onlinepayments.sdk.client.android.model.PublicKeyResponse
+import com.onlinepayments.sdk.client.android.model.api.ApiError
 import com.onlinepayments.sdk.client.android.model.api.ErrorResponse
 import com.onlinepayments.sdk.client.android.model.currencyconversion.CurrencyConversionRequest
 import com.onlinepayments.sdk.client.android.model.currencyconversion.CurrencyConversionResponse
@@ -78,9 +81,9 @@ internal class C2sCommunicator(
 
     suspend fun getBasicPaymentItems(
         paymentContext: PaymentContext
-    ): BasicPaymentItems = withContext(Dispatchers.IO) {
+    ): BasicPaymentItems {
         val basicProducts = getBasicPaymentProducts(paymentContext)
-        BasicPaymentItems(
+        return BasicPaymentItems(
             basicProducts.getPaymentProductsAsItems(),
             basicProducts.getAccountsOnFile()
         )
@@ -88,8 +91,8 @@ internal class C2sCommunicator(
 
     suspend fun getBasicPaymentProducts(
         paymentContext: PaymentContext
-    ): BasicPaymentProducts = withContext(Dispatchers.IO) {
-        callApi {
+    ): BasicPaymentProducts {
+        return callApi {
             val response = this@C2sCommunicator.apiService.getBasicPaymentProducts(
                 configuration.customerId,
                 paymentContext.toMap(),
@@ -108,7 +111,7 @@ internal class C2sCommunicator(
     suspend fun getPaymentProduct(
         productId: String,
         paymentContext: PaymentContext
-    ): PaymentProduct? = withContext(Dispatchers.IO) {
+    ): PaymentProduct? {
         if (productId == Constants.PAYMENT_PRODUCT_ID_APPLEPAY) {
             throw ApiException("Apple Pay is not supported on Android devices.")
         }
@@ -117,7 +120,7 @@ internal class C2sCommunicator(
             throw ApiException("Product with id $productId not found.")
         }
 
-        callApi {
+        return callApi {
             try {
                 val response = apiService.getPaymentProduct(
                     configuration.customerId,
@@ -151,8 +154,8 @@ internal class C2sCommunicator(
     suspend fun getPaymentProductNetworks(
         productId: String,
         paymentContext: PaymentContext
-    ): PaymentProductNetworkResponse = withContext(Dispatchers.IO) {
-        callApi {
+    ): PaymentProductNetworkResponse {
+        return callApi {
             apiService.getPaymentProductNetworks(
                 configuration.customerId,
                 productId,
@@ -164,13 +167,13 @@ internal class C2sCommunicator(
     suspend fun getIinDetails(
         partialCreditCardNumber: String,
         paymentContext: PaymentContext?
-    ): IinDetailsResponse = withContext(Dispatchers.IO) {
+    ): IinDetailsResponse {
         val partialCCNumber = partialCreditCardNumber.take(MAX_CHARS_PAYMENT_PRODUCT_ID_LOOKUP)
         if (partialCCNumber.length < MIN_CHARS_PAYMENT_PRODUCT_ID_LOOKUP) {
-            return@withContext IinDetailsResponse(IinStatus.NOT_ENOUGH_DIGITS)
+            return IinDetailsResponse(IinStatus.NOT_ENOUGH_DIGITS)
         }
 
-        callApi {
+        return callApi {
             try {
                 val request = IinDetailsRequest(partialCCNumber, paymentContext)
                 val response = apiService.getIinDetails(configuration.customerId, request)
@@ -193,8 +196,8 @@ internal class C2sCommunicator(
         }
     }
 
-    suspend fun getPublicKey(): PublicKeyResponse = withContext(Dispatchers.IO) {
-        callApi {
+    suspend fun getPublicKey(): PublicKeyResponse {
+        return callApi {
             apiService.getPublicKey(configuration.customerId)
         }
     }
@@ -202,8 +205,8 @@ internal class C2sCommunicator(
     suspend fun getCurrencyConversionQuote(
         amountOfMoney: AmountOfMoney,
         cardSource: CardSource,
-    ): CurrencyConversionResponse = withContext(Dispatchers.IO) {
-        callApi {
+    ): CurrencyConversionResponse {
+        return callApi {
             apiService.getCurrencyConversionQuote(
                 configuration.customerId,
                 CurrencyConversionRequest(cardSource, Transaction(amountOfMoney))
@@ -214,8 +217,8 @@ internal class C2sCommunicator(
     suspend fun getSurchargeCalculation(
         amountOfMoney: AmountOfMoney,
         cardSource: CardSource,
-    ): SurchargeCalculationResponse = withContext(Dispatchers.IO) {
-        callApi {
+    ): SurchargeCalculationResponse {
+        return callApi {
             apiService.getSurchargeCalculation(
                 configuration.customerId,
                 SurchargeCalculationRequest(amountOfMoney, cardSource)
@@ -257,51 +260,66 @@ internal class C2sCommunicator(
 
     private suspend inline fun <T> callApi(crossinline apiCall: suspend () -> T): T {
         return try {
-            apiCall()
+            withContext(Dispatchers.IO) {
+                apiCall()
+            }
         } catch (e: ApiException) {
             // Already a known API error - propagate it as is.
             throw e
-        } catch (e: IOException) {
-            // Retrofit will throw IOException when the request did not succeed.
-            // We need to check whether our response interceptor threw underlying error.
-
-            // Check the direct cause first.
-            if (e.cause as? ApiException != null) {
-                throw e.cause as ApiException
-            }
-
-            // Check the suppressed exceptions for an ApiErrorException.
-            e.suppressed.firstOrNull { it is ApiException }?.let { suppressed ->
-                throw suppressed as ApiException
-            }
-
-            // Check the suppressed exceptions of the cause for an ApiErrorException.
-            e.cause?.suppressed?.firstOrNull { it is ApiException }?.let { suppressed ->
-                throw suppressed as ApiException
-            }
-
-            if (e.cause as? CommunicationException != null) {
-                throw e.cause as CommunicationException
-            }
-
-            // Check the suppressed exceptions for an ApiErrorException.
-            e.suppressed.firstOrNull { it is CommunicationException }?.let { suppressed ->
-                throw suppressed as CommunicationException
-            }
-
-            // Check the suppressed exceptions of the cause for an ApiErrorException.
-            e.cause?.suppressed?.firstOrNull { it is CommunicationException }?.let { suppressed ->
-                throw suppressed as CommunicationException
-            }
-
-            // If neither is found, wrap the original exception into the CommunicationException.
-            throw CommunicationException("Error while performing a request", e)
+        } catch (e: HttpException) {
+            throw handleHttpException(e)
         } catch (ex: Exception) {
             // For any other unexpected exception, wrap it as well.
             val errorResponse = getErrorResponse(ex)
 
             throw CommunicationException(errorResponse.message, ex, errorResponse)
         }
+    }
+
+    private fun handleHttpException(e: HttpException): Exception {
+        // Retrofit will throw IOException when the request did not succeed.
+        // We need to check whether our response interceptor threw underlying error.
+
+        if (e.code() == 404) {
+            return e
+        }
+
+        if (e.cause as? CommunicationException != null) {
+            return e.cause as CommunicationException
+        }
+
+        // Check the suppressed exceptions for an ApiErrorException.
+        e.suppressed.firstOrNull { it is CommunicationException }?.let { suppressed ->
+            return suppressed as CommunicationException
+        }
+
+        // Check the suppressed exceptions of the cause for an ApiErrorException.
+        e.cause?.suppressed?.firstOrNull { it is CommunicationException }?.let { suppressed ->
+            return suppressed as CommunicationException
+        }
+
+        val errorMessage = "Request failed with status: ${e.code()}"
+
+        val errorBody = try {
+            e.response()?.errorBody()?.string() ?: ""
+        } catch (_: Exception) {
+            ""
+        }
+
+        val errorResponse = try {
+            val response = ErrorResponse(errorMessage)
+            if (errorBody.isNotEmpty()) {
+                response.apply {
+                    apiError = Gson().fromJson(errorBody, ApiError::class.java)
+                }
+            } else {
+                return CommunicationException("Error while performing a request", e)
+            }
+        } catch (_: JsonSyntaxException) {
+            return CommunicationException("Error while performing a request", e)
+        }
+
+        return ApiException("Request failed with status: ${e.code()}", errorResponse)
     }
 
     private fun getErrorResponse(exception: Exception): ErrorResponse {
