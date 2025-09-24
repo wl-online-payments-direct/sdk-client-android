@@ -44,6 +44,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import org.powermock.core.classloader.annotations.PrepareForTest
+import retrofit2.HttpException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
@@ -142,7 +143,8 @@ class C2sCommunicatorTest {
             communicator?.getBasicPaymentProducts(getPaymentContext())
         }
 
-        assertEquals("Forbidden", exception.responseBody)
+        assertNotNull(exception.cause)
+        assertEquals(403, (exception.cause as HttpException).code())
     }
 
     @Test
@@ -175,7 +177,8 @@ class C2sCommunicatorTest {
             communicator!!.getIinDetails("411111", getPaymentContext())
         }
 
-        assertNotNull(exception.responseBody)
+        assertNotNull(exception.cause)
+        assertEquals(500, (exception.cause as HttpException).code())
     }
 
     private fun getPaymentContext(): PaymentContext {

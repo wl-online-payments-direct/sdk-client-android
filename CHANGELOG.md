@@ -1,15 +1,27 @@
-## 4.0.1
+# 4.1.1
+
+## Changed
+
+* Updated the expiry date validator to support dates in MMyy and MMyyyy formats.
+
+# 4.1.0
+
+## Changed
+
+* Handling coroutines has been change to better support consumer handling threads.
+
+# 4.0.1
 
 Fix broken release package.
 
-## 4.0.0
+# 4.0.0
 
 The whole SDK is converted to Kotlin. For the clarity of code, some getters are removed and
 instead, properties are used.
 When calling from Kotlin, use property names, for example `paymentContext.amountOfMoney`.
 When calling from Java, you can still use getters, e.g. `paymentContext.getAmountOfMoney()`.
 
-### Removed
+## Removed
 
 Removed deprecated classes:
 
@@ -48,7 +60,7 @@ The following deprecated elements have been removed
 * `PaymentProductField.validateValue(String)`; use `validateValue(paymentRequest: PaymentRequest)`
   instead.
 
-### Changed
+## Changed
 
 The following classes' constructors or methods have been made internal:
 

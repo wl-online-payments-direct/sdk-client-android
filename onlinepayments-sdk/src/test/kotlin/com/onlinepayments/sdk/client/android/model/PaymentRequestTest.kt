@@ -346,7 +346,7 @@ class PaymentRequestTest {
 
         init {
             allValidValuesVisa.put("cardNumber", "4012000033330026")
-            allValidValuesVisa.put("expiryDate", "1230")
+            allValidValuesVisa.put("expiryDate", "122030")
             allValidValuesVisa.put("cvv", "123")
             allValidValuesVisa.put("cardholderName", "Test")
         }

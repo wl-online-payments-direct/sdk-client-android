@@ -36,7 +36,7 @@ class ValidationRuleExpirationDate internal constructor() : AbstractValidationRu
      * @return true, if the value in the field with fieldId is a valid expiration date; false, if it is not a valid expiration date or the fieldId could not be found
      */
     override fun validate(paymentRequest: PaymentRequest, fieldId: String): Boolean {
-        var text = getUnmaskedValue(paymentRequest, fieldId) ?: return false
+        val text = getUnmaskedValue(paymentRequest, fieldId) ?: return false
 
         try {
             val enteredDate = obtainEnteredDateFromUnmaskedValue(text)
@@ -71,7 +71,10 @@ class ValidationRuleExpirationDate internal constructor() : AbstractValidationRu
         val now = Date()
         val year = centuryDateFormat.format(now)
 
-        val textWithCentury = text.substring(0, 2) + year.substring(0, 2) + text.substring(2, 4)
+        var textWithCentury = text
+        if (text.length == 4) {
+            textWithCentury = (text.substring(0, 2) + year.substring(0, 2) + text.substring(2, 4))
+        }
 
         return fieldDateFormat.parse(textWithCentury)
     }
