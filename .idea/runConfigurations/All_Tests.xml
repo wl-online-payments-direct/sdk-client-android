@@ -11,10 +11,6 @@
       <option name="taskNames">
         <list>
           <option value=":onlinepayments-sdk:testDebugUnitTest" />
-          <option value="--tests" />
-          <option value="&quot;com.onlinepayments.sdk.client.android.SDKTest&quot;" />
-          <option value="--tests" />
-          <option value="&quot;com.onlinepayments.sdk.client.android.SDKJavaTest&quot;" />
         </list>
       </option>
       <option name="vmOptions" />

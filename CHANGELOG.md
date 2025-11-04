@@ -1,3 +1,17 @@
+# 4.2.0
+
+## Added
+
+A new class `CreditCardTokenRequest` has been added. It is used to create a request for a credit
+card tokenization. It works similarly to the `PaymentRequest` class, but it does not validate
+values, nor unmasks them. Encryptor class is extended with a new method `encryptTokenRequest`.
+You can use it to get the encrypted data for the tokenization request.
+
+## Changed
+
+- Added support for SDK 35
+- Upgraded gradle to 8.13, kotlin to 2.2.21.
+
 # 4.1.1
 
 ## Changed

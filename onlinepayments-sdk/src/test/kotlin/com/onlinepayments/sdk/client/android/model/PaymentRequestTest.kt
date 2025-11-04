@@ -163,6 +163,13 @@ class PaymentRequestTest {
     }
 
     @Test
+    fun testValidateFailsForInvalidCVVVisa() {
+        val invalidCVVVisaRequest = PaymentRequest(paymentProductVisa)
+        setValuesInRequest(invalidCVVVisa, invalidCVVVisaRequest)
+        Assert.assertFalse(invalidCVVVisaRequest.validate().isEmpty())
+    }
+
+    @Test
     fun testValidateFailsForMissingRequiredValuesInVoice() {
         val missingCityInVoiceRequest = PaymentRequest(paymentProductInvoice)
         setValuesInRequest(missingCityInVoice, missingCityInVoiceRequest)
@@ -389,6 +396,15 @@ class PaymentRequestTest {
         init {
             missingCCNVisa.put("expiryDate", "1230")
             missingCCNVisa.put("cvv", "123")
+        }
+
+        var invalidCVVVisa: MutableMap<String, String> = HashMap<String, String>()
+
+        init {
+            invalidCVVVisa.put("cardNumber", "4012000033330026")
+            invalidCVVVisa.put("expiryDate", "1230")
+            invalidCVVVisa.put("cvv", "12345")
+            invalidCVVVisa.put("cardholderName", "John")
         }
 
         var missingCityInVoice: MutableMap<String, String> = HashMap<String, String>()

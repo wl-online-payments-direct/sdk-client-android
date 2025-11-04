@@ -39,6 +39,7 @@ import com.onlinepayments.sdk.client.android.listener.PaymentRequestPreparedList
 import com.onlinepayments.sdk.client.android.listener.PublicKeyResponseListener;
 import com.onlinepayments.sdk.client.android.listener.SurchargeCalculationResponseListener;
 import com.onlinepayments.sdk.client.android.model.AmountOfMoney;
+import com.onlinepayments.sdk.client.android.model.CreditCardTokenRequest;
 import com.onlinepayments.sdk.client.android.model.PaymentContext;
 import com.onlinepayments.sdk.client.android.model.PaymentProductNetworkResponse;
 import com.onlinepayments.sdk.client.android.model.PaymentRequest;
@@ -219,6 +220,30 @@ public class SessionListenersJavaTest {
                 }
             },
             (paymentContext, listener) -> getSession().getPaymentProduct("1", paymentContext, (PaymentProductResponseListener) listener)
+        );
+    }
+
+    @Test
+    public void testGetPaymentProductWithMoreFields() throws InterruptedException {
+        executeTest(
+            "paymentProductDinersClub.json",
+            200,
+            countDownLatch -> new PaymentProductResponseListener() {
+                public void onSuccess(PaymentProduct response) {
+                    assertNotNull(response);
+                    assertFalse(response.getDisplayHintsList().isEmpty());
+                    countDownLatch.countDown();
+                }
+
+                public void onApiError(@NonNull ErrorResponse error) {
+                    fail("Should not receive onApiError.");
+                }
+
+                public void onException(@NonNull Throwable e) {
+                    fail("Should not receive onException.");
+                }
+            },
+            (paymentContext, listener) -> getSession().getPaymentProduct("132", paymentContext, (PaymentProductResponseListener) listener)
         );
     }
 
@@ -414,6 +439,39 @@ public class SessionListenersJavaTest {
         };
 
         getSession().preparePaymentRequest(paymentRequest, listener);
+
+        shadowOf(Looper.getMainLooper()).idle();
+
+        boolean awaitSuccess = countDownLatch.await(2, TimeUnit.SECONDS);
+        assertTrue("Listener callback should have been called within 2 seconds.", awaitSuccess);
+    }
+
+    @Test
+    public void testPrepareTokenPayment() throws InterruptedException {
+        CreditCardTokenRequest tokenRequest = GsonHelperJava.fromResourceJson(
+            "creditCardTokenRequest.json",
+            CreditCardTokenRequest.class
+        );
+        setMockServerResponse("publicKeyResponse.json", 200);
+
+        var countDownLatch = new CountDownLatch(1);
+
+        var listener = new PaymentRequestPreparedListener() {
+            @Override
+            public void onPaymentRequestPrepared(@Nullable PreparedPaymentRequest preparedRequest) {
+                assertNotNull(preparedRequest);
+                assertNotNull(preparedRequest.getEncryptedFields());
+                assertNotNull(preparedRequest.getEncodedClientMetaInfo());
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onFailure(@Nullable EncryptDataException e) {
+                fail("Should not fail in a success scenario.");
+            }
+        };
+
+        getSession().prepareTokenPaymentRequest(tokenRequest, listener);
 
         shadowOf(Looper.getMainLooper()).idle();
 

@@ -12,7 +12,9 @@
         <list>
           <option value=":onlinepayments-sdk:testDebugUnitTest" />
           <option value="--tests" />
-          <option value="&quot;com.onlinepayments.sdk.client.android.SDKTest&quot;" />
+          <option value="&quot;*Test&quot;" />
+          <option value="--tests" />
+          <option value="&quot;!*JavaTest&quot;" />
         </list>
       </option>
       <option name="vmOptions" />

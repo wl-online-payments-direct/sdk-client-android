@@ -15,7 +15,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.4.2")
+        classpath("com.android.tools.build:gradle:8.13.0")
         classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3")
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle.kts files
@@ -23,8 +23,8 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.kotlin.android") version "2.0.0" apply false
-    id("com.android.library") version "8.4.2" apply false
+    id("org.jetbrains.kotlin.android") version "2.2.21" apply false
+    id("com.android.library") version "8.13.0" apply false
 }
 
 tasks.register("clean", Delete::class) {

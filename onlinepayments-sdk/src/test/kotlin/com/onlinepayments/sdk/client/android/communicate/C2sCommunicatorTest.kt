@@ -102,7 +102,12 @@ class C2sCommunicatorTest {
 
     @After
     fun tearDown() {
-        mockWebServer.shutdown()
+        try {
+            mockWebServer.shutdown()
+            mockWebServer.close()
+        } catch (_: Exception) {
+            // Ignore shutdown errors
+        }
         Dispatchers.resetMain()
         LoggerProvider.reset()
         unmockkAll()
@@ -144,6 +149,7 @@ class C2sCommunicatorTest {
         }
 
         assertNotNull(exception.cause)
+        assertTrue(exception.cause is HttpException)
         assertEquals(403, (exception.cause as HttpException).code())
     }
 
@@ -178,6 +184,7 @@ class C2sCommunicatorTest {
         }
 
         assertNotNull(exception.cause)
+        assertTrue(exception.cause is HttpException)
         assertEquals(500, (exception.cause as HttpException).code())
     }
 

@@ -30,6 +30,7 @@ import com.onlinepayments.sdk.client.android.listener.SurchargeCalculationRespon
 import com.onlinepayments.sdk.client.android.model.AmountOfMoney
 import com.onlinepayments.sdk.client.android.model.Card
 import com.onlinepayments.sdk.client.android.model.CardSource
+import com.onlinepayments.sdk.client.android.model.CreditCardTokenRequest
 import com.onlinepayments.sdk.client.android.model.PaymentContext
 import com.onlinepayments.sdk.client.android.model.PaymentProductCacheKey
 import com.onlinepayments.sdk.client.android.model.PaymentProductNetworkResponse
@@ -502,11 +503,12 @@ class Session @JvmOverloads constructor(
      */
     suspend fun preparePaymentRequest(paymentRequest: PaymentRequest): PreparedPaymentRequest {
         val metaData = Util.getMetadata(context, appIdentifier, sdkIdentifier)
-        val sessionEncryptionHelper = SessionEncryptionHelper(
+        val sessionEncryptionHelper = SessionEncryptionHelper.Payment(
             context,
-            paymentRequest,
             clientSessionId,
             metaData,
+            null,
+            paymentRequest,
         )
 
         return invokeApiCall("preparePaymentRequest") {
@@ -538,12 +540,74 @@ class Session @JvmOverloads constructor(
         listener: PaymentRequestPreparedListener
     ) {
         val metaData = Util.getMetadata(context, appIdentifier, sdkIdentifier)
-        val sessionEncryptionHelper = SessionEncryptionHelper(
+        val sessionEncryptionHelper = SessionEncryptionHelper.Payment(
             context,
-            paymentRequest,
             clientSessionId,
             metaData,
-            listener
+            listener,
+            paymentRequest,
+        )
+
+        sessionScope.launch {
+            withContext(mainDispatcher) {
+                val result = communicator.getPublicKey()
+                sessionEncryptionHelper.onPublicKeyReceived(result)
+            }
+        }
+    }
+
+    /**
+     * Prepares the token request by encrypting its fields.
+     *
+     * @param tokenRequest The [CreditCardTokenRequest] object with payment data.
+     *
+     * @return [PreparedPaymentRequest]
+     */
+    suspend fun prepareTokenPaymentRequest(tokenRequest: CreditCardTokenRequest): PreparedPaymentRequest {
+        val metaData = Util.getMetadata(context, appIdentifier, sdkIdentifier)
+        val sessionEncryptionHelper = SessionEncryptionHelper.TokenPayment(
+            context,
+            clientSessionId,
+            metaData,
+            null,
+            tokenRequest,
+        )
+
+        return invokeApiCall("prepareTokenPaymentRequest") {
+            val result = getPublicKey()
+            sessionEncryptionHelper.getPreparedRequest(result)
+        }
+    }
+
+    /**
+     * Synchronous execution of the Prepare token payment request method.
+     * Note that this method will block the thread when executed.
+     *
+     * @param tokenRequest The [CreditCardTokenRequest] object with payment data.
+     *
+     * @return [PreparedPaymentRequest]
+     */
+    fun prepareTokenPaymentRequestSync(tokenRequest: CreditCardTokenRequest): PreparedPaymentRequest = runBlocking {
+        prepareTokenPaymentRequest(tokenRequest)
+    }
+
+    /**
+     * Listener-based method for preparing the token request.
+     *
+     * @param tokenRequest The [CreditCardTokenRequest] object with payment data.
+     * @param listener The [PaymentRequestPreparedListener] listener instance for handling the response and errors.
+     */
+    fun prepareTokenPaymentRequest(
+        tokenRequest: CreditCardTokenRequest,
+        listener: PaymentRequestPreparedListener
+    ) {
+        val metaData = Util.getMetadata(context, appIdentifier, sdkIdentifier)
+        val sessionEncryptionHelper = SessionEncryptionHelper.TokenPayment(
+            context,
+            clientSessionId,
+            metaData,
+            listener,
+            tokenRequest,
         )
 
         sessionScope.launch {

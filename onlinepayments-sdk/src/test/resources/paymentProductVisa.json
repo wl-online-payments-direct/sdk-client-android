@@ -46,13 +46,11 @@
       "paymentProductId": 1
     }
   ],
+  "id": "1",
+  "paymentMethod": "card",
+  "paymentProductGroup": "Cards",
   "allowsRecurring": true,
   "allowsTokenization": true,
-  "displayHints": {
-    "displayOrder": 0,
-    "label": "VISA",
-    "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/VISA.gif"
-  },
   "displayHintsList": [
     {
       "displayOrder": 0,
@@ -60,8 +58,28 @@
       "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/VISA.gif"
     }
   ],
+  "usesRedirectionTo3rdParty": false,
+  "paymentProduct302SpecificData": null,
+  "paymentProduct320SpecificData": null,
   "fields": [
     {
+      "id": "cardNumber",
+      "type": "numericstring",
+      "displayHints": {
+        "alwaysShow": false,
+        "obfuscate": false,
+        "displayOrder": 0,
+        "label": "Card number",
+        "placeholderLabel": "",
+        "mask": "{{9999}} {{9999}} {{9999}} {{9999}} {{999}}",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": ""
+        },
+        "formElement": {
+          "type": "text"
+        }
+      },
       "dataRestrictions": {
         "isRequired": true,
         "validators": {
@@ -74,26 +92,26 @@
             "regularExpression": "^[0-9]*$"
           }
         }
-      },
+      }
+    },
+    {
+      "id": "cardholderName",
+      "type": "string",
       "displayHints": {
         "alwaysShow": false,
-        "displayOrder": 0,
-        "formElement": {
-          "type": "text"
-        },
-        "label": "Card number",
-        "mask": "{{9999}} {{9999}} {{9999}} {{9999}} {{999}}",
         "obfuscate": false,
+        "displayOrder": 1,
+        "label": "Cardholder's name",
         "placeholderLabel": "",
+        "mask": null,
         "preferredInputType": "StringKeyboard",
         "tooltip": {
           "label": ""
+        },
+        "formElement": {
+          "type": "text"
         }
       },
-      "id": "cardNumber",
-      "type": "numericstring"
-    },
-    {
       "dataRestrictions": {
         "isRequired": true,
         "validators": {
@@ -105,49 +123,54 @@
             "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßẞŠšŽžŸÿčČďĎěĚľĽĺĹňŇřŘšťŠŤůŮžŽęĘłŁśŚźŹżŻąĄčČęĘėĖįĮšŠųŲūŪžŽäÄöÖõÕüÜāĀčČēĒģĢīĪķĶļĻņŅōŌŗŖšŠūŪžŽ0-9 +_.=,:\\-\\[\\]\\/\\(\\)']*$"
           }
         }
-      },
+      }
+    },
+    {
+      "id": "expiryDate",
+      "type": "expirydate",
       "displayHints": {
         "alwaysShow": false,
-        "displayOrder": 1,
-        "formElement": {
-          "type": "text"
-        },
-        "label": "Cardholder's name",
         "obfuscate": false,
+        "displayOrder": 2,
+        "label": "Expiry date",
         "placeholderLabel": "",
+        "mask": "{{99}}/{{9999}}",
         "preferredInputType": "StringKeyboard",
         "tooltip": {
           "label": ""
+        },
+        "formElement": {
+          "type": "text"
         }
       },
-      "id": "cardholderName",
-      "type": "string"
-    },
-    {
       "dataRestrictions": {
         "isRequired": true,
         "validators": {
-          "expirationDate": {}
+          "expirationDate": {},
+          "regularExpression": {
+            "regularExpression": "^(0[1-9]|1[0-2])(\\d{4})$"
+          }
         }
-      },
-      "displayHints": {
-        "alwaysShow": false,
-        "displayOrder": 2,
-        "formElement": {
-          "type": "list"
-        },
-        "label": "Expiry date",
-        "obfuscate": false,
-        "placeholderLabel": "",
-        "preferredInputType": "StringKeyboard",
-        "tooltip": {
-          "label": ""
-        }
-      },
-      "id": "expiryDate",
-      "type": "expirydate"
+      }
     },
     {
+      "id": "cvv",
+      "type": "numericstring",
+      "displayHints": {
+        "alwaysShow": false,
+        "obfuscate": false,
+        "displayOrder": 3,
+        "label": "Card verification code",
+        "placeholderLabel": "",
+        "mask": "{{999}}",
+        "preferredInputType": "StringKeyboard",
+        "tooltip": {
+          "label": "Last 3 digits on the back of the card"
+        },
+        "formElement": {
+          "type": "text"
+        }
+      },
       "dataRestrictions": {
         "isRequired": true,
         "validators": {
@@ -159,29 +182,7 @@
             "regularExpression": "^[0-9]*$"
           }
         }
-      },
-      "displayHints": {
-        "alwaysShow": false,
-        "displayOrder": 4,
-        "formElement": {
-          "type": "text"
-        },
-        "label": "Card verification code",
-        "mask": "{{9999}}",
-        "obfuscate": false,
-        "placeholderLabel": "",
-        "preferredInputType": "StringKeyboard",
-        "tooltip": {
-          "label": "Last 3 digits on the back of the card"
-        }
-      },
-      "id": "cvv",
-      "type": "numericstring"
+      }
     }
-  ],
-  "id": 1,
-  "paymentMethod": "card",
-  "paymentProductGroup": "Cards",
-  "usesRedirectionTo3rdParty": false,
-  "allowsAuthentication": true
+  ]
 }

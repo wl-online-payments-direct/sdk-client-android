@@ -26,6 +26,7 @@ import com.google.gson.JsonElement;
 import com.onlinepayments.sdk.client.android.configuration.Constants;
 import com.onlinepayments.sdk.client.android.exception.ApiException;
 import com.onlinepayments.sdk.client.android.model.AmountOfMoney;
+import com.onlinepayments.sdk.client.android.model.CreditCardTokenRequest;
 import com.onlinepayments.sdk.client.android.model.PaymentContext;
 import com.onlinepayments.sdk.client.android.model.PaymentRequest;
 import com.onlinepayments.sdk.client.android.model.currencyconversion.ConversionResultType;
@@ -154,6 +155,19 @@ public class SessionJavaTest {
         PaymentContext paymentContext = new PaymentContext(amountOfMoney, "NL", false);
 
         var paymentProduct = getSession().getPaymentProductSync("1", paymentContext);
+
+        assertNotNull(paymentProduct);
+        assertFalse(paymentProduct.getDisplayHintsList().isEmpty());
+    }
+
+    @Test
+    public void testGetPaymentProductWithMoreFields() {
+        setMockServerResponse("paymentProductDinersClub.json", 200);
+
+        AmountOfMoney amountOfMoney = new AmountOfMoney(1298L, "EUR");
+        PaymentContext paymentContext = new PaymentContext(amountOfMoney, "NL", false);
+
+        var paymentProduct = getSession().getPaymentProductSync("132", paymentContext);
 
         assertNotNull(paymentProduct);
         assertFalse(paymentProduct.getDisplayHintsList().isEmpty());
@@ -294,6 +308,21 @@ public class SessionJavaTest {
         setMockServerResponse("publicKeyResponse.json", 200);
 
         var preparedRequest = getSession().preparePaymentRequestSync(paymentRequest);
+
+        assertNotNull(preparedRequest.getEncryptedFields());
+        assertNotNull(preparedRequest.getEncodedClientMetaInfo());
+    }
+
+    @Test
+    public void testPrepareTokenPayment() {
+        CreditCardTokenRequest tokenRequest = GsonHelperJava.fromResourceJson(
+            "creditCardTokenRequest.json",
+            CreditCardTokenRequest.class
+        );
+
+        setMockServerResponse("publicKeyResponse.json", 200);
+
+        var preparedRequest = getSession().prepareTokenPaymentRequestSync(tokenRequest);
 
         assertNotNull(preparedRequest.getEncryptedFields());
         assertNotNull(preparedRequest.getEncodedClientMetaInfo());

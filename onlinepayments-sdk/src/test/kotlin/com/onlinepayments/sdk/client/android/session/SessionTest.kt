@@ -18,6 +18,7 @@ import com.onlinepayments.sdk.client.android.exception.ApiException
 import com.onlinepayments.sdk.client.android.mocks.MockContext
 import com.onlinepayments.sdk.client.android.mocks.MockEncoding
 import com.onlinepayments.sdk.client.android.model.AmountOfMoney
+import com.onlinepayments.sdk.client.android.model.CreditCardTokenRequest
 import com.onlinepayments.sdk.client.android.model.PaymentContext
 import com.onlinepayments.sdk.client.android.model.PaymentRequest
 import com.onlinepayments.sdk.client.android.model.currencyconversion.ConversionResultType
@@ -52,25 +53,17 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
 import org.powermock.core.classloader.annotations.PrepareForTest
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@RunWith(MockitoJUnitRunner::class)
 @PrepareForTest(Base64::class)
 class SessionTest {
-    companion object {
-        private val testDispatcher = StandardTestDispatcher()
-
-        private lateinit var mockWebServer: MockWebServer
-
-        private val mockContext = MockContext.setup()
-
-        private val mockLogger = mockk<Logger>(relaxed = true)
-    }
+    private val testDispatcher = StandardTestDispatcher()
+    private lateinit var mockWebServer: MockWebServer
+    private val mockContext = MockContext.setup()
+    private val mockLogger = mockk<Logger>(relaxed = true)
 
     @Before
     fun setup() {
@@ -92,7 +85,12 @@ class SessionTest {
 
     @After
     fun tearDown() {
-        mockWebServer.shutdown()
+        try {
+            mockWebServer.shutdown()
+            mockWebServer.close()
+        } catch (_: Exception) {
+            // Ignore shutdown errors
+        }
         Dispatchers.resetMain()
         LoggerProvider.reset()
         // Cleanup MockK mocks
@@ -170,6 +168,19 @@ class SessionTest {
         val paymentContext = PaymentContext(amountOfMoney, "NL", isRecurring = false)
 
         val paymentProduct = getSession().getPaymentProduct("1", paymentContext)
+
+        assertNotNull(paymentProduct)
+        assertTrue(paymentProduct!!.getDisplayHintsList().count() > 0)
+    }
+
+    @Test
+    fun testGetPaymentProductWithMoreFields() = runTest {
+        setMockServerResponse("paymentProductDinersClub.json", 200)
+
+        val amountOfMoney = AmountOfMoney(1298L, "EUR")
+        val paymentContext = PaymentContext(amountOfMoney, "NL", isRecurring = false)
+
+        val paymentProduct = getSession().getPaymentProduct("132", paymentContext)
 
         assertNotNull(paymentProduct)
         assertTrue(paymentProduct!!.getDisplayHintsList().count() > 0)
@@ -309,6 +320,22 @@ class SessionTest {
 
         assertNotNull(preparedRequest.encryptedFields)
         assertNotNull(preparedRequest.encodedClientMetaInfo)
+    }
+
+    @Test
+    fun testPrepareTokenPayment() = runTest {
+        // for detailed test regarding payment request check `PaymentRequestTest`
+        val tokenRequest = GsonHelper.fromResourceJson<CreditCardTokenRequest>(
+            "creditCardTokenRequest.json",
+            CreditCardTokenRequest::class.java
+        )
+
+        setMockServerResponse("publicKeyResponse.json", 200)
+
+        val preparedTokenRequest = getSession().prepareTokenPaymentRequest(tokenRequest)
+
+        assertNotNull(preparedTokenRequest.encryptedFields)
+        assertNotNull(preparedTokenRequest.encodedClientMetaInfo)
     }
 
     @Test

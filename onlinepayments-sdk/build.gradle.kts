@@ -9,7 +9,6 @@
  */
 @file:Suppress("UnstableApiUsage")
 
-import org.gradle.api.tasks.bundling.Zip
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -29,8 +28,8 @@ java {
 
 android {
     namespace = "com.onlinepayments.sdk.client.android"
-    compileSdk = 34
-    compileSdkVersion = "android-34"
+    compileSdk = 35
+    compileSdkVersion = "android-35"
 
     defaultConfig {
         minSdk = 21
@@ -39,12 +38,12 @@ android {
 
     lint {
         abortOnError = false
-        targetSdk = 34
+        targetSdk = 35
         lintConfig = file("lint.xml")
     }
 
     testOptions {
-        targetSdk = 34
+        targetSdk = 35
         unitTests.isIncludeAndroidResources = true
     }
 
@@ -75,14 +74,13 @@ dependencies {
     implementation("com.google.android.gms:play-services-wallet:19.4.0")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("io.mockk:mockk:1.13.17")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
-    testImplementation("androidx.test:core:1.6.1")
+    testImplementation("io.mockk:mockk:1.14.6")
+    testImplementation("com.squareup.okhttp3:mockwebserver:5.3.0")
+    testImplementation("androidx.test:core:1.7.0")
     testImplementation("org.powermock:powermock-module-junit4:2.0.9")
-    testImplementation("org.mockito:mockito-core:5.16.1")
-    //noinspection GradleDependency We need this until we upgrade to support SDK 35
-    testImplementation("org.robolectric:robolectric:4.11.1")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+    testImplementation("org.mockito:mockito-core:5.20.0")
+    testImplementation("org.robolectric:robolectric:4.16")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test:2.1.10")
 }
 

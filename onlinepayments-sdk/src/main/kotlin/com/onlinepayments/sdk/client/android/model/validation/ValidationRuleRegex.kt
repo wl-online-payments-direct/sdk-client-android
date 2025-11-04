@@ -29,7 +29,7 @@ class ValidationRuleRegex internal constructor(
      * @return true, if the value in the field with fieldId matches the regex; false, if it doesn't or if the fieldId could not be found
      */
     override fun validate(paymentRequest: PaymentRequest, fieldId: String): Boolean {
-        var text = getUnmaskedValue(paymentRequest, fieldId) ?: return false
+        val text = getUnmaskedValue(paymentRequest, fieldId) ?: return false
 
         return text.matches(regex)
     }
