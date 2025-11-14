@@ -10,17 +10,16 @@
 package com.onlinepayments.sdk.client.android.exception
 
 import com.onlinepayments.sdk.client.android.model.api.ErrorResponse
-import java.lang.Exception
 
 class CommunicationException(
     message: String? = null,
     cause: Throwable? = null,
     @Suppress("unused") val errorResponse: ErrorResponse? = null,
-    val responseBody: String? = null
+    @Suppress("unused") val responseBody: String? = null
 ) : Exception(message, cause) {
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 378923281056384514L
+        private const val serialVersionUID = 378923281056384514L
     }
 }

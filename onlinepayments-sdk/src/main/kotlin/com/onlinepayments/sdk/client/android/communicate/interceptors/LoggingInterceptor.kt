@@ -39,8 +39,8 @@ class LoggingInterceptor(var loggingEnabled: AtomicBoolean) : Interceptor {
 
     private fun logRequest(request: Request) {
         var log = "Request URL : ${request.url}\n" +
-                "Request method : ${request.method}\n" +
-                "Request headers : \n"
+            "Request method : ${request.method}\n" +
+            "Request headers : \n"
         for (header in request.headers) {
             log += "\t\t ${header.first} : ${header.second}\n"
         }
@@ -54,8 +54,8 @@ class LoggingInterceptor(var loggingEnabled: AtomicBoolean) : Interceptor {
 
     private fun logResponse(response: Response, startNs: Long) {
         var log = "Response for ${response.request.method} request URL: ${response.request.url}\n" +
-                "Response code : ${response.code}\n" +
-                "Response headers : \n"
+            "Response code : ${response.code}\n" +
+            "Response headers : \n"
         for (header in response.headers) {
             log += "\t\t ${header.first} : ${header.second}\n"
         }

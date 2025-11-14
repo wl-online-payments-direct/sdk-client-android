@@ -12,7 +12,6 @@ package com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints
 import com.google.gson.annotations.SerializedName
 import com.onlinepayments.sdk.client.android.model.paymentproduct.FormElement
 import com.onlinepayments.sdk.client.android.model.paymentproduct.Tooltip
-import com.onlinepayments.sdk.client.android.model.paymentproduct.displayhints.DisplayHintsProductFields.PreferredInputType
 import java.io.Serializable
 
 /**
@@ -50,6 +49,6 @@ data class DisplayHintsProductFields(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -4396644758512959868L
+        private const val serialVersionUID = -4396644758512959868L
     }
 }

@@ -21,8 +21,6 @@ import com.onlinepayments.sdk.client.android.providers.LoggerProvider
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.Exception
-import java.lang.IllegalStateException
 import java.security.InvalidParameterException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -71,7 +69,7 @@ internal object GooglePayUtil {
 
         // Wait for a response
         try {
-            Tasks.await<Boolean?>(
+            Tasks.await(
                 task,
                 Constants.ACCEPTABLE_WAIT_TIME_IN_MILLISECONDS.toLong(),
                 TimeUnit.MILLISECONDS
@@ -158,6 +156,6 @@ internal object GooglePayUtil {
             return networks
         }
 
-        throw IllegalStateException("No networks found")
+        error("No networks found")
     }
 }

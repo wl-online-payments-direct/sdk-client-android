@@ -22,6 +22,6 @@ data class IinDetail(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 6951132953680660913L
+        private const val serialVersionUID = 6951132953680660913L
     }
 }

@@ -60,6 +60,8 @@ internal class C2sCommunicator(
         private const val AMEX_CARD_NUMBER_MASK = "{{9999}} {{999999}} {{99999}}"
         private const val EXPIRY_DATE = "expiryDate"
         private const val CARD_NUMBER = "cardNumber"
+
+        private const val NOT_FOUND_ERROR = 404
     }
 
     init {
@@ -108,10 +110,11 @@ internal class C2sCommunicator(
         }
     }
 
+    @Suppress("ThrowsCount")
     suspend fun getPaymentProduct(
         productId: String,
         paymentContext: PaymentContext
-    ): PaymentProduct? {
+    ): PaymentProduct {
         if (productId == Constants.PAYMENT_PRODUCT_ID_APPLEPAY) {
             throw ApiException("Apple Pay is not supported on Android devices.")
         }
@@ -142,7 +145,7 @@ internal class C2sCommunicator(
                     getPaymentProductFields().forEach { it.setValidationRules() }
                 }
             } catch (e: HttpException) {
-                if (e.code() == 404) {
+                if (e.code() == NOT_FOUND_ERROR) {
                     throw ApiException("Product with id $productId not found.")
                 }
 
@@ -187,7 +190,7 @@ internal class C2sCommunicator(
 
                 response
             } catch (e: HttpException) {
-                if (e.code() == 404) {
+                if (e.code() == NOT_FOUND_ERROR) {
                     return@callApi IinDetailsResponse(IinStatus.UNKNOWN)
                 }
 
@@ -248,8 +251,8 @@ internal class C2sCommunicator(
 
                 CARD_NUMBER -> {
                     if (field.displayHints.mask.isNullOrEmpty()) {
-                        field.displayHints.mask =
-                            if (product.getId() == Constants.PAYMENT_PRODUCT_ID_AMEX) AMEX_CARD_NUMBER_MASK else BASIC_CARD_NUMBER_MASK
+                        val isAmex = product.getId() == Constants.PAYMENT_PRODUCT_ID_AMEX
+                        field.displayHints.mask = if (isAmex) AMEX_CARD_NUMBER_MASK else BASIC_CARD_NUMBER_MASK
                     }
                 }
             }
@@ -276,11 +279,12 @@ internal class C2sCommunicator(
         }
     }
 
+    @Suppress("ReturnCount")
     private fun handleHttpException(e: HttpException): Exception {
         // Retrofit will throw IOException when the request did not succeed.
         // We need to check whether our response interceptor threw underlying error.
 
-        if (e.code() == 404) {
+        if (e.code() == NOT_FOUND_ERROR) {
             return e
         }
 

@@ -10,7 +10,6 @@
 package com.onlinepayments.sdk.client.android.model.validation
 
 import com.onlinepayments.sdk.client.android.model.PaymentRequest
-import java.lang.StringBuilder
 import java.math.BigInteger
 
 /**
@@ -27,12 +26,12 @@ class ValidationRuleIBAN internal constructor() : AbstractValidationRule("iban",
      * @return true, if the value in the field with fieldId is a proper IBAN; false, if it is not or if the fieldId could not be found
      */
     override fun validate(paymentRequest: PaymentRequest, fieldId: String): Boolean {
-        var newAccountNumber = paymentRequest.getValue(fieldId)?.trim { it <= ' ' }
+        var newAccountNumber = paymentRequest.getValue(fieldId)?.trim()
 
         if (newAccountNumber?.matches("^[A-Z]{2}[0-9]{2}[A-Z0-9]{4}[0-9]{7}([A-Z0-9]?){0,16}$".toRegex()) == true) {
             // Move the four initial characters to the end of the string.
 
-            newAccountNumber = newAccountNumber.substring(4) + newAccountNumber.substring(0, 4)
+            newAccountNumber = newAccountNumber.substring(4) + newAccountNumber.take(4)
 
             // Replace each letter in the string with two digits, thereby expanding the string, where A = 10, B = 11, ..., Z = 35.
             val numericAccountNumber = StringBuilder()
@@ -51,7 +50,7 @@ class ValidationRuleIBAN internal constructor() : AbstractValidationRule("iban",
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -2638250936233171926L
+        private const val serialVersionUID = -2638250936233171926L
 
         private val IBAN_NUMBER_MODULO = BigInteger("97")
     }

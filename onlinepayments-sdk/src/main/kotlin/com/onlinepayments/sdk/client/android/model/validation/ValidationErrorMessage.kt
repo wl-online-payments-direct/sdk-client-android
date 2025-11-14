@@ -22,6 +22,6 @@ data class ValidationErrorMessage(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 5842038484067693459L
+        private const val serialVersionUID = 5842038484067693459L
     }
 }

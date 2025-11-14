@@ -23,6 +23,6 @@ data class DisplayHintsPaymentItem(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 5783120855027244241L
+        private const val serialVersionUID = 5783120855027244241L
     }
 }

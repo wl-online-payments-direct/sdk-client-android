@@ -27,6 +27,6 @@ data class IinDetailsResponse(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -4043745317792003304L
+        private const val serialVersionUID = -4043745317792003304L
     }
 }

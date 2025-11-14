@@ -9,7 +9,14 @@
 #
 complexity:
   TooManyFunctions:
-    thresholdInClasses: 20
+    active: false
+  CyclomaticComplexMethod:
+    threshold: 20
+  LongParameterList:
+    functionThreshold: 7
+    constructorThreshold: 8
+  NestedBlockDepth:
+    active: false
 
 exceptions:
   SwallowedException:
@@ -20,3 +27,11 @@ exceptions:
 style:
   MaxLineLength:
     excludeCommentStatements: true
+  MagicNumber:
+    active: false
+  UnusedPrivateMember:
+    active: false
+  ReturnCount:
+    max: 4
+  ThrowsCount:
+    max: 4

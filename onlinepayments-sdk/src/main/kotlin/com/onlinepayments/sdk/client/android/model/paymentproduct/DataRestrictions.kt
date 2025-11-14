@@ -21,7 +21,6 @@ import com.onlinepayments.sdk.client.android.model.validation.ValidationRuleRang
 import com.onlinepayments.sdk.client.android.model.validation.ValidationRuleRegex
 import com.onlinepayments.sdk.client.android.model.validation.ValidationRuleTermsAndConditions
 import java.io.Serializable
-import java.util.ArrayList
 
 /**
  * POJO that represents an Data restrictions object.
@@ -109,6 +108,6 @@ class DataRestrictions internal constructor() : Serializable {
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -549503465906936684L
+        private const val serialVersionUID = -549503465906936684L
     }
 }

@@ -15,6 +15,7 @@ import java.security.InvalidParameterException
 /**
  * Data class with convenience methods for getting BasicPaymentItem and AccountOnFile objects.
  */
+@Suppress("ConstructorParameterNaming")
 data class BasicPaymentItems(
     val basicPaymentItems: MutableList<BasicPaymentItem> = mutableListOf(),
     private val _accountsOnFile: MutableList<AccountOnFile> = mutableListOf() // Private backing list
@@ -61,20 +62,22 @@ data class BasicPaymentItems(
     }
 
     @Suppress("Unused")
-    fun getBasicPaymentItemById(basicPaymentItemId: String?): BasicPaymentItem? {
+    fun getBasicPaymentItemById(basicPaymentItemId: String?): BasicPaymentItem {
         return basicPaymentItemId?.let { id -> basicPaymentItems.firstOrNull { it.getId() == id } }
             ?: throw InvalidParameterException("basicPaymentItemId may not be null")
     }
 
     private fun populateAccountsOnFile() {
         if (!_accountsOnFilePopulated) {
-            basicPaymentItems.forEach { product -> _accountsOnFile.addAll(product.getAccountsOnFile()) } // Direct access
+            basicPaymentItems.forEach { product ->
+                _accountsOnFile.addAll(product.getAccountsOnFile())
+            }
             _accountsOnFilePopulated = true
         }
     }
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 2481207529146031966L
+        private const val serialVersionUID = 2481207529146031966L
     }
 }

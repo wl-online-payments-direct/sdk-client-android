@@ -21,6 +21,6 @@ data class DisplayHintsAccountOnFile(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 3446099654728722104L
+        private const val serialVersionUID = 3446099654728722104L
     }
 }

@@ -22,6 +22,6 @@ class RegularExpression(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -1242536946684504857L
+        private const val serialVersionUID = -1242536946684504857L
     }
 }

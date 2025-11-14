@@ -53,6 +53,6 @@ class PaymentProduct internal constructor(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -8362704974696989741L
+        private const val serialVersionUID = -8362704974696989741L
     }
 }

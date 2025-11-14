@@ -12,7 +12,6 @@ package com.onlinepayments.sdk.client.android.testUtil
 import com.google.gson.Gson
 import java.io.IOException
 import java.io.InputStreamReader
-import java.lang.RuntimeException
 
 object GsonHelper {
     private val gson = Gson()
@@ -20,7 +19,7 @@ object GsonHelper {
     fun <T> fromResourceJson(resource: String?, classOfT: Class<T>): T {
         try {
             InputStreamReader(GsonHelper::class.java.getClassLoader()?.getResourceAsStream(resource)).use { reader ->
-                return gson.fromJson<T?>(reader, classOfT)
+                return gson.fromJson<T>(reader, classOfT)
             }
         } catch (e: IOException) {
             throw RuntimeException(e)

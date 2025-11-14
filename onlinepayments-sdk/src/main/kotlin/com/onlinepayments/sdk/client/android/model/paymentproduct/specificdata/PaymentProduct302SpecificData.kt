@@ -20,6 +20,6 @@ data class PaymentProduct302SpecificData(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 4006738016411138300L
+        private const val serialVersionUID = 4006738016411138300L
     }
 }

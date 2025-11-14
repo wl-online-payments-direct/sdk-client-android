@@ -11,13 +11,12 @@ package com.onlinepayments.sdk.client.android.formatter
 
 import com.onlinepayments.sdk.client.android.model.FormatResult
 import java.io.Serializable
-import java.lang.IllegalStateException
-import java.lang.StringBuilder
 import java.security.InvalidParameterException
 
 /**
  * Contains util methods for string formatting.
  */
+@Suppress("CyclomaticComplexMethod", "LongMethod", "LoopWithTooManyJumpStatements")
 class StringFormatter private constructor() : Serializable {
     companion object {
         private enum class ChangeType {
@@ -55,10 +54,8 @@ class StringFormatter private constructor() : Serializable {
                 return null
             }
 
-            var result: FormatResult? = null
-
             // Determine whether character(s) are added, removed, or replaced, and act accordingly.
-            result = when (addedRemovedOrReplaced(count, after)) {
+            val result = when (addedRemovedOrReplaced(count, after)) {
                 ChangeType.ADDED -> determineFormatResultADDED(mask, value, oldValue, after, start)
                 ChangeType.REMOVED -> determineFormatResultREMOVED(mask, value, start)
                 ChangeType.REPLACED -> determineFormatResultREPLACED(mask, value, oldValue, after, start)
@@ -259,8 +256,9 @@ class StringFormatter private constructor() : Serializable {
                         formattedValue += maskCharacter
                     }
                 } else {
-                    throw IllegalStateException("Error while masking inputText; there seems to be an invalid mask.")
+                    error("Error while masking inputText; there seems to be an invalid mask.")
                 }
+
                 i++
             }
 
@@ -493,6 +491,6 @@ class StringFormatter private constructor() : Serializable {
         }
 
         @Suppress("Unused")
-        private val serialVersionUID = -365568554479175934L
+        private const val serialVersionUID = -365568554479175934L
     }
 }

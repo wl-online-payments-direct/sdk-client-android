@@ -250,7 +250,7 @@ class Session @JvmOverloads constructor(
      * @param paymentContext The [PaymentContext] object with information about a payment,
      *  like its [AmountOfMoney] and countryCode.
      *
-     * @return [PaymentProduct] or `null`.
+     * @return [PaymentProduct].
      */
     suspend fun getPaymentProduct(
         paymentProductId: String,
@@ -270,9 +270,7 @@ class Session @JvmOverloads constructor(
 
         return invokeApiCall("getPaymentProduct") {
             val result = communicator.getPaymentProduct(paymentProductId, paymentContext)
-            if (result != null) {
-                cachePaymentProduct(result, paymentContext)
-            }
+            cachePaymentProduct(result, paymentContext)
 
             result
         }
@@ -326,9 +324,7 @@ class Session @JvmOverloads constructor(
 
         invokeApiCallWithListener(listener, "getPaymentProduct") {
             val result = communicator.getPaymentProduct(paymentProductId, paymentContext)
-            if (result != null) {
-                cachePaymentProduct(result, paymentContext)
-            }
+            cachePaymentProduct(result, paymentContext)
 
             result
         }
@@ -966,7 +962,7 @@ class Session @JvmOverloads constructor(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -4386453L
+        private const val serialVersionUID = -4386453L
 
         var mainDispatcher: CoroutineDispatcher = Dispatchers.Main
     }

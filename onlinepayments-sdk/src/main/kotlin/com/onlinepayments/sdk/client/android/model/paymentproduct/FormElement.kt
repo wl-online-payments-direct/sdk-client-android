@@ -43,6 +43,6 @@ data class FormElement(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 7081218270681792356L
+        private const val serialVersionUID = 7081218270681792356L
     }
 }

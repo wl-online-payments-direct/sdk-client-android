@@ -14,13 +14,13 @@ import java.io.Serializable
 /**
  * Data class which holds the payment product 320 specific properties.
  */
-data class PaymentProduct320SpecificData (
+data class PaymentProduct320SpecificData(
     val gateway: String? = null,
     val networks: MutableList<String?>? = null
 ) : Serializable {
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 8538500042642795722L
+        private const val serialVersionUID = 8538500042642795722L
     }
 }

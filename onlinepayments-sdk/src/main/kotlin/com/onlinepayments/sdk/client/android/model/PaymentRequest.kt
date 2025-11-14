@@ -14,7 +14,6 @@ import com.onlinepayments.sdk.client.android.model.paymentproduct.PaymentProduct
 import com.onlinepayments.sdk.client.android.model.paymentproduct.PaymentProductField
 import com.onlinepayments.sdk.client.android.model.validation.ValidationErrorMessage
 import java.io.Serializable
-import java.lang.NullPointerException
 import java.security.InvalidParameterException
 
 /**
@@ -154,6 +153,6 @@ open class PaymentRequest @JvmOverloads constructor(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 1553481971640554760L
+        private const val serialVersionUID = 1553481971640554760L
     }
 }

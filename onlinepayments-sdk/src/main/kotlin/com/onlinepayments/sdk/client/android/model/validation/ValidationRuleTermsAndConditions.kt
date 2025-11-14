@@ -14,7 +14,8 @@ import com.onlinepayments.sdk.client.android.model.PaymentRequest
 /**
  * Validation rule for terms and conditions.
  */
-class ValidationRuleTermsAndConditions internal constructor(): AbstractValidationRule("termsAndConditions", ValidationType.TERMSANDCONDITIONS) {
+class ValidationRuleTermsAndConditions internal constructor() :
+    AbstractValidationRule("termsAndConditions", ValidationType.TERMSANDCONDITIONS) {
 
     /**
      * Validates that the terms and conditions have been accepted.
@@ -30,6 +31,6 @@ class ValidationRuleTermsAndConditions internal constructor(): AbstractValidatio
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 2209679897444037061L
+        private const val serialVersionUID = 2209679897444037061L
     }
 }

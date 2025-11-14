@@ -22,10 +22,10 @@ internal data class PaymentProductCacheKey(
     private val currencyCode: String,
     private val isRecurring: Boolean,
     private val paymentProductId: String
-): Serializable {
+) : Serializable {
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -45L
+        private const val serialVersionUID = -45L
     }
 }

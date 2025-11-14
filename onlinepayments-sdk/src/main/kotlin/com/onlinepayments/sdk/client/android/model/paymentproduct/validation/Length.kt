@@ -22,6 +22,6 @@ data class Length(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -8127911803708372125L
+        private const val serialVersionUID = -8127911803708372125L
     }
 }

@@ -28,16 +28,16 @@ class ValidationRuleEmailAddress internal constructor() : AbstractValidationRule
      *  false, if it is not a valid email address or if the fieldId could not be found.
      */
     override fun validate(paymentRequest: PaymentRequest, fieldId: String): Boolean {
-        var text = getUnmaskedValue(paymentRequest, fieldId) ?: return false
+        val text = getUnmaskedValue(paymentRequest, fieldId) ?: return false
 
-        return text.matches(EMAIL_REGEX.toRegex()) == true
+        return text.matches(EMAIL_REGEX.toRegex())
     }
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -2476401279131525956L
+        private const val serialVersionUID = -2476401279131525956L
 
-        @Suppress("RegExpRedundantEscape")
+        @Suppress("RegExpRedundantEscape", "MaxLineLength")
         private const val EMAIL_REGEX =
             "^(?!.*\\.\\.)(?!\\.)(?!.*\\.\$)[A-Za-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[A-Za-z0-9!#\$%&'*+/=?^_`{|}~-]+)*@(?!\\d+\\.\\d+\\.\\d+\\.\\d+)([A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\\.)+[A-Za-z]{2,}\$"
     }

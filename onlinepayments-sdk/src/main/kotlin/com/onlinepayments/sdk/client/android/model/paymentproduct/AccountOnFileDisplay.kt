@@ -25,6 +25,6 @@ class AccountOnFileDisplay(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -7793293988073972532L
+        private const val serialVersionUID = -7793293988073972532L
     }
 }

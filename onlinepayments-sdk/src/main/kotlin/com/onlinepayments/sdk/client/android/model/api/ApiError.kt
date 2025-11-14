@@ -27,6 +27,6 @@ class ApiError : Serializable {
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 8917688214136217124L
+        private const val serialVersionUID = 8917688214136217124L
     }
 }

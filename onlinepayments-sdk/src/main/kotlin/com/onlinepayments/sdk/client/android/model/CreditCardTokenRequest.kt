@@ -32,6 +32,6 @@ open class CreditCardTokenRequest @JvmOverloads constructor(
 
     private companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -115547161880629623L
+        private const val serialVersionUID = -115547161880629623L
     }
 }

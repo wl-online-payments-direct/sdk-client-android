@@ -18,7 +18,7 @@ import java.security.InvalidParameterException
 /**
  * POJO which holds the BasicPaymentProduct properties.
  */
-@Suppress("Unused")
+@Suppress("Unused", "LongParameterList")
 open class BasicPaymentProduct internal constructor(
     private val id: String? = null,
     val paymentMethod: String? = null,
@@ -44,13 +44,13 @@ open class BasicPaymentProduct internal constructor(
         return displayHintsList
     }
 
-    fun getAccountOnFileById(accountOnFileId: String?): AccountOnFile? {
+    fun getAccountOnFileById(accountOnFileId: String?): AccountOnFile {
         return accountOnFileId?.let { id -> accountsOnFile.firstOrNull { it.id == id } }
             ?: throw InvalidParameterException("accountOnFileId may not be null")
     }
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -8362704974696989741L
+        private const val serialVersionUID = -8362704974696989741L
     }
 }

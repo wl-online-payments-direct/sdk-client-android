@@ -10,7 +10,6 @@
 package com.onlinepayments.sdk.client.android.model.validation
 
 import com.onlinepayments.sdk.client.android.model.PaymentRequest
-import java.lang.Exception
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -26,7 +25,6 @@ class ValidationRuleExpirationDate internal constructor() : AbstractValidationRu
     "expirationDate",
     ValidationType.EXPIRATIONDATE
 ) {
-
     /**
      * Validates an expiration date.
      *
@@ -43,7 +41,7 @@ class ValidationRuleExpirationDate internal constructor() : AbstractValidationRu
 
             val calendar: Calendar = GregorianCalendar()
             calendar.setTime(Date())
-            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 25)
+            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + MAX_YEARS)
             val futureLimit = calendar.getTime()
 
             return validateDateIsBetween(Date(), futureLimit, enteredDate!!)
@@ -69,11 +67,13 @@ class ValidationRuleExpirationDate internal constructor() : AbstractValidationRu
         // Add centuries to prevent swapping back to previous century with yy date format pattern:
         // http://docs.oracle.com/javase/1.5.0/docs/api/java/text/SimpleDateFormat.html#year
         val now = Date()
-        val year = centuryDateFormat.format(now)
+        val century = centuryDateFormat.format(now).take(2)
 
         var textWithCentury = text
-        if (text.length == 4) {
-            textWithCentury = (text.substring(0, 2) + year.substring(0, 2) + text.substring(2, 4))
+        val month = text.take(2)
+        if (text.length == SHORT_YEAR_DIGITS) {
+            val year = text.substring(2, SHORT_YEAR_DIGITS)
+            textWithCentury = month + century + year
         }
 
         return fieldDateFormat.parse(textWithCentury)
@@ -141,9 +141,12 @@ class ValidationRuleExpirationDate internal constructor() : AbstractValidationRu
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -8737074337688865517L
+        private const val serialVersionUID = -8737074337688865517L
 
         private const val DATE_FORMAT_PATTERN_MONTH_YEAR = "MMyyyy"
         private const val DATE_FORMAT_PATTERN_CENTURY = "yyyy"
+        private const val MAX_YEARS = 25
+        private const val SHORT_YEAR_DIGITS = 4
+
     }
 }

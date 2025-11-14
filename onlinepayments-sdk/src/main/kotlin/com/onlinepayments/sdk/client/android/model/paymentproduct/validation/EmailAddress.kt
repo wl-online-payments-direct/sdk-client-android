@@ -16,7 +16,7 @@ import java.io.Serializable
  * Used for validation.
  */
 object EmailAddress : Serializable {
-    @Suppress("ConstPropertyName")
+    @Suppress("Unused")
     private const val serialVersionUID = -2599214976694861251L
 
     @Suppress("Unused")

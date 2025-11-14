@@ -22,16 +22,20 @@ class ValidationRuleLength internal constructor(
 
     init {
         if (minLength < 0) {
-            throw InvalidParameterException("Error initialising ValidationRuleLength, minLength must be non-negative.")
+            throw InvalidParameterException(
+                "Error initialising ValidationRuleLength, minLength must be non-negative."
+            )
         }
 
         if (maxLength < minLength) {
-            throw InvalidParameterException("Error initialising ValidationRuleLength, maxLength must be greater than or equal to minLength.")
+            throw InvalidParameterException(
+                "Error initialising ValidationRuleLength, maxLength must be greater than or equal to minLength."
+            )
         }
     }
 
     override fun validate(paymentRequest: PaymentRequest, fieldId: String): Boolean {
-        var text = getUnmaskedValue(paymentRequest, fieldId) ?: return minLength == 0
+        val text = getUnmaskedValue(paymentRequest, fieldId) ?: return minLength == 0
 
         return text.length in minLength..maxLength
     }
@@ -48,6 +52,6 @@ class ValidationRuleLength internal constructor(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 6453263230504247824L
+        private const val serialVersionUID = 6453263230504247824L
     }
 }

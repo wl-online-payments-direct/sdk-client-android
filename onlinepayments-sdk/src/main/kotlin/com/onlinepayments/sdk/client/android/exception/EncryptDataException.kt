@@ -9,8 +9,6 @@
  */
 package com.onlinepayments.sdk.client.android.exception
 
-import java.lang.Exception
-
 class EncryptDataException(
     message: String? = null,
     cause: Throwable? = null,
@@ -18,6 +16,6 @@ class EncryptDataException(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 1060449781983665636L
+        private const val serialVersionUID = 1060449781983665636L
     }
 }

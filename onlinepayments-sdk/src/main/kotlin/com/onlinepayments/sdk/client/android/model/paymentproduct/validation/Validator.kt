@@ -29,6 +29,6 @@ data class Validator(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 8524174888810141991L
+        private const val serialVersionUID = 8524174888810141991L
     }
 }

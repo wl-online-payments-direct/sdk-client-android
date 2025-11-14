@@ -49,6 +49,6 @@ data class AccountOnFile(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 4898075257024154390L
+        private const val serialVersionUID = 4898075257024154390L
     }
 }

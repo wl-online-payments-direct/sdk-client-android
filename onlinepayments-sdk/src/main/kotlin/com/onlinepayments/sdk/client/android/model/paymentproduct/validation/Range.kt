@@ -22,6 +22,6 @@ data class Range(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 4659640500627126711L
+        private const val serialVersionUID = 4659640500627126711L
     }
 }

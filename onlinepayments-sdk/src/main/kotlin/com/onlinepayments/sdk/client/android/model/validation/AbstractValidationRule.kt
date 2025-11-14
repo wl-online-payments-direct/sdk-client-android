@@ -22,13 +22,13 @@ abstract class AbstractValidationRule internal constructor(
 ) : Serializable, ValidationRule {
 
     protected fun getUnmaskedValue(paymentRequest: PaymentRequest, fieldId: String): String? {
-        var text = paymentRequest.getValue(fieldId) ?: return null
+        val text = paymentRequest.getValue(fieldId) ?: return null
 
         return paymentRequest.getUnmaskedValue(fieldId, text)
     }
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -1068723487645115780L
+        private const val serialVersionUID = -1068723487645115780L
     }
 }

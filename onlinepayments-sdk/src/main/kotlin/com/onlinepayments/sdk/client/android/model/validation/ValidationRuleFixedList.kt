@@ -28,13 +28,13 @@ class ValidationRuleFixedList internal constructor(
     }
 
     override fun validate(paymentRequest: PaymentRequest, fieldId: String): Boolean {
-        var text = getUnmaskedValue(paymentRequest, fieldId) ?: return false
+        val text = getUnmaskedValue(paymentRequest, fieldId) ?: return false
 
         return listValues.contains(text)
     }
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -1388124383409175742L
+        private const val serialVersionUID = -1388124383409175742L
     }
 }

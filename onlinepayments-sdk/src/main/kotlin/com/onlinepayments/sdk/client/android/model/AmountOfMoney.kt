@@ -25,6 +25,6 @@ data class AmountOfMoney(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 3077405745639575054L
+        private const val serialVersionUID = 3077405745639575054L
     }
 }

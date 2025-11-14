@@ -33,6 +33,6 @@ data class AccountOnFileAttribute(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -31120L
+        private const val serialVersionUID = -31120L
     }
 }

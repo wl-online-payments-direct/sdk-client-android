@@ -50,6 +50,6 @@ data class ApiErrorItem(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 1983759919374923872L
+        private const val serialVersionUID = 1983759919374923872L
     }
 }

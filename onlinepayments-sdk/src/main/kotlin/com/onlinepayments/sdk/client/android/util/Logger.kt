@@ -12,7 +12,6 @@ package com.onlinepayments.sdk.client.android.util
 
 import android.util.Log
 
-@Suppress("Unused")
 class Logger {
     fun d(tag: String, message: String) {
         Log.d(tag, message)
@@ -34,6 +33,7 @@ class Logger {
         Log.i(tag, message)
     }
 
+    @Suppress("unused")
     fun i(tag: String, message: String, t: Throwable?) {
         Log.i(tag, message, t)
     }

@@ -106,6 +106,6 @@ data class PaymentProductField(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 7731107337899853223L
+        private const val serialVersionUID = 7731107337899853223L
     }
 }

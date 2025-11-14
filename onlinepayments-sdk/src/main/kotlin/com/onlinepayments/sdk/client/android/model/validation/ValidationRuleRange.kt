@@ -10,7 +10,6 @@
 package com.onlinepayments.sdk.client.android.model.validation
 
 import com.onlinepayments.sdk.client.android.model.PaymentRequest
-import java.lang.NumberFormatException
 
 /**
  * Validation rule for range.
@@ -29,7 +28,7 @@ class ValidationRuleRange(
      * @return true, if the value in the field with fieldId is in the correct range; false, if it is out of bounds or if the fieldId could not be found
      */
     override fun validate(paymentRequest: PaymentRequest, fieldId: String): Boolean {
-        var text = getUnmaskedValue(paymentRequest, fieldId) ?: return false
+        val text = getUnmaskedValue(paymentRequest, fieldId) ?: return false
 
         try {
             val enteredValue = text.toInt()
@@ -51,6 +50,6 @@ class ValidationRuleRange(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 1199939638104378041L
+        private const val serialVersionUID = 1199939638104378041L
     }
 }

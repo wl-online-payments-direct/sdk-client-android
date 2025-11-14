@@ -21,6 +21,6 @@ data class FixedList(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -7191166722186646029L
+        private const val serialVersionUID = -7191166722186646029L
     }
 }

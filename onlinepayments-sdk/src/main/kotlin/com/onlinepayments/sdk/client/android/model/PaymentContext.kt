@@ -30,6 +30,6 @@ data class PaymentContext(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -4845945197600321181L
+        private const val serialVersionUID = -4845945197600321181L
     }
 }

@@ -54,6 +54,6 @@ class ValidationRuleLuhn internal constructor() : AbstractValidationRule("luhn",
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -6609650480352325271L
+        private const val serialVersionUID = -6609650480352325271L
     }
 }

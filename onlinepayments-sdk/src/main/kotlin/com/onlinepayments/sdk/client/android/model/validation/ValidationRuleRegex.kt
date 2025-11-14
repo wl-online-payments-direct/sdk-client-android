@@ -36,6 +36,6 @@ class ValidationRuleRegex internal constructor(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 5054525275294003657L
+        private const val serialVersionUID = 5054525275294003657L
     }
 }

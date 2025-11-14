@@ -94,7 +94,7 @@ data class BasicPaymentProducts(
      * @return the retrieved [BasicPaymentProduct], or null if not found
      */
     @Suppress("Unused")
-    fun getBasicPaymentProductById(basicPaymentProductId: String): BasicPaymentProduct? {
+    fun getBasicPaymentProductById(basicPaymentProductId: String): BasicPaymentProduct {
         return basicPaymentProductId.let { id -> basicPaymentProducts.firstOrNull { it.getId() == id } }
             ?: throw InvalidParameterException("basicPaymentProductId may not be null")
     }
@@ -116,6 +116,6 @@ data class BasicPaymentProducts(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = 6385568686033699522L
+        private const val serialVersionUID = 6385568686033699522L
     }
 }

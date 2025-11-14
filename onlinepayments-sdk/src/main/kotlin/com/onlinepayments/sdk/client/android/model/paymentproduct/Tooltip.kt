@@ -21,6 +21,6 @@ data class Tooltip(
 
     companion object {
         @Suppress("Unused")
-        private val serialVersionUID = -317203058533669043L
+        private const val serialVersionUID = -317203058533669043L
     }
 }

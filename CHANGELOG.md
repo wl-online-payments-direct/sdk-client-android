@@ -1,3 +1,11 @@
+# 4.3.0
+
+## Changed
+
+- Updated dependencies to fix vulnerabilities
+- Increased minSdk to 23 because of dependencies
+- Fixed code issues
+
 # 4.2.0
 
 ## Added
