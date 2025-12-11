@@ -1,0 +1,26 @@
+{
+  "dccSessionId": "5cd02469177743fb8a0b2c78937ee25f",
+  "result": {
+    "result": "Allowed",
+    "resultReason": "Accepted"
+  },
+  "proposal": {
+    "baseAmount": {
+      "amount": 1000,
+      "currencyCode": "EUR"
+    },
+    "targetAmount": {
+      "amount": 1000,
+      "currencyCode": "EUR"
+    },
+    "rate": {
+      "exchangeRate": 1.57,
+      "invertedExchangeRate": 0.63694,
+      "markUpRate": 3.12,
+      "quotationDateTime": "2021-07-21T08:00:00Z",
+      "source": "European Central Bank"
+    },
+    "disclaimerReceipt": "",
+    "disclaimerDisplay": "Make sure you understand the costs of currency conversion as they may be different ..."
+  }
+}

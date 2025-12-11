@@ -1,0 +1,14 @@
+{
+  "errorId": "e53d3705-0b4d-4bd7-94e1-f0e005cfbb5c",
+  "errors": [
+    {
+      "errorCode": "50001111",
+      "category": "DIRECT_PLATFORM_ERROR",
+      "code": "9999",
+      "httpStatusCode": 404,
+      "id": "CURRENCY_CONVERSION_NOT_FOUND_REQUEST",
+      "message": "Some request parameter e.g. merchant, card etc not found in the system.",
+      "retriable": false
+    }
+  ]
+}

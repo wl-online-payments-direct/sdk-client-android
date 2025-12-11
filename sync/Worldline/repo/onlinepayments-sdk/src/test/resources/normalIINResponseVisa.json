@@ -1,0 +1,13 @@
+{
+  "coBrands" : [ {
+    "isAllowedInContext" : true,
+    "paymentProductId" : 1
+  }, {
+    "isAllowedInContext" : true,
+    "paymentProductId" : 122
+  } ],
+  "countryCode" : "99",
+  "isAllowedInContext" : true,
+  "paymentProductId" : 1,
+  "cardType": "Debit"
+}

@@ -1,0 +1,15 @@
+{
+  "errorId": "62c1bdb7-b3b7-443b-a665-5e41eaf85063",
+  "errors": [
+    {
+      "errorCode": "50001111",
+      "category": "DIRECT_PLATFORM_ERROR",
+      "code": "210380",
+      "httpStatusCode": 404,
+      "id": "IIN_NOT_FOUND",
+      "message": "NO bin FOUND",
+      "propertyName": "bin",
+      "retriable": false
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "cardNumber": "4111111111111111",
+  "cardHolderName": "Test cardholderName",
+  "expiryDate": "12/28",
+  "securityCode": "123",
+  "paymentProductId": 1
+}

@@ -1,0 +1,37 @@
+#
+# Do not remove or alter the notices in this preamble.
+#
+# Copyright © 2025 Worldline and/or its affiliates.
+#
+# All rights reserved. License grant and user rights and obligations according to the applicable license agreement.
+#
+# Please contact Worldline for questions regarding license and user rights.
+#
+complexity:
+  TooManyFunctions:
+    active: false
+  CyclomaticComplexMethod:
+    threshold: 20
+  LongParameterList:
+    functionThreshold: 7
+    constructorThreshold: 8
+  NestedBlockDepth:
+    active: false
+
+exceptions:
+  SwallowedException:
+    active: false
+  TooGenericExceptionCaught:
+    active: false
+
+style:
+  MaxLineLength:
+    excludeCommentStatements: true
+  MagicNumber:
+    active: false
+  UnusedPrivateMember:
+    active: false
+  ReturnCount:
+    max: 4
+  ThrowsCount:
+    max: 4

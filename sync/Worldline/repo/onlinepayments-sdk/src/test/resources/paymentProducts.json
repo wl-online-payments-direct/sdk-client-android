@@ -1,0 +1,2220 @@
+{
+  "paymentProducts": [
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 0,
+        "label": "A2A",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/A2A.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 0,
+          "label": "A2A",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/A2A.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5408,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": true,
+      "allowsTokenization": true,
+      "displayHints": {
+        "displayOrder": 1,
+        "label": "American Express",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/American Express.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 1,
+          "label": "American Express",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/American Express.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 15,
+                "minLength": 15
+              },
+              "luhn": {
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card number",
+            "mask": "{{9999}} {{999999}} {{99999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardNumber",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 50,
+                "minLength": 2
+              },
+              "regularExpression": {
+                "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßẞŠšŽžŸÿčČďĎěĚľĽĺĹňŇřŘšťŠŤůŮžŽęĘłŁśŚźŹżŻąĄčČęĘėĖįĮšŠųŲūŪžŽäÄöÖõÕüÜāĀčČēĒģĢīĪķĶļĻņŅōŌŗŖšŠūŪžŽ0-9 +_.=,:\\\\-\\\\[\\\\]\\\\/\\\\(\\\\)']*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 1,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Cardholder's name",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardholderName",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "expirationDate": {
+              },
+              "regularExpression": {
+                "regularExpression": "^(0[1-9]|1[0-2])(\\\\d{4})\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 2,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Expiry date",
+            "mask": "{{99}}/{{9999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "expiryDate",
+          "type": "expirydate"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 4,
+                "minLength": 4
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 3,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card verification code",
+            "mask": "{{9999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": "4 digit code on the front of the card"
+            }
+          },
+          "id": "cvv",
+          "type": "numericstring"
+        }
+      ],
+      "id": 2,
+      "paymentMethod": "card",
+      "paymentProductGroup": "Cards",
+      "usesRedirectionTo3rdParty": false,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 2,
+        "label": "APPLEPAY",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/APPLEPAY.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 2,
+          "label": "APPLEPAY",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/APPLEPAY.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "encryptedPaymentData",
+          "type": "string"
+        }
+      ],
+      "id": 302,
+      "paymentMethod": "mobile",
+      "usesRedirectionTo3rdParty": false,
+      "paymentProduct302SpecificData": {
+        "networks": [
+          "Visa",
+          "MasterCard"
+        ]
+      },
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 3,
+        "label": "BCMC",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/BCMC.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 3,
+          "label": "BCMC",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/BCMC.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 19,
+                "minLength": 16
+              },
+              "luhn": {
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card number",
+            "mask": "{{9999}} {{9999}} {{9999}} {{9999}} {{999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardNumber",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 50,
+                "minLength": 0
+              },
+              "regularExpression": {
+                "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßẞŠšŽžŸÿčČďĎěĚľĽĺĹňŇřŘšťŠŤůŮžŽęĘłŁśŚźŹżŻáÁäÄďĎéÉíÍĺĹľĽňŇóÓôÔŕŔšŠťŤúÚýÝ0-9 +_.=,:\\\\-\\\\[\\\\]\\\\/\\\\(\\\\)']*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 1,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Cardholder's name",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardholderName",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "expirationDate": {
+              },
+              "regularExpression": {
+                "regularExpression": "^(0[1-9]|1[0-2])(\\\\d{4})\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 2,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Expiry date",
+            "mask": "{{99}}/{{9999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "expiryDate",
+          "type": "expirydate"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 4,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "NoAliasCreation",
+          "type": "string"
+        }
+      ],
+      "id": 3012,
+      "paymentMethod": "card",
+      "paymentProductGroup": "Cards",
+      "usesRedirectionTo3rdParty": false,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 4,
+        "label": "Cadhoc",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Cadhoc.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 4,
+          "label": "Cadhoc",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Cadhoc.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5601,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": true,
+      "allowsTokenization": true,
+      "displayHints": {
+        "displayOrder": 5,
+        "label": "CB",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/CB.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 5,
+          "label": "CB",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/CB.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 19,
+                "minLength": 13
+              },
+              "luhn": {
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card number",
+            "mask": "{{9999}} {{9999}} {{9999}} {{9999}} {{999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardNumber",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 50,
+                "minLength": 2
+              },
+              "regularExpression": {
+                "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßẞŠšŽžŸÿčČďĎěĚľĽĺĹňŇřŘšťŠŤůŮžŽęĘłŁśŚźŹżŻąĄčČęĘėĖįĮšŠųŲūŪžŽäÄöÖõÕüÜāĀčČēĒģĢīĪķĶļĻņŅōŌŗŖšŠūŪžŽ0-9 +_.=,:\\\\-\\\\[\\\\]\\\\/\\\\(\\\\)']*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 1,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Cardholder's name",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardholderName",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "expirationDate": {
+              },
+              "regularExpression": {
+                "regularExpression": "^(0[1-9]|1[0-2])(\\\\d{4})\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 2,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Expiry date",
+            "mask": "{{99}}/{{9999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "expiryDate",
+          "type": "expirydate"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 3,
+                "minLength": 3
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 3,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card verification code",
+            "mask": "{{9999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": "This is an additional check to ensure that your card is not being used by an unauthorized person. Depending on the card brand, the verification code will be a 3 or 4-digit code on the front or back of the card, an issue number, a start date or a date of birth."
+            }
+          },
+          "id": "cvv",
+          "type": "numericstring"
+        }
+      ],
+      "id": 130,
+      "paymentMethod": "card",
+      "paymentProductGroup": "Cards",
+      "usesRedirectionTo3rdParty": false,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 6,
+        "label": "Cetelem3XCB",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Cetelem3XCB.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 6,
+          "label": "Cetelem3XCB",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Cetelem3XCB.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5133,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 7,
+        "label": "ClickToPay",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/ClickToPay.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 7,
+          "label": "ClickToPay",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/ClickToPay.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "isProdEnv",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 1,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "mastercardSrcDpaId",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 2,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "mastercardSrcInitiatorId",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 3,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "visaSrcDpaId",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 4,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "visaSrcInitiatorId",
+          "type": "string"
+        }
+      ],
+      "id": 5002,
+      "paymentMethod": "card",
+      "usesRedirectionTo3rdParty": false,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 8,
+        "label": "Cofidis3XCB",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Cofidis3XCB.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 8,
+          "label": "Cofidis3XCB",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Cofidis3XCB.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5129,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 9,
+        "label": "CVCONNECT",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/CVCONNECT.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 9,
+          "label": "CVCONNECT",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/CVCONNECT.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5403,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 10,
+        "label": "EPS",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/EPS.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 10,
+          "label": "EPS",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/EPS.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5406,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": true,
+      "allowsTokenization": true,
+      "displayHints": {
+        "displayOrder": 11,
+        "label": "MasterCard",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Eurocard.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 11,
+          "label": "MasterCard",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Eurocard.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 19,
+                "minLength": 13
+              },
+              "luhn": {
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card number",
+            "mask": "{{9999}} {{9999}} {{9999}} {{9999}} {{999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardNumber",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 50,
+                "minLength": 2
+              },
+              "regularExpression": {
+                "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßẞŠšŽžŸÿčČďĎěĚľĽĺĹňŇřŘšťŠŤůŮžŽęĘłŁśŚźŹżŻąĄčČęĘėĖįĮšŠųŲūŪžŽäÄöÖõÕüÜāĀčČēĒģĢīĪķĶļĻņŅōŌŗŖšŠūŪžŽ0-9 +_.=,:\\\\-\\\\[\\\\]\\\\/\\\\(\\\\)']*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 1,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Cardholder's name",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardholderName",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "expirationDate": {
+              },
+              "regularExpression": {
+                "regularExpression": "^(0[1-9]|1[0-2])(\\\\d{4})\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 2,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Expiry date",
+            "mask": "{{99}}/{{9999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "expiryDate",
+          "type": "expirydate"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 3,
+                "minLength": 3
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 3,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card verification code",
+            "mask": "{{9999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": "Last 3 digits on the back of the card"
+            }
+          },
+          "id": "cvv",
+          "type": "numericstring"
+        }
+      ],
+      "id": 3,
+      "paymentMethod": "card",
+      "paymentProductGroup": "Cards",
+      "usesRedirectionTo3rdParty": false,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 12,
+        "label": "Floa3x",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Floa3x.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 12,
+          "label": "Floa3x",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Floa3x.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5139,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 13,
+        "label": "Floa3xsansfrais",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Floa3xsansfrais.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 13,
+          "label": "Floa3xsansfrais",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Floa3xsansfrais.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5142,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 14,
+        "label": "GOOGLEPAY",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/GOOGLEPAY.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 14,
+          "label": "GOOGLEPAY",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/GOOGLEPAY.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "encryptedPaymentData",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 1,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "HostedPagePaymentData",
+          "type": "string"
+        }
+      ],
+      "id": 320,
+      "paymentMethod": "mobile",
+      "usesRedirectionTo3rdParty": false,
+      "paymentProduct320SpecificData": {
+        "networks": [
+          "VISA",
+          "MASTERCARD"
+        ],
+        "gateway": "worldlineingenicoogone"
+      },
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 15,
+        "label": "iDeal",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/iDeal.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 15,
+          "label": "iDeal",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/iDeal.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 809,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": true,
+      "displayHints": {
+        "displayOrder": 16,
+        "label": "Intersolve",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Intersolve.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 16,
+          "label": "Intersolve",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Intersolve.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 50,
+                "minLength": 5
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card number",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardNumber",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+              "length": {
+                "maxLength": 30,
+                "minLength": 6
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 1,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Security Code",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "IntegerKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "PinCode",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 3,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "NoAliasCreation",
+          "type": "string"
+        }
+      ],
+      "id": 5700,
+      "paymentMethod": "card",
+      "usesRedirectionTo3rdParty": false,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 17,
+        "label": "KLARNA_BANK_TRANSFER",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/KLARNA_BANK_TRANSFER.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 17,
+          "label": "KLARNA_BANK_TRANSFER",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/KLARNA_BANK_TRANSFER.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 3304,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 18,
+        "label": "KLARNA_DIRECT_DEBIT",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/KLARNA_DIRECT_DEBIT.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 18,
+          "label": "KLARNA_DIRECT_DEBIT",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/KLARNA_DIRECT_DEBIT.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 3305,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 19,
+        "label": "KLARNA_PAYLATER",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/KLARNA_PAYLATER.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 19,
+          "label": "KLARNA_PAYLATER",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/KLARNA_PAYLATER.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 3302,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 20,
+        "label": "KLARNA_PAYNOW",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/KLARNA_PAYNOW.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 20,
+          "label": "KLARNA_PAYNOW",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/KLARNA_PAYNOW.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 3301,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 21,
+        "label": "Linxo",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Linxo.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 21,
+          "label": "Linxo",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Linxo.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5003,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": true,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 22,
+        "label": "Maestro",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Maestro.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 22,
+          "label": "Maestro",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Maestro.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 19,
+                "minLength": 13
+              },
+              "luhn": {
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card number",
+            "mask": "{{9999}} {{9999}} {{9999}} {{9999}} {{999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardNumber",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 50,
+                "minLength": 2
+              },
+              "regularExpression": {
+                "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßẞŠšŽžŸÿčČďĎěĚľĽĺĹňŇřŘšťŠŤůŮžŽęĘłŁśŚźŹżŻąĄčČęĘėĖįĮšŠųŲūŪžŽäÄöÖõÕüÜāĀčČēĒģĢīĪķĶļĻņŅōŌŗŖšŠūŪžŽ0-9 +_.=,:\\\\-\\\\[\\\\]\\\\/\\\\(\\\\)']*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 1,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Cardholder's name",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardholderName",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "expirationDate": {
+              },
+              "regularExpression": {
+                "regularExpression": "^(0[1-9]|1[0-2])(\\\\d{4})\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 2,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Expiry date",
+            "mask": "{{99}}/{{9999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "expiryDate",
+          "type": "expirydate"
+        }
+      ],
+      "id": 117,
+      "paymentMethod": "card",
+      "paymentProductGroup": "Cards",
+      "usesRedirectionTo3rdParty": false,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 23,
+        "label": "Mealvouchers",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Mealvouchers.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 23,
+          "label": "Mealvouchers",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Mealvouchers.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5402,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 24,
+        "label": "Ogloba",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Ogloba.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 24,
+          "label": "Ogloba",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Ogloba.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5602,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 25,
+        "label": "Oney3x",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Oney3x.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 25,
+          "label": "Oney3x",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Oney3x.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5111,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 26,
+        "label": "Oney3x4x",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Oney3x4x.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 26,
+          "label": "Oney3x4x",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Oney3x4x.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5110,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 27,
+        "label": "OneyBrandedGiftCard",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/OneyBrandedGiftCard.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 27,
+          "label": "OneyBrandedGiftCard",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/OneyBrandedGiftCard.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5600,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": true,
+      "displayHints": {
+        "displayOrder": 28,
+        "label": "PAYPAL",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/PAYPAL.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 28,
+          "label": "PAYPAL",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/PAYPAL.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 840,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 29,
+        "label": "Przelewy24",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Przelewy24.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 29,
+          "label": "Przelewy24",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Przelewy24.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 3124,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": true,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 30,
+        "label": "SepaDirectDebit",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/SepaDirectDebit.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 30,
+          "label": "SepaDirectDebit",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/SepaDirectDebit.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "list"
+            },
+            "label": "Title",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "HonorificPrefix",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 15,
+                "minLength": 0
+              },
+              "regularExpression": {
+                "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßŠšŽžŸÿęĘ \\\\-_'æÆœŒß~0-9,\\\\.\\\\(\\\\)]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 1,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "First name",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "FirstName",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 55,
+                "minLength": 0
+              },
+              "regularExpression": {
+                "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßŠšŽžŸÿęĘ \\\\-_'æÆœŒß~0-9,\\\\.\\\\(\\\\)]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 2,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Name",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "LastName",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "regularExpression": {
+                "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßŠšŽžŸÿęĘ \\\\-_'æÆœŒß~]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 3,
+            "formElement": {
+              "type": "list"
+            },
+            "label": "Country",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "Country",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 50,
+                "minLength": 0
+              },
+              "regularExpression": {
+                "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßŠšŽžŸÿęĘ \\\\-_'æÆœŒß~0-9,\\\\.\\\\(\\\\)]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 4,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Street",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "Street",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 10,
+                "minLength": 0
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 5,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Postcode",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "PostalCode",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 35,
+                "minLength": 0
+              },
+              "regularExpression": {
+                "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßŠšŽžŸÿęĘ \\\\-_'æÆœŒß~]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 6,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "City",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "City",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "iban": {
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 7,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "IBAN",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "Iban",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+              "length": {
+                "maxLength": 70,
+                "minLength": 0
+              },
+              "regularExpression": {
+                "regularExpression": "^\\$|^([-a-zA-Z0-9!#\\\\\\\\\\$%&\\\\*\\\\+/=\\\\?^_'`|~]+(?:\\\\.[-a-zA-Z0-9!#\\\\\\\\\\$%&\\\\*\\\\+/=\\\\?^_'`|~]+)*)@((?:[-a-zA-Z0-9!#\\\\\\\\\\$%&\\\\*\\\\+/=\\\\?^_'`|~]+\\\\.)*\\\\w[\\\\w-]{0,66})\\\\.([a-zA-Z]{2,}(?:\\\\.[a-zA-Z]{2})?)([;]([-a-zA-Z0-9!#\\\\\\\\\\$%&\\\\*\\\\+/=\\\\?^_`'|~]+(?:\\\\.[-a-zA-Z0-9!#\\\\\\\\\\$%&\\\\*\\\\+/=\\\\?^_`'|~]+)*)@((?:[-a-zA-Z0-9!#\\\\\\\\\\$%&\\\\*\\\\+/=\\\\?^_`'|~]+\\\\.)*\\\\w[\\\\w-]{0,66})\\\\.([a-zA-Z]{2,6}(?:\\\\.[a-zA-Z]{2})?))*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 8,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "E-mail",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "Email",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+              "length": {
+                "maxLength": 40,
+                "minLength": 0
+              },
+              "regularExpression": {
+                "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßŠšŽžŸÿęĘ \\\\-_'æÆœŒß~0-9,\\\\.\\\\(\\\\)]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 9,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Company name",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "CompanyName",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 11,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "NoAliasCreation",
+          "type": "string"
+        }
+      ],
+      "id": 771,
+      "paymentMethod": "directDebit",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": true,
+      "displayHints": {
+        "displayOrder": 31,
+        "label": "Sodexo Sport & Culture",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Sodexo Sport & Culture.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 31,
+          "label": "Sodexo Sport & Culture",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/Sodexo Sport & Culture.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 50,
+                "minLength": 5
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card number",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardNumber",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+              "length": {
+                "maxLength": 30,
+                "minLength": 6
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 1,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Security Code",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "IntegerKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "PinCode",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 3,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "NoAliasCreation",
+          "type": "string"
+        }
+      ],
+      "id": 5772,
+      "paymentMethod": "card",
+      "usesRedirectionTo3rdParty": false,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 32,
+        "label": "sofinco3xcb",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/sofinco3xcb.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 32,
+          "label": "sofinco3xcb",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/sofinco3xcb.gif"
+        }
+      ],
+      "fields": [
+      ],
+      "id": 5131,
+      "paymentMethod": "redirect",
+      "usesRedirectionTo3rdParty": true,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": true,
+      "allowsTokenization": true,
+      "displayHints": {
+        "displayOrder": 33,
+        "label": "VISA",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/VISA.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 33,
+          "label": "VISA",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/VISA.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 19,
+                "minLength": 13
+              },
+              "luhn": {
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card number",
+            "mask": "{{9999}} {{9999}} {{9999}} {{9999}} {{999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardNumber",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 50,
+                "minLength": 2
+              },
+              "regularExpression": {
+                "regularExpression": "^[a-zA-ZàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßẞŠšŽžŸÿčČďĎěĚľĽĺĹňŇřŘšťŠŤůŮžŽęĘłŁśŚźŹżŻąĄčČęĘėĖįĮšŠųŲūŪžŽäÄöÖõÕüÜāĀčČēĒģĢīĪķĶļĻņŅōŌŗŖšŠūŪžŽ0-9 +_.=,:\\\\-\\\\[\\\\]\\\\/\\\\(\\\\)']*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 1,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Cardholder's name",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardholderName",
+          "type": "string"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "expirationDate": {
+              },
+              "regularExpression": {
+                "regularExpression": "^(0[1-9]|1[0-2])(\\\\d{4})\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 2,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Expiry date",
+            "mask": "{{99}}/{{9999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "expiryDate",
+          "type": "expirydate"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 3,
+                "minLength": 3
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 3,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card verification code",
+            "mask": "{{9999}}",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": "Last 3 digits on the back of the card"
+            }
+          },
+          "id": "cvv",
+          "type": "numericstring"
+        }
+      ],
+      "id": 1,
+      "paymentMethod": "card",
+      "paymentProductGroup": "Cards",
+      "usesRedirectionTo3rdParty": false,
+      "allowsAuthentication": false
+    },
+    {
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "displayHints": {
+        "displayOrder": 34,
+        "label": "VVV Giftcard",
+        "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/VVV Giftcard.gif"
+      },
+      "displayHintsList": [
+        {
+          "displayOrder": 34,
+          "label": "VVV Giftcard",
+          "logo": "https://assets.test.cdn.v-psp.com/s2s/0c73d6c6195079ae5b5e/images/pm/VVV Giftcard.gif"
+        }
+      ],
+      "fields": [
+        {
+          "dataRestrictions": {
+            "isRequired": true,
+            "validators": {
+              "length": {
+                "maxLength": 50,
+                "minLength": 5
+              },
+              "regularExpression": {
+                "regularExpression": "^[0-9]*\\$"
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 0,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Card number",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "cardNumber",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+              "length": {
+                "maxLength": 30,
+                "minLength": 6
+              }
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 1,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "Security Code",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "IntegerKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "PinCode",
+          "type": "numericstring"
+        },
+        {
+          "dataRestrictions": {
+            "isRequired": false,
+            "validators": {
+            }
+          },
+          "displayHints": {
+            "alwaysShow": false,
+            "displayOrder": 3,
+            "formElement": {
+              "type": "text"
+            },
+            "label": "",
+            "obfuscate": false,
+            "placeholderLabel": "",
+            "preferredInputType": "StringKeyboard",
+            "tooltip": {
+              "label": ""
+            }
+          },
+          "id": "NoAliasCreation",
+          "type": "string"
+        }
+      ],
+      "id": 5784,
+      "paymentMethod": "card",
+      "usesRedirectionTo3rdParty": false,
+      "allowsAuthentication": false
+    }
+  ]
+}
