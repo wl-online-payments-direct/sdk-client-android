@@ -47,6 +47,9 @@ captures/
 .idea/caches
 .idea/navEditor.xml
 .idea/misc.xml
+.idea/shelf
+NUL
+*.local.json
 
 # Keystore files
 *.jks

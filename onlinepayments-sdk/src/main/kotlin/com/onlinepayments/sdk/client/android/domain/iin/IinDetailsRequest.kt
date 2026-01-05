@@ -1,0 +1,30 @@
+/*
+ * Do not remove or alter the notices in this preamble.
+ *
+ * Copyright © 2026 Worldline and/or its affiliates.
+ *
+ * All rights reserved. License grant and user rights and obligations according to the applicable license agreement.
+ *
+ * Please contact Worldline for questions regarding license and user rights.
+ */
+
+package com.onlinepayments.sdk.client.android.domain.iin
+
+import com.google.gson.annotations.SerializedName
+import com.onlinepayments.sdk.client.android.domain.PaymentContextWithAmount
+import java.io.Serializable
+
+/**
+ * Data class that contains the request for IIN lookup.
+ */
+@ConsistentCopyVisibility
+data class IinDetailsRequest internal constructor(
+    @SerializedName("bin") val bin: String?,
+    val paymentContext: PaymentContextWithAmount? = null
+) : Serializable {
+    companion object {
+        @Suppress("Unused")
+        private const val serialVersionUID = 8401271765455867950L
+    }
+}
+

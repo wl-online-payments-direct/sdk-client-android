@@ -1,0 +1,26 @@
+{
+  "id": "cardNumber",
+  "type": "numericstring",
+  "displayHints": {
+    "label": "Card number",
+    "placeholderLabel": "test placeholder",
+    "mask": "{{9999}} {{9999}} {{9999}} {{9999}} {{999}}",
+    "obfuscate": true,
+    "preferredInputType": "IntegerKeyboard",
+    "formElement": {
+      "type": "text"
+    }
+  },
+  "dataRestrictions": {
+    "isRequired": true,
+    "validators": {
+      "length": {
+        "minLength": 12,
+        "maxLength": 19
+      },
+      "luhn": {
+        "enabled": true
+      }
+    }
+  }
+}

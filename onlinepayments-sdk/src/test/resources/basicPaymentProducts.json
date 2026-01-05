@@ -1,0 +1,135 @@
+{
+  "paymentProducts": [
+    {
+      "id": "1",
+      "paymentMethod": "card",
+      "displayHints": {
+        "label": "Visa",
+        "logo": "https://example.com/visa.png"
+      },
+      "allowsInstallments": false,
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "usesRedirectionTo3rdParty": false,
+      "displayHintsList": [
+        {
+          "displayOrder": 0,
+          "label": "VISA",
+          "logo": "logo"
+        }
+      ],
+      "accountsOnFile": [
+        {
+          "attributes": [
+            {
+              "key": "alias",
+              "status": "READ_ONLY",
+              "value": "test label"
+            },
+            {
+              "key": "cardNumber",
+              "status": "READ_ONLY",
+              "value": "9999-9999-9999-9999"
+            },
+            {
+              "key": "cvv",
+              "status": "MUST_WRITE",
+              "value": ""
+            }
+          ],
+          "displayHints": {
+            "labelTemplate": [
+              {
+                "attributeKey": "alias",
+                "mask": ""
+              }
+            ],
+            "logo": "test-logo"
+          },
+          "id": "1234",
+          "paymentProductId": 1
+        },
+        {
+          "attributes": [
+            {
+              "key": "alias",
+              "status": "READ_ONLY",
+              "value": "test label"
+            },
+            {
+              "key": "cardNumber",
+              "status": "READ_ONLY",
+              "value": "9999-9999-9999-9999"
+            },
+            {
+              "key": "cvv",
+              "status": "MUST_WRITE",
+              "value": ""
+            }
+          ],
+          "displayHints": {
+            "labelTemplate": [
+              {
+                "attributeKey": "alias",
+                "mask": ""
+              }
+            ],
+            "logo": "test-logo"
+          },
+          "id": "1234",
+          "paymentProductId": 1
+        },
+        {
+          "attributes": [
+            {
+              "key": "alias",
+              "status": "READ_ONLY",
+              "value": "test label"
+            },
+            {
+              "key": "cardNumber",
+              "status": "READ_ONLY",
+              "value": "9999-9999-9999-9999"
+            },
+            {
+              "key": "cvv",
+              "status": "MUST_WRITE",
+              "value": ""
+            }
+          ],
+          "displayHints": {
+            "labelTemplate": [
+              {
+                "attributeKey": "alias",
+                "mask": ""
+              }
+            ],
+            "logo": "test-logo"
+          },
+          "id": "5678",
+          "paymentProductId": 2
+        }
+      ],
+      "paymentProduct302SpecificData": {
+        "networks": ["test network 1", "test network 2", "test network 3"]
+      },
+      "paymentProduct320SpecificData": {
+        "networks": ["test network 1", "test network 2", "test network 3"],
+        "gateway": "test gateway"
+      }
+    },
+    {
+      "id": "2",
+      "paymentMethod": "card",
+      "displayHints": {
+        "label": "Mastercard",
+        "logo": "https://example.com/mc.png"
+      }
+    },
+    {
+      "id": "302",
+      "paymentMethod": "mobile",
+      "displayHints": {"label": "Apple Pay"}
+    }
+  ]
+}

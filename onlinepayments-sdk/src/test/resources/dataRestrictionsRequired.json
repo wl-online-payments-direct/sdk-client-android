@@ -1,0 +1,9 @@
+{
+  "isRequired": true,
+  "validators": {
+    "length": {
+      "maxLength": 10,
+      "minLength": 3
+    }
+  }
+}

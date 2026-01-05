@@ -1,0 +1,32 @@
+## Online Payments SDK - Integration Test Configuration
+##
+## Copy this file to 'local.properties' and fill in your credentials.
+## The local.properties file is .gitignored and will not be committed.
+##
+## These credentials are ONLY needed for running integration tests.
+## Unit tests do not require any configuration.
+
+# Required: Merchant ID from your Worldline account
+ONLINEPAYMENTS_SDK_MERCHANT_ID=
+
+# Required: API Key ID from your Worldline account
+ONLINEPAYMENTS_SDK_API_ID=
+
+# Required: API Secret from your Worldline account
+ONLINEPAYMENTS_SDK_API_SECRET=
+
+# Optional: API host (defaults to preprod environment)
+# ONLINEPAYMENTS_SDK_HOST=payment.preprod.direct.worldline-solutions.com
+
+# Optional: Test card numbers (defaults provided)
+# CARD_NUMBER_WITH_SURCHARGE=4567350000427977
+# CARD_NUMBER_WITHOUT_SURCHARGE=4242424242424242
+# CARD_NUMBER_WITH_CO_BRANDS=5341013985664960
+
+# Optional: Test product IDs (defaults provided)
+# PRODUCT_ID_WITH_SURCHARGE=302
+# PRODUCT_ID_WITHOUT_SURCHARGE=2
+
+## Security note:
+## NEVER commit your local.properties file with real credentials!
+## This file should remain in .gitignore

@@ -22,10 +22,8 @@ processes security credentials to guarantee the safe transit of your customers' 
     - [Example apps](#example-apps)
     - [Quick overview](#quick-overview)
     - [Type definitions](#type-definitions)
-        - [Session](#session)
-            - [Logging of requests and responses](#logging-of-requests-and-responses)
+        - [OnlinePaymentSdk](#onlinepaymentsdk)
         - [PaymentContext](#paymentcontext)
-        - [PaymentItems](#paymentitems)
         - [BasicPaymentProduct](#basicpaymentproduct)
         - [AccountOnFile](#accountonfile)
         - [PaymentProduct](#paymentproduct)
@@ -35,15 +33,13 @@ processes security credentials to guarantee the safe transit of your customers' 
             - [Set field values to payment request](#set-field-values-to-payment-request)
             - [Validate payment request](#validate-payment-request)
             - [Encrypt payment request](#encrypt-payment-request)
+        - [CreditCardTokenRequest](#creditcardtokenrequest)
         - [IINDetails](#iindetails)
-        - [Masking](#masking)
-        - [StringFormatter](#stringformatter)
     - [Payment Steps](#payment-steps)
         - [1. Initialize the Android SDK for this payment](#1-initialize-the-android-sdk-for-this-payment)
-        - [2. Retrieve the payment items](#2-retrieve-the-payment-items)
-        - [3. Retrieve payment product details](#3-retrieve-payment-product-details)
-        - [4. Encrypt payment information](#4-encrypt-payment-information)
-        - [5. Response from the Server API call](#5-response-from-the-server-api-call)
+        - [2. Retrieve payment product details](#2-retrieve-payment-product-details)
+        - [3. Encrypt payment information](#3-encrypt-payment-information)
+        - [4. Response from the Server API call](#4-response-from-the-server-api-call)
 
 ## Installation
 
@@ -77,30 +73,47 @@ section [Payment Steps](#payment-steps) for more details on these steps.
 
    **_java:_**
    ```java
-   Session session = new Session(
-       "47e9dc332ca24273818be2a46072e006", // client session id
-       "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
-       "https://clientapi.com", // client API URL
-       "https://assets.com", // asset URL
-       false, // states if the environment is production, this property is used to determine the Google Pay environment
-       "Android Example Application/v2.0.4", // your application identifier
-       true, // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
-       getApplicationContext() // this will get your Java application context
-   );
+    OnlinePaymentSdk sdk = new OnlinePaymentSdk(
+        new SessionData(
+           "47e9dc332ca24273818be2a46072e006", // client session id
+           "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
+           "https://clientapi.com", // client API URL
+           "https://assets.com" // asset URL
+        ),
+       getApplicationContext(), // this will get your Java application context
+       new SdkConfiguration( //optional
+           false, // states if the environment is production, this property is used to determine the Google Pay environment
+           "Android Example Application/v2.0.4", // your application identifier
+           "AndroidSDK/v4.0.0", // SDK identifier
+           true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
+       )
+    );
    ```
 
    **_kotlin:_**
    ```kotlin
-   val session = Session(
-       "47e9dc332ca24273818be2a46072e006", // client session id
-       "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
-       "https://clientapi.com", // client API URL
-       "https://assets.com", // asset URL
-       false, // states if the environment is production, this property is used to determine the Google Pay environment
-       "Android Example Application/v2.0.4", // your application identifier
-       true, // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
-       getApplication<Application>().applicationContext
-   )
+    // Create session data
+    val sessionData = SessionData(
+       clientSessionId = "47e9dc332ca24273818be2a46072e006", // client session id
+       customerId = "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
+       clientApiUrl = "https://clientapi.com", // client API URL
+       assetUrl = "https://assets.com" // asset URL
+    )
+
+    // Create SDK configuration
+    val sdkConfiguration = SdkConfiguration(
+       environmentIsProduction = false, // states if the environment is production, this property is used to determine the Google Pay environment
+       appIdentifier = "Android Example Application/v2.0.4", // your application identifier
+       sdkIdentifier = "AndroidSDK/v4.0.0", // SDK identifier
+       loggingEnabled = true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
+    )
+
+    // Initialize SDK
+    val sdk = OnlinePaymentSdk(
+       sessionData = sessionData,
+       context = getApplication<Application>().applicationContext, // application context
+       configuration = sdkConfiguration //optional
+    )
    ```
 
 3. Configure your payment context.
@@ -134,7 +147,7 @@ section [Payment Steps](#payment-steps) for more details on these steps.
    ```
 
 4. Retrieve the available Payment Products. After successfully retrieving the Payment Products,
-   display the `BasicPaymentItem` and `AccountOnFile` lists and request your customer to select one.\
+   display the `BasicPaymentProduct` and `AccountOnFile` lists and request your customer to select one.\
    **Note:** each session call can throw errors. Wrap your code into the try/catch block.\
    **Note 2:** Since Kotlin methods are asynchronous (using coroutines), there are synchronous overloads with `Sync`
    suffixes that you can use in Java, but be aware they will block the main thread. For async calls in Java, you can use
@@ -143,25 +156,24 @@ section [Payment Steps](#payment-steps) for more details on these steps.
    **_java:_**
    ```java
    // sync call - blocks the main thread
-   try {
-       BasicPaymentItems basicPaymentItems = session.getBasicPaymentItemsSync(paymentContext);
-
-       // Display the contents of basicPaymentItems & accountsOnFile to your customer.
-   } catch (e: ApiException) {
-       // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
-   } catch (e: CommunicationException) {
-       // Handle the communication exception - it can happen when the API call could not be established.
-   } catch (e: Exception) {
-       // Handle any other unhandled exception.
-   }
+    try {
+    BasicPaymentProducts basicPaymentProducts = sdk.getBasicPaymentProductsSync(paymentContext);
+       // Display the contents of basicPaymentProducts to your customer.
+    } catch (ResponseException e) {
+       // Handle HTTP/API errors (usually 4xx)
+    } catch (CommunicationException e) {
+      // Handle communication errors (network connection failed, timeout, malformed URL, etc.)
+    } catch (Exception e) {
+      // Handle any other unhandled exception
+    }
 
    // *** Listener-based async call ****
-   session.getBasicPaymentItems(
+   session.getBasicPaymentProducts(
        paymentContext, // PaymentContext
-       new BasicPaymentItemsResponseListener() {
+       new BasicPaymentProductsResponseListener() {
            @Override
-           public void onSuccess(@NonNull BasicPaymentItems basicPaymentItems) {
-              // Display the contents of basicPaymentItems & accountsOnFile to your customer
+           public void onSuccess(@NonNull BasicPaymentProducts basicPaymentProducts) {
+              // Display the contents of basicPaymentProducts to your customer
            }
 
            @Override
@@ -179,17 +191,16 @@ section [Payment Steps](#payment-steps) for more details on these steps.
 
    **_kotlin:_**
    ```kotlin
-   try {
-       val basicPaymentItems = session.getBasicPaymentItems(paymentContext)
-    
-       // Display the contents of basicPaymentItems & accountsOnFile to your customer.
-   } catch (e: ApiException) {
-       // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
-   } catch (e: CommunicationException) {
-       // Handle the communication exception - it can happen when the API call could not be established.
-   } catch (e: Exception) {
-       // Handle any other unhandled exception.
-   }
+    try {
+        BasicPaymentProducts basicPaymentProducts = sdk.getBasicPaymentProducts(paymentContext);
+        // Display the contents of basicPaymentProducts to your customer.
+    } catch (ResponseException e) {
+        // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
+    } catch (CommunicationException e) {
+       // Handle communication errors (network connection failed, timeout, malformed URL, etc.)
+    } catch (Exception e) {
+       // Handle any other unhandled exception
+    }
    ```
 
 5. Once the customer has selected the desired payment product, retrieve the enriched`PaymentProduct`
@@ -200,10 +211,9 @@ section [Payment Steps](#payment-steps) for more details on these steps.
    ```java
    // sync call
    try {
-       PaymentProduct paymentProduct = session.getPaymentProductSync(paymentProductId, paymentContext);
-
+       PaymentProduct paymentProduct = sdk.getPaymentProductSync(paymentProductId, paymentContext);
        // Display the fields to your customer.
-   } catch (e: ApiException) {
+   } catch (e: ResponseException) {
        // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
    } catch (e: CommunicationException) {
        // Handle the communication exception - it can happen when the API call could not be established.
@@ -215,10 +225,9 @@ section [Payment Steps](#payment-steps) for more details on these steps.
    **_kotlin:_**
    ```kotlin
    try {
-       val paymentProduct = session.getPaymentProduct(paymentProductId, paymentContext)
-
+       val paymentProduct = sdk.getPaymentProduct(paymentProductId, paymentContext)
        // Display the fields to your customer.
-   } catch (e: ApiException) {
+   } catch (e: ResponseException) {
        // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
    } catch (e: CommunicationException) {
        // Handle the communication exception - it can happen when the API call could not be established.
@@ -231,55 +240,62 @@ section [Payment Steps](#payment-steps) for more details on these steps.
 
    **_java:_**
    ```java
-   PaymentRequest paymentRequest = new PaymentRequest();
+   //payment request with paymentProduct, accountOnFile, tokenize status
+   PaymentRequest paymentRequest = new PaymentRequest(paymentProduct, null, false);
     
-   paymentRequest.setValue(
-       "cardNumber", // field id
-       "12451254457545" // unmasked value
-   );
+   //new way of setting (unmasked) values 
+   paymentRequest.field("cardNumber).setValue("12451254457545")
+   
+   //backward compatibility
    paymentRequest.setValue("cvv","123");
    paymentRequest.setValue("expiryDate","1225");
    ```
 
    **_kotlin:_**
    ```kotlin
-   var paymentRequest = PaymentRequest()
+   var paymentRequest = PaymentRequest(paymentProduct)
     
-   paymentRequest.setValue(
-       "cardNumber", // field id
-       "12451254457545" // unmasked value
-   )
+   //new way of setting (unmasked) values
+   paymentRequest.field("cardNumber").setValue("12451254457545")
+
+   //backward compatibility
    paymentRequest.setValue("cvv","123")
    paymentRequest.setValue("expiryDate","1225")
    ```
 
 7. Validate and encrypt the payment request. After successfully encrypting the `PaymentRequest`, you will have access
-   to the encrypted version, `PreparedPaymentRequest`. The encrypted customer data should then be sent to your server.
+   to the encrypted version, `EncryptedRequest`. The encrypted customer data should then be sent to your server.
 
    **_java:_**
    ```java
-   try {
-       PreparedPaymentRequest preparedRequest = session.preparePaymentRequestSync(paymentRequest);
-
-       // Send the preparedRequest.encryptedFields to your server and use it to create the payment with the Server SDK.
-   } catch (e: EncryptDataException) {
-       // Handle the ecryption exception.
-   } catch (e: Exception) {
-       // Handle any other unhandled exception.
-   }
+    try {
+        EncryptedRequest encryptedRequest = sdk.encryptPaymentRequestSync(paymentRequest);
+        // Send the encryptedRequest.encryptedCustomerInput to your server and use it to create the payment with the Server SDK.
+    } catch (EncryptionException e) {
+        // Handle encryption failure (invalid payment data, encryption failed, etc.)
+    } catch (ResponseException e) {
+        // Handle HTTP/API errors (usually 4xx)
+    } catch (CommunicationException e) {
+        // Handle communication errors when fetching public key (network issues, timeout, etc.)
+    } catch (Exception e) {
+       // handle any other unhandled exception
+    }
    ```
 
    **_kotlin:_**
    ```kotlin
-   try {
-       val preparedRequest = session.preparePaymentRequest(paymentRequest)
-
-       // Send the preparedRequest.encryptedFields to your server and use it to create the payment with the Server SDK.
-   } catch (e: EncryptDataException) {
-       // Handle the ecryption exception.
-   } catch (e: Exception) {
-       // Handle any other unhandled exception.
-   }
+    try {
+        val encryptedRequest = sdk.encryptPaymentRequest(paymentRequest)
+        // Send the encryptedRequest.encryptedCustomerInput to your server and use it to create the payment with the Server SDK.
+    } catch (e: EncryptionException) {
+        // Handle encryption failure (invalid payment data, encryption failed, etc.)
+    } catch (e: ResponseException) {
+        // Handle HTTP/API errors (usually 4xx)
+    } catch (e: CommunicationException) {
+       // Handle communication errors when fetching public key (network issues, timeout, etc.)
+    } catch (e: Exception) {
+       // Handle any other unhandled exception
+    }
    ```
 
 8. Request your server to create a payment request using the Server APIs Create Payment call.
@@ -290,68 +306,69 @@ section [Payment Steps](#payment-steps) for more details on these steps.
 
 ## Type definitions
 
-### Session
+### OnlinePaymentSdk
 
-An instance of the `Session` class is required for all interactions with the SDK. The following code fragment shows how
-`Session` is initialized. The session details are obtained by performing a Create Client Session call using the Server
+An instance of the `OnlinePaymentSdk` class is required for all interactions with the SDK. The following code fragment
+shows how
+`OnlinePaymentSdk` is initialized. The session details are obtained by performing a Create Client Session call using the
+Server
 API (not part of this SDK).
 
 **_java:_**
 
-```java
-Session session = new Session(
-    "47e9dc332ca24273818be2a46072e006", // client session id
-    "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
-    "https://clientapi.com", // client API URL
-    "https://assets.com", // asset URL
-    false, // states if the environment is production, this property is used to determine the Google Pay environment
-    "Android Example Application/v2.0.4", // your application identifier
-    true, // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
-    getApplicationContext() // this will get your Java application context
-);
-```
+   ```java
+    OnlinePaymentsSDK sdk = new OnlinePaymentsSDK(
+        new SessionData(
+           "47e9dc332ca24273818be2a46072e006", // client session id
+           "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
+           "https://clientapi.com", // client API URL
+           "https://assets.com" // asset URL
+        ),
+       getApplicationContext(), // this will get your Java application context
+       new SdkConfiguration(
+           false, // states if the environment is production, this property is used to determine the Google Pay environment
+           "Android Example Application/v2.0.4", // your application identifier
+           "AndroidSDK/v4.0.0", // SDK identifier
+           true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
+       )
+    );
+   ```
 
 **_kotlin:_**
 
-```kotlin
-val session = Session(
-    "47e9dc332ca24273818be2a46072e006", // client session id
-    "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
-    "https://clientapi.com", // client API URL
-    "https://assets.com", // asset URL
-    false, // states if the environment is production, this property is used to determine the Google Pay environment
-    "Android Example Application/v2.0.4", // your application identifier
-    true, // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
-    getApplication<Application>().applicationContext
-)
-```
+   ```kotlin
+    // Create session data
+    val sessionData = SessionData(
+       clientSessionId = "47e9dc332ca24273818be2a46072e006", // client session id
+       customerId = "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
+       clientApiUrl = "https://clientapi.com", // client API URL
+       assetUrl = "https://assets.com" // asset URL
+    )
 
-Almost all methods that are offered by `Session` are simple wrappers around the Client API. They create the request and
+    // Create SDK configuration
+    val sdkConfiguration = SdkConfiguration(
+       environmentIsProduction = false, // states if the environment is production, this property is used to determine the Google Pay environment
+       appIdentifier = "Android Example Application/v2.0.4", // your application identifier
+       sdkIdentifier = "AndroidSDK/v4.0.0", // SDK identifier
+       loggingEnabled = true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
+    )
+
+    // Initialize SDK
+    val sdk = OnlinePaymentsSDK(
+       sessionData = sessionData,
+       context = getApplication<Application>().applicationContext, // application context
+       configuration = sdkConfiguration
+    )
+   ```
+
+Almost all methods that are offered by `OnlinePaymentSdk` are simple wrappers around the Client API. They create the
+request and
 convert the response to Java objects that may contain convenience functions.
-
-#### Logging of requests and responses
-
-You can log requests made to the server and responses received from the server. By default, logging is disabled,
-and it is essential to disable it in production. You can enable logging in two ways. Either by setting its value
-when creating a Session - as shown in the code fragment above - or by setting its value after the Session was already
-created.
-
-**_java:_**
-
-```java
-session.setLoggingEnabled(true);
-```
-
-**_kotlin:_**
-
-```kotlin
-session.setLoggingEnabled(true)
-```
 
 ### PaymentContext
 
 `PaymentContext` is an object that contains the context/settings of the upcoming payment. It is required as an argument
-to some of the methods of the `Session` instance. This object can contain the following details:
+to some of the methods of the `OnlinePaymentSdk` instance. This object can contain the following details:
 
 **_java:_**
 
@@ -373,49 +390,6 @@ data class PaymentContext(
 ) : Serializable { ... }
 ```
 
-### PaymentItems
-
-This object contains the available Payment Items for the current payment. Use the
-`session.getBasicPaymentItems` function to request the data.
-
-The object you will receive is `BasicPaymentItems`, which contains two lists. One for all available
-`BasicPaymentItem`s and one for all available `AccountOnFile`s.
-
-The code fragment below shows how to get the `BasicPaymentItems` instance.
-
-**_java:_**
-
-```java
-// sync call
-try {
-   BasicPaymentItems basicPaymentItems = session.getBasicPaymentItemsSync(paymentContext);
-
-   // Display the contents of basicPaymentItems & accountsOnFile to your customer.
-} catch (e: ApiException) {
-   // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
-} catch (e: CommunicationException) {
-   // Handle the communication exception - it can happen when the API call could not be established.
-} catch (e: Exception) {
-   // Handle any other unhandled exception.
-}
-```
-
-**_kotlin:_**
-
-```kotlin
-try {
-   val basicPaymentItems = session.getBasicPaymentItems(paymentContext)
-
-   // Display the contents of basicPaymentItems & accountsOnFile to your customer.
-} catch (e: ApiException) {
-   // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
-} catch (e: CommunicationException) {
-   // Handle the communication exception - it can happen when the API call could not be established.
-} catch (e: Exception) {
-   // Handle any other unhandled exception.
-}
-```
-
 ### BasicPaymentProduct
 
 The SDK offers two types to represent information about payment products: `BasicPaymentProduct` and `PaymentProduct`.
@@ -431,21 +405,23 @@ Below is an example for how to obtain display names and assets for the Visa prod
 **_java:_**
 
 ```java
-BasicPaymentItem basicPaymentProduct = paymentItems.getBasicPaymentItemById("1");
+BasicPaymentProducts basicPaymentProducts = sdk.getBasicPaymentProducts(paymentContext)
 
-String id = basicPaymentProduct.getId();
-String label = basicPaymentProduct.getDisplayHintsList().get(0).getLabel();
-String logoUrl = basicPaymentProduct.getDisplayHintsList().get(0).getLogoUrl();
+List<BasicPaymentProduct> paymentProducts = basicPaymentProducts.getPaymentProducts();
+
+String label = paymentProducts[0].getLabel
+String logoUrl = paymentProducts[0].getLogo
 ```
 
 **_kotlin:_**
 
 ```kotlin
-val basicPaymentProduct = paymentItems.getBasicPaymentItemById("1")
+val basicPaymentProducts = sdk.getBasicPaymentProducts(paymentContext)
 
-val id = basicPaymentProduct.id
-val label = basicPaymentProduct.displayHintsList[0].label
-val logoUrl = basicPaymentProduct.displayHintsList[0].logoUrl
+val paymentProducts = basicPaymentProducts.paymentProducts
+
+val label = paymentProducts[0].label
+val logoUrl = paymentProducts[0].logo
 ```
 
 ### AccountOnFile
@@ -466,7 +442,7 @@ List<AccountOnFile> allAccountsOnFile = basicPaymentProduct.getAccountsOnFile();
 // Get specific account on file for the payment product
 AccountOnFile accountOnFile = null;
 
-for (AccountOnFile aof : basicPaymentProduct.getAccountsOnFile()) {
+for (AccountOnFile aof : basicPaymentProduct.getAccountsOnFile) {
     if (Objects.equals(aof.getId(), identifier)) { // 'identifier' is the ID of the AccountOnFile selected by the customer
         accountOnFile = aof;
         break;
@@ -474,9 +450,7 @@ for (AccountOnFile aof : basicPaymentProduct.getAccountsOnFile()) {
 }
 
 // Shows a mask based formatted value for the obfuscated cardNumber.
-// The mask that is used is defined in the displayHints of this accountOnFile
-// If the mask for the "cardNumber" field is {{9999}} {{9999}} {{9999}} {{9999}}, then the result would be **** **** **** 7412
-String maskedValue = accountOnFile.getMaskedValue("cardNumber");
+String label = accountOnFile.getLabel
 ```
 
 **_kotlin:_**
@@ -490,9 +464,7 @@ val accountOnFile = basicPaymentProduct.accountsOnFile
     .firstOrNull { it.id == identifier } // 'identifier' is the ID of the AccountOnFile selected by the customer
 
 // Shows a mask-based formatted value for the obfuscated card number
-// The mask that is used is defined in the displayHints of this accountOnFile
-// If the mask for the "cardNumber" field is {{9999}} {{9999}} {{9999}} {{9999}}, then the result would be **** **** **** 7412
-val maskedValue = accountOnFile?.getMaskedValue("cardNumber") ?: ""
+val label = accountOnFile?.label
 ```
 
 ### PaymentProduct
@@ -506,14 +478,15 @@ contain any information about these fields.
 Information about the fields of payment products are represented by instances of`PaymentProductField`, which are
 contained in instances of `PaymentProduct`. The class `PaymentProductField` is described further down below.
 
-The `Session` instance can be used to retrieve the instance of a `PaymentProduct`, as shown in the following code
+The `OnlinePaymentSdk` instance can be used to retrieve the instance of a `PaymentProduct`, as shown in the following
+code
 fragment.
 
 **_java:_**
 
 ```java
 // Note that exception handling is omitted here. Check the code above for more info. 
-PaymentProduct paymentProduct = session.getPaymentProductSync(
+PaymentProduct paymentProduct = sdk.getPaymentProductSync(
     "1", // id of the payment product you want to retrieve
     paymentContext, // PaymentContext
 );
@@ -523,7 +496,7 @@ PaymentProduct paymentProduct = session.getPaymentProductSync(
 
 ```kotlin
 // Note that exception handling is omitted here. Check the code above for more info. 
-val paymentProduct = session.getPaymentProduct(
+val paymentProduct = sesssdkion.getPaymentProduct(
     "1", // id of the payment product you want to retrieve
     paymentContext, // PaymentContext
 )
@@ -543,21 +516,19 @@ hints of the field are inspected to see whether the values a customer provides s
 **_java:_**
 
 ```java
-PaymentProductField ccvField = paymentProduct.getPaymentProductFieldById("cvv");
+PaymentProductField ccvField = paymentProduct.getField("cvv");
 
-Boolean isRequired = ccvField.getDataRestrictions()
-    .isRequired(); // state if value is required for this field
-Boolean shouldObfuscate = ccvField.getDisplayHints()
-    .isObfuscate(); // state if field value should be obfuscated
+Boolean isRequired = ccvField.isRequired(); // state if value is required for this field
+Boolean shouldObfuscate = ccvField.shouldObfuscate(); // state if field value should be obfuscated
 ```
 
 **_kotlin:_**
 
 ```kotlin
-val ccvField = paymentProduct.getPaymentProductFieldById("cvv")
+val ccvField = paymentProduct.getField("cvv")
 
-val isRequired = ccvField.dataRestrictions.isRequired()
-val shouldObfuscate = ccvField.displayHints.isObfuscate()
+val isRequired = ccvField.isRequired()
+val shouldObfuscate = ccvField.shouldObfuscate()
 ```
 
 ### PaymentRequest
@@ -565,17 +536,42 @@ val shouldObfuscate = ccvField.displayHints.isObfuscate()
 Once a payment product has been selected and an instance of `PaymentProduct` has been retrieved, a payment request can
 be constructed. This class must be used as a container for all the values the customer provides.
 
+PaymentRequest internally has list of `PaymentRequestField`. Each field provides methods to set and retrieve values, get
+the field label, obtain masked values for display, and validate user input against the field's restrictions.
+
+Set field values to the payment request
+Once a payment request has been created, the values for the payment request fields can be supplied as follows.
+
 **_java:_**
 
 ```java
-PaymentRequest paymentRequest = new PaymentRequest(paymentProduct);
+boolean tokenize = true; // true or false 
+
+//provide paymentProduct, accountOnFile, tokenize status
+PaymentRequest paymentRequest = new PaymentRequest(paymentProduct, null, tokenize);
+
+//or
+PaymentRequest paymentRequest = new PaymentRequest(paymentProduct, accountOnFile, tokenize);
 ```
 
 **_kotlin:_**
 
 ```kotlin
+//tokenize status set to false by default
 var paymentRequest = PaymentRequest(paymentProduct)
+
+//with account on file
+var paymentRequest = PaymentRequest(paymentProduct, accountOnFile)
 ```
+
+When no `AccountOnFile` is selected for the specific `PaymentRequest`, all payment request fields(such as cardNumber)
+are writable and can be set normally.
+Once an `AccountOnFile` is set on the `PaymentRequest`, the SDK enforces the following behavior:
+
+All previously set unwritable field values are cleared from the `PaymentRequest`.
+Read-only fields cannot be set manually anymore. Calling setter will throw `InvalidArgumentException`.
+Calling `paymentRequest.getField(readOnlyFieldId).getValue()` will return undefined.
+This ensures only values that can be changed are submitted.
 
 #### Tokenize payment request
 
@@ -587,10 +583,7 @@ request should be stored as an account on file. By default, `tokenize` is set to
 
 ```java
 // you can supply tokenize via the constructor
-PaymentRequest paymentRequest = new PaymentRequest(paymentProduct, true);
-
-// Or you can set the request's tokenize property after having initialized the paymentRequest
-paymentRequest.setTokenize(true);
+PaymentRequest paymentRequest = new PaymentRequest(paymentProduct, accountOnFile, true);
 ```
 
 **_kotlin:_**
@@ -598,9 +591,6 @@ paymentRequest.setTokenize(true);
 ```kotlin
 // you can supply tokenize via the constructor
 var paymentRequest = PaymentRequest(paymentProduct, true)
-
-// Or you can set the request's tokenize property after having initialized the paymentRequest
-paymentRequest.tokenize = true
 ```
 
 If the customer selected an account on file, both the account on file and the corresponding payment product must be
@@ -612,7 +602,8 @@ be retrieved from instances of `BasicPaymentProduct` and `PaymentProduct`.
 ```java
 PaymentRequest paymentRequest = new PaymentRequest(
     paymentProduct,
-    accountOnFile
+    accountOnFile,
+    tokenizeStatus
 ); // when you do not pass an accountOnFile argument, it will be null
 ```
 
@@ -631,24 +622,21 @@ fields using the payment request. In general, you can retrieve all available fie
 **_java:_**
 
 ```java
-PaymentRequest paymentRequest = new PaymentRequest();
+PaymentRequest paymentRequest = new PaymentRequest(paymentProduct, null, false);
 
-paymentRequest.setValue(
-    "cardNumber", // field id
-    "12451254457545" // unmasked value
-);
-paymentRequest.setValue("cvv", "123");
-paymentRequest.setValue("expiryDate", "1225");
+paymentRequest.getField("cardNumber").setValue("12451254457545")
+paymentRequest.getField("cvv").setValue("123")
+paymentRequest.getField("expiryDate").setValue("1225")
 ```
 
 **_kotlin:_**
 
 ```kotlin
-var paymentRequest = PaymentRequest()
+var paymentRequest = PaymentRequest(paymentProduct)
 
-paymentRequest.setValue("cardNumber", "12451254457545")
-paymentRequest.setValue("cvv", "123")
-paymentRequest.setValue("expiryDate", "1225")
+paymentRequest.getField("cardNumber").setValue("12451254457545")
+paymentRequest.getField("cvv").setValue("123")
+paymentRequest.getField("expiryDate").setValue("1225")
 ```
 
 #### Validate payment request
@@ -659,50 +647,44 @@ after the validation, which indicates any issues that have occurred during valid
 payment request can be encrypted and sent to our platform via your server (Server SDK). If there are validation errors,
 the customer should be provided with feedback about these errors.
 
-**_java:_**
-
-```java
-// validate all fields in the payment request
-List<ValidationErrorMessage> errorMessages = paymentRequest.validate();
-
-// check if the payment request is valid
-if (errorMessages.isEmpty()) {
-    // payment request is valid
-} else {
-    // payment request has errors
-}
-```
-
-**_kotlin:_**
-
-```kotlin
-// validate all fields in the payment request
-val errorMessages = paymentRequest.validate()
-
-// check if the payment request is valid
-if (errorMessages.isEmpty()) {
-    // payment request is valid
-} else {
-    // payment request has errors
-}
-```
-
 The validations are the `Validator`s linked to the `PaymentProductField`, and are returned as a
-`ValidationErrorMessage`, for example:
+`ValidationErrorMessage` list inside `ValidationResult`:
 
 **_java:_**
 
 ```java
-for (ValidationErrorMessage validationResult : errorMessages) {
-    // do something with the error, like displaying it to the user
+// validate all fields in the payment request
+// validate() return ValidationResult object with isValid status and errors
+ValidationResult validationResult = paymentRequest.validate();
+
+// check if the payment request is valid - result will return isValid: true and errors: []
+if (validationResult.isValid()) {
+    // payment request is valid
+} else {
+    // payment request has errors
+    List<ValidationErrorMessage> errors = validationResult.getErrors();
+    
+    for (ValidationErrorMessage error : errors) {
+        //show errors
+    }
 }
 ```
 
 **_kotlin:_**
 
 ```kotlin
-for (validationResult in errorMessages) {
-    // do something with the error, like displaying it to the user
+// validate all fields in the payment request
+// validate() return ValidationResult object with isValid status and errors
+val validationResult = paymentRequest.validate()
+
+// check if the // check if the payment request is valid - result will return isValid: true and errors: []
+if (validationResult.isValid) {
+    // payment request is valid
+} else {
+    // payment request has errors
+    for (error in validationResult.errors) {
+      //show errors
+    }
 }
 ```
 
@@ -710,20 +692,23 @@ for (validationResult in errorMessages) {
 
 The `PaymentRequest` is ready for encryption once the `PaymentProduct` is set, the `PaymentProductField` values have
 been provided and validated, and potentially the selected `AccountOnFile` or `tokenize` properties have been set. After
-successfully encrypting the `PaymentRequest`, you will have access to the encrypted version, `PreparedPaymentRequest`
+successfully encrypting the `PaymentRequest`, you will have access to the encrypted version, `EncryptedRequest`
 which contains the encrypted payment request fields and encoded client meta info.
 
 **_java:_**
 
 ```java
 try {
-    PreparedPaymentRequest preparedRequest = session.preparePaymentRequestSync(paymentRequest);
-    
-    // Send the preparedRequest.encryptedFields to your server and use it to create the payment with the Server SDK.
-} catch (e: EncryptDataException) {
-    // Handle the ecryption exception.
-} catch (e: Exception) {
-    // Handle any other unhandled exception.
+    EncryptedRequest encryptedRequest = sdk.encryptPaymentRequestSync(paymentRequest);
+    // Send the encryptedRequest.encryptedCustomerInput to your server and use it to create the payment with the Server SDK.
+} catch (EncryptionException e) {
+    // Handle encryption failure (invalid payment data, encryption failed, etc.)
+} catch (ResponseException e) {
+    // Handle HTTP/API errors (usually 4xx)
+} catch (CommunicationException e) {
+    // Handle communication errors when fetching public key (network issues, timeout, etc.)
+} catch (Exception e) {
+    // Handle any other unhandled exception
 }
 ```
 
@@ -731,27 +716,96 @@ try {
 
 ```kotlin
 try {
-    val preparedRequest = session.preparePaymentRequest(paymentRequest)
+    val encryptedRequest = sdk.encryptPaymentRequest(paymentRequest)
 
-    // Send the preparedRequest.encryptedFields to your server and use it to create the payment with the Server SDK.
-} catch (e: EncryptDataException) {
-    // Handle the ecryption exception.
-} catch (e: Exception) {
-    // Handle any other unhandled exception.
+    // Send the encryptedRequest.encryptedCustomerInput to your server and use it to create the payment with the Server SDK.
+} catch (EncryptionException e) {
+    // Handle encryption failure (invalid payment data, encryption failed, etc.)
+} catch (ResponseException e) {
+    // Handle HTTP/API errors (usually 4xx)
+} catch (CommunicationException e) {
+    // Handle communication errors when fetching public key (network issues, timeout, etc.)
+} catch (Exception e) {
+    // Handle any other unhandled exception
 }
 ```
 
 > Although it is possible to use your own encryption algorithms to encrypt a payment request, we
 > advise you to use the encryption functionality that is offered by the SDK.
 
+### CreditCardTokenRequest
+
+This class is used to create a Card Tokenization request. It contains the essential credit card fields: card number,
+cardholder name, expiry date, cvv, and payment product id.
+**_java:_**
+
+```java
+CreditCardTokenRequest tokenRequest = new CreditCardTokenRequest();
+tokenRequest.setCardNumber("1234567890123452");
+tokenRequest.setCardHolderName("John Doe");
+tokenRequest.setExpiryDate("1225");
+tokenRequest.setSecurityCode("123");
+tokenRequest.setPaymentProductId(1);
+```
+
+**_kotlin:_**
+
+```kotlin
+val tokenRequest = CreditCardTokenRequest()
+tokenRequest.cardNumber = "1234567890123452"
+tokenRequest.cardholderName = "John Doe"
+tokenRequest.expiryDate = "1225"
+tokenRequest.securityCode = "123"
+tokenRequest.paymentProductId = 1
+```
+
+Note that there are no validation rules applied for values set in the token request since it is detached from the
+instance of the payment product. This class is meant to be used as a helper for encrypting data required for creating a
+token using Server SDK. However, if the invalid data is provided, the Create Token request will fail.
+
+**_java:_**
+
+```java
+try {
+    EncryptedRequest encryptedRequest = sdk.encryptTokenRequest(tokenRequest);
+    // Send the encryptedRequest.encryptedCustomerInput to your server and use it to create the payment with the Server SDK.
+} catch (EncryptionException e) {
+    // Handle encryption failure (invalid payment data, encryption failed, etc.)
+} catch (ResponseException e) {
+    // Handle HTTP/API errors (usually 4xx)
+} catch (CommunicationException e) {
+    // Handle communication errors when fetching public key (network issues, timeout, etc.)
+} catch (Exception e) {
+    // Handle any other unhandled exception
+}
+```
+
+**_kotlin:_**
+
+```kotlin
+try {
+    val encryptedRequest = sdk.encryptTokenRequest(tokenRequest)
+    // Send the encryptedRequest.encryptedCustomerInput to your server and use it to create the payment with the Server SDK.
+} catch (EncryptionException e) {
+    // Handle encryption failure (invalid payment data, encryption failed, etc.)
+} catch (ResponseException e) {
+    // Handle HTTP/API errors (usually 4xx)
+} catch (CommunicationException e) {
+    // Handle communication errors when fetching public key (network issues, timeout, etc.)
+} catch (Exception e) {
+    // Handle any other unhandled exception
+}
+```
+
 ### IINDetails
 
 The first six digits of a payment card number are known as the _Issuer Identification Number (IIN)_. As soon as the
-first 6 digits of the card number have been captured, you can use the `session.getIinDetails` call to retrieve the
+first 6 digits of the card number have been captured, you can use the `sdk.getIinDetails` call to retrieve the
 payment product and network that are associated with the provided IIN. Then you can verify the card type and check if
 you can accept this card.
 
-An instance of `Session` can be used to check which payment product is associated with an IIN. This is done via the
+An instance of `OnlinePaymentSdk` can be used to check which payment product is associated with an IIN. This is done via
+the
 `session.getIinDetails` function. The result of this check is an instance of `IinDetailsResponse`. This class has a
 property status that indicates the result of the check and a property `paymentProductId` that indicates which payment
 product is associated with the IIN. The returned `paymentProductId` can be used to provide visual feedback to the
@@ -771,7 +825,7 @@ are:
 
 ```java
 // The exception hanlding is omitted from this example. See the examples above.
-session.getIinDetailsSync(
+sdk.getIinDetailsSync(
     "123456", // partial credit card number
     paymentContext // PaymentContext
 );
@@ -781,51 +835,12 @@ session.getIinDetailsSync(
 
 ```kotlin
 // The exception hanlding is omitted from this example. See the examples above.
-session.getIinDetails("123456", paymentContext)
+sdk.getIinDetails("123456", paymentContext)
 ```
 
 Some cards are dual branded and could be processed as either a local card _(with a local brand)_ or an international
 card _(with an international brand)_. In case you are not set to process these local cards, this API call will not
 return that card type in its response.
-
-### Masking
-
-To help in formatting field values based on masks, the SDK offers a base set of masking functions in `PaymentRequest`,
-`PaymentProductField`, and `AccountOnFile`.
-
-This set of masking functions all make use of the `StringFormatter` class to apply the actual logic, which is also
-publicly available in the SDK.
-
-### StringFormatter
-
-To help in formatting field values based on masks, the SDK offers the `StringFormatter` class. It allows you to format
-field values and apply and remove masks on a string.
-
-**_java:_**
-
-```java
-String mask = "{{9999}} {{9999}} {{9999}} {{9999}}";
-String value = "1234567890123456";
-
-// apply masked value
-String maskedValue = StringFormatter.applyMask(value, mask); // "1234 5678 9012 3456"
-
-// remove masked value
-String unmaskedValue = StringFormatter.reoveMask(value, mask); // "1234567890123456"
-```
-
-**_kotlin:_**
-
-```kotlin
-val  mask = "{{9999}} {{9999}} {{9999}} {{9999}}"
-val  value = "1234567890123456"
-
-// apply masked value
-val maskedValue = StringFormatter.applyMask(value, mask) // "1234 5678 9012 3456"
-
-// remove masked value
-val unmaskedValue = StringFormatter.reoveMask(value, mask) // "1234567890123456"
-```
 
 ## Payment Steps
 
@@ -839,16 +854,21 @@ like currency and total amount.
 **_java:_**
 
 ```java
-Session session = new Session(
-    "47e9dc332ca24273818be2a46072e006", // client session id
-    "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
-    "https://clientapi.com", // client API URL
-    "https://assets.com", // asset URL
-    false, // states if the environment is production, this property is used to determine the Google Pay environment
-    "Android Example Application/v2.0.4", // your application identifier
-    true, // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
-    getApplicationContext() // this will get your Java application context
-);
+OnlinePaymentSdk sdk = new OnlinePaymentSdk(
+   new SessionData(
+       "47e9dc332ca24273818be2a46072e006", // client session id
+       "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
+       "https://clientapi.com", // client API URL
+       "https://assets.com" // asset URL
+   ),
+   getApplicationContext(), // this will get your Java application context
+   new SdkConfiguration( //optional
+        false, // states if the environment is production, this property is used to determine the Google Pay environment
+        "Android Example Application/v2.0.4", // your application identifier
+        "AndroidSDK/v4.0.0", // SDK identifier
+        true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
+       )
+    );
 
 AmountOfMoney amountOfMoney = new AmountOfMoney(
     1298L, // in cents as a Long
@@ -865,15 +885,27 @@ PaymentContext paymentContext = new PaymentContext(
 **_kotlin:_**
 
 ```kotlin
-val session = Session(
-    "47e9dc332ca24273818be2a46072e006", // client session id
-    "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
-    "https://clientapi.com", // client API URL
-    "https://assets.com", // asset URL
-    false, // states if the environment is production, this property is used to determine the Google Pay environment
-    "Android Example Application/v2.0.4", // your application identifier
-    true, // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
-    getApplication<Application>().applicationContext
+// Create session data
+val sessionData = SessionData(
+   clientSessionId = "47e9dc332ca24273818be2a46072e006", // client session id
+   customerId = "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
+   clientApiUrl = "https://clientapi.com", // client API URL
+   assetUrl = "https://assets.com" // asset URL
+)
+
+// Create SDK configuration
+val sdkConfiguration = SdkConfiguration(
+    environmentIsProduction = false, // states if the environment is production, this property is used to determine the Google Pay environment
+    appIdentifier = "Android Example Application/v2.0.4", // your application identifier
+    sdkIdentifier = "AndroidSDK/v4.0.0", // SDK identifier
+    loggingEnabled = true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
+)
+
+// Initialize SDK
+val sdk = OnlinePaymentSdk(
+    sessionData = sessionData,
+    context = getApplication<Application>().applicationContext, // application context
+    configuration = sdkConfiguration //optional
 )
 
 val amountOfMoney = AmountOfMoney(
@@ -905,43 +937,11 @@ val paymentContext = PaymentContext(
     - the country of the person that is performing the payment, defined as property `countryCode`
     - whether the payment is a single payment or a recurring payment
 
-### 2. Retrieve the payment items
+### 2. Retrieve payment product details
 
-Retrieve the payment products and accounts on file that can be used for this payment. Your application can use this data
-to create the payment product selection screen.
-
-**_java:_**
-
-```java
-// sync call
-try {
-    BasicPaymentItems basicPaymentItems = session.getBasicPaymentItemsSync(paymentContext);
-
-    // Display the contents of basicPaymentItems & accountsOnFile to your customer.
-} catch (e: ApiException) {
-    // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
-} catch (e: CommunicationException) {
-    // Handle the communication exception - it can happen when the API call could not be established.
-} catch (e: Exception) {
-    // Handle any other unhandled exception.
-}
-```
-
-**_kotlin:_**
-
-```kotlin
-try {
-    val basicPaymentItems = session.getBasicPaymentItems(paymentContext)
-
-    // Display the contents of basicPaymentItems & accountsOnFile to your customer.
-} catch (e: ApiException) {
-    // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
-} catch (e: CommunicationException) {
-    // Handle the communication exception - it can happen when the API call could not be established.
-} catch (e: Exception) {
-    // Handle any other unhandled exception.
-}
-```
+Retrieve all the details about the payment product - including it's fields - that the customer needs to provide based on
+the selected payment product or account on file. Your app can use this information to create the payment product details
+screen.
 
 For some payment products, customers can indicate that they want the Online Payments platform to store part of the data
 they entered while using such a payment product. For example, it is possible to store the card holder name and the card
@@ -956,26 +956,19 @@ of payment products and accounts on file to the customer.
 If the customer wishes to use an existing `AccountOnFile` for a payment, the selected`AccountOnFile` should be added to
 the `PaymentRequest`.
 
-### 3. Retrieve payment product details
-
-Retrieve all the details about the payment product - including it's fields - that the customer needs to provide based on
-the selected payment product or account on file. Your app can use this information to create the payment product details
-screen.
-
 **_java:_**
 
 ```java
 // sync call
 try {
-    PaymentProduct paymentProduct = session.getPaymentProductSync(paymentProductId, paymentContext);
-    
-    // Display the fields to your customer.
-} catch (e: ApiException) {
-    // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
-} catch (e: CommunicationException) {
-    // Handle the communication exception - it can happen when the API call could not be established.
-} catch (e: Exception) {
-    // Handle any other unhandled exception.
+   BasicPaymentProducts basicPaymentProducts = sdk.getBasicPaymentProductsSync(paymentContext);
+   // Display the contents of basicPaymentProducts to your customer.
+} catch (ResponseException e) {
+   // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
+} catch (CommunicationException e) {
+   // Handle communication errors (network connection failed, timeout, malformed URL, etc.)
+} catch (Exception e) {
+   // Handle any other unhandled exception
 }
 ```
 
@@ -984,7 +977,6 @@ try {
 ```kotlin
 try {
    val paymentProduct = session.getPaymentProduct(paymentProductId, paymentContext)
-
    // Display the fields to your customer.
 } catch (e: ApiException) {
    // Handle the exception thrown by the API. Usually, these are 4xx exceptions.
@@ -1005,41 +997,29 @@ the CVC. The details entered by the customer are stored in a `PaymentRequest`. A
 starting point to create your screen. If there is no additional information that needs to be entered, this screen can be
 skipped.
 
-### 4. Encrypt payment information
+### 3. Encrypt payment information
 
-Encrypt all the provided payment information in the `PaymentRequest` using `session.preparePaymentRequest`. This
-function will return a `PreparedPaymentRequest` which contains the encrypted payment request fields and encoded client
+Encrypt all the provided payment information in the `PaymentRequest` using `sdk.createPaymentRequest` or
+`sdk.createPaymentRequestSync`.
+This function will return a `EncryptedRequest` which contains the encrypted payment request fields and encoded client
 meta info. The encrypted fields result is in a format that can be processed by the Server API. The only thing you need
 to provide to the SDK are the values the customer provided in your screens. Once you have retrieved the encrypted fields
-String from the `PreparedPaymentRequest`, your application should send it to your server, which in turn should forward
+String from the `EncryptedRequest`, your application should send it to your server, which in turn should forward
 it to the Server API.
 
 **_java:_**
+// Note that exception handling is omitted here. Check the code above for more info.
 
 ```java
-try {
-    PreparedPaymentRequest preparedRequest = session.preparePaymentRequestSync(paymentRequest);
-
-    // Send the preparedRequest.encryptedFields to your server and use it to create the payment with the Server SDK.
-} catch (e: EncryptDataException) {
-    // Handle the ecryption exception.
-} catch (e: Exception) {
-    // Handle any other unhandled exception.
-}
+// Note that exception handling is omitted here. Check the code above for more info. 
+EncryptedRequest encryptedRequest = sdk.encryptPaymentRequest(paymentRequest);
 ```
 
 **_kotlin:_**
 
 ```kotlin
-try {
-    val preparedRequest = session.preparePaymentRequest(paymentRequest)
-
-    // Send the preparedRequest.encryptedFields to your server and use it to create the payment with the Server SDK.
-} catch (e: EncryptDataException) {
-    // Handle the ecryption exception.
-} catch (e: Exception) {
-    // Handle any other unhandled exception.
-}
+// Note that exception handling is omitted here. Check the code above for more info. 
+val encryptedRequest = sdk.encryptPaymentRequest(paymentRequest)
 ```
 
 All the heavy lifting, such as requesting a public key from the Client API, performing the encryption and BASE-64
@@ -1048,9 +1028,77 @@ object contains all the information entered by the user.
 
 From your server, make a create payment request, providing the encrypted data in the `encryptedCustomerInput` field.
 
-### 5. Response from the Server API call
+### 4. Response from the Server API call
 
 It is up to you and your application to show the customer the correct screens based on the response of the Server API
 call. In some cases, the payment has not finished yet since the customer must be redirected to a third party (such as a
 bank or PayPal) to authorise the payment. See the Server API documentation on what kinds of responses the Server API can
 return. The Client API has no part in the remainder of the payment.
+
+## Development
+
+### Running Tests
+
+The SDK includes two types of tests:
+
+#### Unit Tests
+
+Unit tests use mocked dependencies and do not require any configuration. Run them with:
+
+```bash
+./gradlew test
+```
+
+#### Integration Tests
+
+Integration tests make real API calls to the preprod environment and require valid credentials.
+
+**Setup:**
+
+1. Copy `local.properties.example` to `local.properties`:
+   ```bash
+   cp local.properties.example local.properties
+   ```
+
+2. Fill in your credentials in `local.properties`:
+   ```properties
+   ONLINEPAYMENTS_SDK_MERCHANT_ID=your-merchant-id
+   ONLINEPAYMENTS_SDK_API_ID=your-api-key-id
+   ONLINEPAYMENTS_SDK_API_SECRET=your-api-secret
+   ```
+
+3. Contact Worldline to obtain test credentials if you don't have them.
+
+**Running Integration Tests:**
+
+You can run only integration tests:
+
+```bash
+./gradlew :onlinepayments-sdk:testDebugUnitTest --tests "com.onlinepayments.sdk.client.android.integration.*"
+```
+
+or, run all tests (unit + integration):
+
+```bash
+./gradlew :onlinepayments-sdk:testDebugUnitTest
+```
+
+Integration tests are automatically included and will be skipped if credentials are not configured in
+`local.properties`.
+
+**Important Notes:**
+
+- Integration tests will be automatically skipped if credentials are not configured
+- Integration tests use session caching to avoid excessive API calls during development
+- Integration tests are located in `src/test/kotlin/com/onlinepayments/sdk/client/android/integration/`
+
+**Integration Test Coverage:**
+
+The integration tests cover:
+
+- Getting payment products from the real API
+- Encrypting payment requests with real public keys
+- IIN (card number) lookup functionality
+- Session caching and invalidation
+- Real payment product field validation
+- End-to-end encryption workflows

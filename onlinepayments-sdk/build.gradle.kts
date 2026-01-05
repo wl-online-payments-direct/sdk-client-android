@@ -1,7 +1,7 @@
 /*
  * Do not remove or alter the notices in this preamble.
  *
- * Copyright © 2025 Worldline and/or its affiliates.
+ * Copyright © 2026 Worldline and/or its affiliates.
  *
  * All rights reserved. License grant and user rights and obligations according to the applicable license agreement.
  *
@@ -39,6 +39,7 @@ android {
     namespace = "com.onlinepayments.sdk.client.android"
     //noinspection GradleDependency This will be updated in 2026
     compileSdk = 35
+    //noinspection GradleDependency This will be updated in 2026
     compileSdkVersion = "android-35"
 
     defaultConfig {
@@ -72,26 +73,29 @@ android {
 }
 
 dependencies {
+    //noinspection NewerVersionAvailable Will be addressed in 2026
     implementation("com.squareup.retrofit2:retrofit:2.12.0")
     implementation("com.squareup.retrofit2:converter-gson:2.12.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:5.3.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:5.3.2")
     implementation("com.google.code.gson:gson:2.13.2")
-    implementation("org.apache.commons:commons-lang3:3.19.0")
+    implementation("org.apache.commons:commons-lang3:3.20.0")
     implementation("androidx.annotation:annotation:1.9.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 
     implementation("com.google.android.gms:play-services-wallet:19.5.0")
+    implementation("com.google.firebase:firebase-appdistribution-gradle:5.2.0")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("io.mockk:mockk:1.14.6")
-    testImplementation("com.squareup.okhttp3:mockwebserver:5.3.0")
+    testImplementation("io.mockk:mockk:1.14.7")
+    testImplementation("com.squareup.okhttp3:mockwebserver:5.3.2")
     testImplementation("androidx.test:core:1.7.0")
     testImplementation("org.powermock:powermock-module-junit4:2.0.9")
-    testImplementation("org.mockito:mockito-core:5.20.0")
+    testImplementation("org.mockito:mockito-core:5.21.0")
     testImplementation("org.robolectric:robolectric:4.16")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test:2.2.21")
+    testImplementation("com.worldline-solutions:onlinepayments-sdk-java:6.4.0")
 }
 
 dependencyCheck {

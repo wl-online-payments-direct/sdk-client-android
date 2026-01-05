@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8"?><!--
   ~ Do not remove or alter the notices in this preamble.
   ~
-  ~ Copyright © 2025 Worldline and/or its affiliates.
+  ~ Copyright © 2026 Worldline and/or its affiliates.
   ~
   ~ All rights reserved. License grant and user rights and obligations according to the applicable license agreement.
   ~
@@ -43,6 +42,15 @@
         <notes>CVE-2024-7254: Protobuf - Not used in Android SDK runtime, only in build tools</notes>
         <packageUrl regex="true">^pkg:maven/com\.google\.protobuf/.*@3\.(22\.3|24\.4|25\.5)$</packageUrl>
         <cve>CVE-2024-7254</cve>
+    </suppress>
+
+    <!-- Kotlin Compiler - Contains files with invalid characters that cause analysis failures -->
+    <suppress>
+        <notes>Kotlin compiler JARs contain files with special characters (?) that cause InvalidPathException. Not used
+            at runtime, only for compilation.
+        </notes>
+        <packageUrl regex="true">^pkg:maven/org\.jetbrains\.kotlin/kotlin\-compiler.*@.*$</packageUrl>
+        <cpe regex="true">.*</cpe>
     </suppress>
 
 </suppressions>

@@ -1,3 +1,76 @@
+# 5.0.0
+
+The SDK was internally refactored to be unified with Client SDKs in other technologies. This log states only externally
+visible changes.
+For usage example, check the [README.md](README.md) file.
+
+## Changed
+
+- The main entry `Session` class changed to `OnlinePaymentSdk`. It is instantiated with
+  `OnlinePaymentSdk(sessionData, context, configuration?)` provided in the main SDK export.
+- Fluent API added for domain models:
+    - `PaymentProductField`:
+        - `validate(value) `returns array of `ValidationErrorMessage` (previously `isValid()`).
+        - Added methods: `getLabel`, `getPlaceholder`, `shouldObfuscate`, `isRequired`, `applyMask(value)`,
+          `removeMask(value)`
+    - `PaymentRequest`:
+        - Constructor now requires `PaymentProduct` (previously optional).
+        - `validate()` returns `ValidationResult` containing validation errors.
+        - Field values managed through `PaymentRequestField` instances.
+        - Setting `AccountOnFile` automatically clears non-writable field values set previously on the payment request.
+        - Setting a value to READ_ONLY field throws `InvalidArgumentException`
+- `PaymentProduct.id` is now of Int type, as this is how the API returns it. The corresponding methods for retrieving
+  a payment product or product networks now accepts Int instead of String parameter:
+- `OnlinePaymentsSdk` methods accept product Id as Int instead of String. These methods are changed:
+    - `getPaymentProduct` and corresponding overloads and Sync method
+    - `getPaymentProductNetworks` and corresponding overloads and Sync method
+- `OnlinePaymentsSdk.getIinDetails` now accepts `PaymentContextWithAmount` since the amount is required for fetching IIN
+  details.
+
+## Added
+
+- `PaymentProduct`: added methods and properties for field access:
+    - `fields` - returns all fields
+    - `requiredFields` - returns only required fields
+    - `getField(id)` - returns specific field by ID
+- `PaymentRequestField` - Internal class for field value management with methods:
+    - `getValue()`, `setValue(value)`, `clearValue()`
+    - `maskedValue()`, `type()`
+    - `getId()`, `getLabel()`, `getPlaceholder()`, `isRequired()`, `shouldObfuscate`
+    - `validate()`
+- `PaymentRequest`: added methods:
+    - `getField(id)` - returns `PaymentRequestField` for fluent API
+    - `getValues()` - returns all unmasked values as object
+    - `validate()` - validates entire request, returns `ValidationResult` (see below)
+- `AccountOnFile`: added methods:
+    - `value(id)` - get stored value for field
+    - `requiredAttributes()` -get attributes that must be provided
+    - `isWritable(fieldId)` - check if field can be modified
+- `BasicPaymentProduct`: added method
+    - `accountOnFile(id)` - retrieves specific account on file
+- `ValidationResult` - New class wrapping validation results with:
+    - `isValid` - boolean indicating if validation passed
+    - `errors` - array of `ValidationErrorMessage`
+- Error (exception) hierarchy:
+    - `SDKException` - Abstract base class for all SDK exceptions
+    - `ConfigurationException` - Invalid session/config data
+    - `InvalidArgumentException` - Invalid method arguments
+    - `ResponseException` - API request failures (includes HTTP status)
+    - `EncryptionException` - Encryption or validation failures
+    - `IllegalStateExcption` - Operation called at wrong time
+    - `CommunicationException` - For handling communication exceptions.
+- `SdkConfiguration` parameter with `appIdentifier`, old `sdkIdentifier`, `environmentIsProduction` and `loggingEnabled`
+  for identifying and configuring application.
+
+## Removed:
+
+- `BasicPaymentItems` class removed.
+- `getBasicPaymentItems()` method removed from facade. Use `getBasicPaymentProducts()` instead.
+- `Session` class removed. Use `OnlinePaymentSdk` constructor to create `OnlinePaymentSdk` instance. The interface of
+  the previous `Session` and new `OnlinePaymentSdk` instances is mostly the same.
+- `setLoggingEnabled` and `getLogginEnabled` methods removed from the facade
+- `SdkConfiguration` no longer checks and parses `sdkIdentifier`.
+
 # 4.3.1
 
 ## Changed

@@ -1,0 +1,9 @@
+{
+  "countryCode": "BE",
+  "paymentProductId": 1,
+  "cardType": "Credit",
+  "cardScheme": "Visa",
+  "panLengthMax": 19,
+  "panLengthMin": 13,
+  "isAllowedInContext": true
+}
