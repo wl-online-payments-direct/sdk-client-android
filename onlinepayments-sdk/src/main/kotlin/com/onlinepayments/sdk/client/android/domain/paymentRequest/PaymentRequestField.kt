@@ -25,7 +25,7 @@ class PaymentRequestField internal constructor(
 
     fun setValue(newValue: String?) {
         if (readOnly) {
-            throw InvalidArgumentException("Cannot write \"READ_ONLY\" field: ${definition.id}")
+            throw InvalidArgumentException("Cannot write READ_ONLY field: ${definition.id}")
         }
 
         value = if (!newValue.isNullOrEmpty()) {

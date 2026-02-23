@@ -73,20 +73,24 @@ section [Payment Steps](#payment-steps) for more details on these steps.
 
    **_java:_**
    ```java
+    SessionData sessionData = new SessionData(
+        "47e9dc332ca24273818be2a46072e006", // client session id
+        "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
+        "https://clientapi.com", // client API URL
+        "https://assets.com" // asset URL
+    );
+
+    SdkConfiguration sdkConfiguration = new SdkConfiguration( //optional
+        false, // states if the environment is production, this property is used to determine the Google Pay environment
+        "Android Example Application/v2.0.4", // your application identifier
+        "AndroidSDK/v4.0.0", // SDK identifier, optional
+        true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
+    );
+
     OnlinePaymentSdk sdk = new OnlinePaymentSdk(
-        new SessionData(
-           "47e9dc332ca24273818be2a46072e006", // client session id
-           "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
-           "https://clientapi.com", // client API URL
-           "https://assets.com" // asset URL
-        ),
-       getApplicationContext(), // this will get your Java application context
-       new SdkConfiguration( //optional
-           false, // states if the environment is production, this property is used to determine the Google Pay environment
-           "Android Example Application/v2.0.4", // your application identifier
-           "AndroidSDK/v4.0.0", // SDK identifier
-           true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
-       )
+        sessionData,
+        getApplicationContext(), // this will get your Java application context
+        sdkConfiguration
     );
    ```
 
@@ -242,11 +246,11 @@ section [Payment Steps](#payment-steps) for more details on these steps.
    ```java
    //payment request with paymentProduct, accountOnFile, tokenize status
    PaymentRequest paymentRequest = new PaymentRequest(paymentProduct, null, false);
-    
-   //new way of setting (unmasked) values 
+
+   // set a value to the specific field
    paymentRequest.field("cardNumber).setValue("12451254457545")
-   
-   //backward compatibility
+
+   // or
    paymentRequest.setValue("cvv","123");
    paymentRequest.setValue("expiryDate","1225");
    ```
@@ -254,11 +258,11 @@ section [Payment Steps](#payment-steps) for more details on these steps.
    **_kotlin:_**
    ```kotlin
    var paymentRequest = PaymentRequest(paymentProduct)
-    
-   //new way of setting (unmasked) values
+   
+   // set a value to the specific field
    paymentRequest.field("cardNumber").setValue("12451254457545")
 
-   //backward compatibility
+   // or
    paymentRequest.setValue("cvv","123")
    paymentRequest.setValue("expiryDate","1225")
    ```
@@ -317,20 +321,24 @@ API (not part of this SDK).
 **_java:_**
 
    ```java
-    OnlinePaymentsSDK sdk = new OnlinePaymentsSDK(
-        new SessionData(
-           "47e9dc332ca24273818be2a46072e006", // client session id
-           "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
-           "https://clientapi.com", // client API URL
-           "https://assets.com" // asset URL
-        ),
-       getApplicationContext(), // this will get your Java application context
-       new SdkConfiguration(
-           false, // states if the environment is production, this property is used to determine the Google Pay environment
-           "Android Example Application/v2.0.4", // your application identifier
-           "AndroidSDK/v4.0.0", // SDK identifier
-           true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
-       )
+    SessionData sessionData = new SessionData(
+        "47e9dc332ca24273818be2a46072e006", // client session id
+        "9991-0d93d6a0e18443bd871c89ec6d38a873", // customer id
+        "https://clientapi.com", // client API URL
+        "https://assets.com" // asset URL
+    );
+
+    SdkConfiguration sdkConfiguration = new SdkConfiguration( //optional
+        false, // states if the environment is production, this property is used to determine the Google Pay environment
+        "Android Example Application/v2.0.4", // your application identifier
+        "AndroidSDK/v4.0.0", // SDK identifier, optional
+        true // if true, requests and responses will be logged to the console; not supplying this parameter means it is false; should be false in production
+    );
+
+    OnlinePaymentSdk sdk = new OnlinePaymentSdk(
+        sessionData,
+        getApplicationContext(), // this will get your Java application context
+        sdkConfiguration
     );
    ```
 
@@ -409,8 +417,8 @@ BasicPaymentProducts basicPaymentProducts = sdk.getBasicPaymentProducts(paymentC
 
 List<BasicPaymentProduct> paymentProducts = basicPaymentProducts.getPaymentProducts();
 
-String label = paymentProducts[0].getLabel
-String logoUrl = paymentProducts[0].getLogo
+String label = paymentProducts[0].getLabel();
+String logoUrl = paymentProducts[0].getLogo();
 ```
 
 **_kotlin:_**
@@ -450,7 +458,7 @@ for (AccountOnFile aof : basicPaymentProduct.getAccountsOnFile) {
 }
 
 // Shows a mask based formatted value for the obfuscated cardNumber.
-String label = accountOnFile.getLabel
+String label = accountOnFile.getLabel();
 ```
 
 **_kotlin:_**
@@ -647,14 +655,13 @@ after the validation, which indicates any issues that have occurred during valid
 payment request can be encrypted and sent to our platform via your server (Server SDK). If there are validation errors,
 the customer should be provided with feedback about these errors.
 
-The validations are the `Validator`s linked to the `PaymentProductField`, and are returned as a
-`ValidationErrorMessage` list inside `ValidationResult`:
+The validations return errors as a `ValidationErrorMessage` list inside `ValidationResult`:
 
 **_java:_**
 
 ```java
 // validate all fields in the payment request
-// validate() return ValidationResult object with isValid status and errors
+// validate() returns ValidationResult object with isValid status and errors
 ValidationResult validationResult = paymentRequest.validate();
 
 // check if the payment request is valid - result will return isValid: true and errors: []
@@ -1071,13 +1078,7 @@ Integration tests make real API calls to the preprod environment and require val
 
 **Running Integration Tests:**
 
-You can run only integration tests:
-
-```bash
-./gradlew :onlinepayments-sdk:testDebugUnitTest --tests "com.onlinepayments.sdk.client.android.integration.*"
-```
-
-or, run all tests (unit + integration):
+Run all tests (unit + integration):
 
 ```bash
 ./gradlew :onlinepayments-sdk:testDebugUnitTest

@@ -12,7 +12,7 @@ package com.onlinepayments.sdk.client.android.domain
 
 internal object Constants {
     // SDK version
-    const val SDK_VERSION = "5.0.0"
+    const val SDK_VERSION = "5.0.1"
     const val SDK_IDENTIFIER = "OnlinePaymentsAndroidClientSDK/v$SDK_VERSION"
 
     const val MAX_CHARS_PAYMENT_PRODUCT_ID_LOOKUP = 8

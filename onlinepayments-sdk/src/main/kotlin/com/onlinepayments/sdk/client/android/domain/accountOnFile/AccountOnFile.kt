@@ -28,8 +28,20 @@ class AccountOnFile internal constructor(
         return attributeByKey[fieldId]?.value
     }
 
+    fun getAttribute(fieldId: String): AccountOnFileAttribute? {
+        return attributeByKey[fieldId]
+    }
+
     fun getRequiredAttributes(): List<AccountOnFileAttribute> {
         return attributes.filter { it.status == AccountOnFileAttribute.Status.MUST_WRITE }
+    }
+
+    fun getWritableAttributes(): List<AccountOnFileAttribute> {
+        return attributes.filter { it.status != AccountOnFileAttribute.Status.READ_ONLY }
+    }
+
+    fun getReadOnlyAttributes(): List<AccountOnFileAttribute> {
+        return attributes.filter { it.status == AccountOnFileAttribute.Status.READ_ONLY }
     }
 
     fun isWritable(fieldId: String): Boolean {

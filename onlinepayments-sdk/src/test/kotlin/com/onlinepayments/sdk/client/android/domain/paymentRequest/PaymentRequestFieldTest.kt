@@ -134,6 +134,6 @@ class PaymentRequestFieldTest {
             paymentRequestField.setValue("4222422242224222")
         }
 
-        assertEquals("Cannot write \"READ_ONLY\" field: cardNumber", exception.message)
+        assertEquals("Cannot write READ_ONLY field: cardNumber", exception.message)
     }
 }

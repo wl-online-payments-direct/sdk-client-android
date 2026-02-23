@@ -1,0 +1,35 @@
+{
+  "attributes": [
+    {
+      "key": "cardNumber",
+      "value": "************7977",
+      "status": "READ_ONLY"
+    },
+    {
+      "key": "cardholderName",
+      "value": "Darwin Núñez",
+      "status": "CAN_WRITE"
+    },
+    {
+      "key": "expiryDate",
+      "value": "1230",
+      "status": "CAN_WRITE"
+    },
+    {
+      "key": "cvv",
+      "value": "",
+      "status": "MUST_WRITE"
+    }
+  ],
+  "displayHints": {
+    "labelTemplate": [
+      {
+        "attributeKey": "alias",
+        "mask": ""
+      }
+    ],
+    "logo": "test-logo"
+  },
+  "id": "5678",
+  "paymentProductId": 2
+}

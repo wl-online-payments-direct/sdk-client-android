@@ -183,4 +183,100 @@ class PaymentRequestTest {
         assertTrue(validationResult.isValid)
         assertEquals(0, validationResult.errors.size)
     }
+
+    @Test
+    fun `should return error for 'cvv' when it is 'MUST_WRITE' in accountOnFile and user provides no value with AOF`(){
+        val accountOnFileResponse = GsonHelper.fromResourceJson(
+            "accountOnFileWithMustWriteCvv.json",
+            AccountOnFileDto::class.java
+        )
+
+        accountOnFile = PaymentProductFactory().createAccountOnFile(accountOnFileResponse)
+
+        val paymentRequest = PaymentRequest(paymentProduct, accountOnFile)
+
+        val validationResult = paymentRequest.validate()
+
+        assertFalse(validationResult.isValid)
+        assertEquals(1, validationResult.errors.size)
+    }
+
+    @Test
+    fun `should return error for 'cvv' when it is 'MUST_WRITE' and user provides invalid value with AOF`(){
+        val accountOnFileResponse = GsonHelper.fromResourceJson(
+            "accountOnFileWithMustWriteCvv.json",
+            AccountOnFileDto::class.java
+        )
+
+        accountOnFile = PaymentProductFactory().createAccountOnFile(accountOnFileResponse)
+
+        val paymentRequest = PaymentRequest(paymentProduct, accountOnFile)
+
+       paymentRequest.getField("cvv").setValue("1")
+
+        val validationResult = paymentRequest.validate()
+
+        assertFalse(validationResult.isValid)
+        assertEquals(1, validationResult.errors.size)
+    }
+
+    @Test
+    fun `should not return error for 'cvv' when it is 'MUST_WRITE' and user provides valid value with AOF`(){
+        val accountOnFileResponse = GsonHelper.fromResourceJson(
+            "accountOnFileWithMustWriteCvv.json",
+            AccountOnFileDto::class.java
+        )
+
+        accountOnFile = PaymentProductFactory().createAccountOnFile(accountOnFileResponse)
+
+        val paymentRequest = PaymentRequest(paymentProduct, accountOnFile)
+
+        paymentRequest.getField("cvv").setValue("123")
+
+        val validationResult = paymentRequest.validate()
+
+        assertTrue(validationResult.isValid)
+        assertEquals(0, validationResult.errors.size)
+    }
+
+    @Test
+    fun `should pass validation when 'cardholderName' is 'CAN_WRITE' and user does not provide value it should not validate it`(){
+        val accountOnFileResponse = GsonHelper.fromResourceJson(
+            "accountOnFileWithMustWriteCvv.json",
+            AccountOnFileDto::class.java
+        )
+
+        accountOnFile = PaymentProductFactory().createAccountOnFile(accountOnFileResponse)
+
+        val paymentRequest = PaymentRequest(paymentProduct, accountOnFile)
+
+        paymentRequest.setValue("expiryDate", "11/2026")
+        paymentRequest.setValue("cvv", "123")
+
+
+        val validationResult = paymentRequest.validate()
+
+        assertTrue(validationResult.isValid)
+        assertEquals(0, validationResult.errors.size)
+    }
+
+    @Test
+    fun `should not pass validation when 'cvv' is 'MUST_WRITE' and user does not provide value`(){
+        val accountOnFileResponse = GsonHelper.fromResourceJson(
+            "accountOnFileWithMustWriteCvv.json",
+            AccountOnFileDto::class.java
+        )
+
+        accountOnFile = PaymentProductFactory().createAccountOnFile(accountOnFileResponse)
+
+        val paymentRequest = PaymentRequest(paymentProduct, accountOnFile)
+
+        paymentRequest.setValue("expiryDate", "11/2026")
+
+        val validationResult = paymentRequest.validate()
+
+
+        assertFalse(validationResult.isValid)
+        assertEquals(1, validationResult.errors.size)
+    }
 }

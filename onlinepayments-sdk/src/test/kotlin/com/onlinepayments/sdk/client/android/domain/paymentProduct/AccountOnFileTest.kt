@@ -63,6 +63,20 @@ class AccountOnFileTest {
     }
 
     @Test
+    fun `getWritableAttributes should return all attributes that are not 'READ_ONLY'`() {
+        val requiredAttributes = accountOnFile.getWritableAttributes()
+
+        assertEquals(2, requiredAttributes.size)
+    }
+
+    @Test
+    fun `getReadOnlyAttributes should return all attributes that are 'READ_ONLY'`() {
+        val requiredAttributes = accountOnFile.getReadOnlyAttributes()
+
+        assertEquals(5, requiredAttributes.size)
+    }
+
+    @Test
     fun `isWritable should return false for cardNumber`() {
         val isWritable = accountOnFile.isWritable("cardNumber")
         assertFalse(isWritable)

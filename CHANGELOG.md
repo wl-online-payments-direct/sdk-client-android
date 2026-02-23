@@ -1,3 +1,16 @@
+# 5.0.1
+
+## Added
+
+- `getAttribute()`, `getWritableAttributes()` and `getReadOnlyAttributes` methods in `AccountOnFile`
+- Added more unit tests
+
+## Changed
+
+- Fixed bug in `PaymentRequest` validation method. Validation now also checks fields with values
+  when `AccountOnFile` present.
+- Fixed bug in `isProductSupported` method, `GooglePay` method now returning properly when fetching products.
+
 # 5.0.0
 
 The SDK was internally refactored to be unified with Client SDKs in other technologies. This log states only externally

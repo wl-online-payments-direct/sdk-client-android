@@ -121,8 +121,7 @@ internal class PaymentProductService(
 
     private fun isProductSupported(product: BasicPaymentProduct): Boolean {
         return SupportedProductsUtil.isSupportedInSdk(product.id!!)
-            && (product.id != Constants.PAYMENT_PRODUCT_ID_GOOGLEPAY
-            || GooglePayUtil.isGooglePayAllowed(
+                || (product.id == Constants.PAYMENT_PRODUCT_ID_GOOGLEPAY && GooglePayUtil.isGooglePayAllowed(
             this.context,
             this.configuration?.environmentIsProduction ?: false,
             product

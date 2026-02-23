@@ -1,0 +1,20 @@
+{
+  "attributes": [
+    {
+      "key": "cardholderName",
+      "value": "test",
+      "status": "CAN_WRITE"
+    }
+  ],
+  "displayHints": {
+    "labelTemplate": [
+      {
+        "attributeKey": "alias",
+        "mask": ""
+      }
+    ],
+    "logo": "test-logo"
+  },
+  "id": "5678",
+  "paymentProductId": 2
+}

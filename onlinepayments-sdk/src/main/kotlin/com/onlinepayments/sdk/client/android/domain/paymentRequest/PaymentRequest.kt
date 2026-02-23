@@ -85,13 +85,23 @@ class PaymentRequest(
     fun validate(): ValidationResult {
         val allErrors = mutableListOf<ValidationErrorMessage>()
 
-        if (accountOnFile != null && accountOnFile!!.getRequiredAttributes().isNotEmpty()) {
-            val requiredAttributes = accountOnFile!!.getRequiredAttributes()
+        if (accountOnFile != null) {
+            val aof = accountOnFile!!
+            val requiredAttributes = aof.getRequiredAttributes()
 
-            val requiredFields = paymentProduct.fields
-                .filter { field -> requiredAttributes.any { attr -> field.id == attr.key } }
+            val fieldsToValidate = this.paymentProduct.fields.filter { field ->
+                val hasUserValue = this.getField(field.id).getValue() != null
 
-            validateFields(requiredFields, allErrors)
+                if (aof.getAttribute(field.id) == null) {
+                    return@filter true
+                }
+
+                val isMustWrite = requiredAttributes.any { attr -> attr.key == field.id }
+
+                return@filter isMustWrite || hasUserValue
+            }
+
+            validateFields(fieldsToValidate, allErrors)
         } else {
             validateFields(paymentProduct.fields, allErrors)
         }

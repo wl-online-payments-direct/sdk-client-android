@@ -100,7 +100,7 @@ class OnlinePaymentsSDKTest {
         val paymentProducts = getSdk().getBasicPaymentProducts(paymentContext)
 
         val products = paymentProducts.paymentProducts
-        assertEquals(29, products.count())
+        assertEquals(30, products.count())
 
         val resultIds = products.map { it.id }
         val filteredIds = listOf(117, 5700, 5772, 5784)
@@ -337,10 +337,8 @@ class OnlinePaymentsSDKTest {
 
         val paymentProducts = getSdk().getBasicPaymentProductsSync(paymentContext)
 
-        assertEquals(29, paymentProducts.paymentProducts.count())
+        assertEquals(30, paymentProducts.paymentProducts.count())
     }
-
-    // Error Handling Tests
 
     @Test
     fun testGetPaymentProductsUnauthorized() = runTest {

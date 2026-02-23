@@ -98,7 +98,7 @@ public class OnlinePaymentsSdkJavaTest {
 
         BasicPaymentProducts paymentProducts = getSdk().getBasicPaymentProductsSync(paymentContext);
 
-        assertEquals(29, paymentProducts.getPaymentProducts().size());
+        assertEquals(30, paymentProducts.getPaymentProducts().size());
 
         List<Integer> actualIds = paymentProducts.getPaymentProducts()
             .stream()

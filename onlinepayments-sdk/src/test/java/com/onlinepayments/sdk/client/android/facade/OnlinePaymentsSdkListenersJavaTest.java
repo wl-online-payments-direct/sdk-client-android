@@ -112,7 +112,7 @@ public class OnlinePaymentsSdkListenersJavaTest {
                 @Override
                 public void onSuccess(BasicPaymentProducts response) {
                     assertNotNull(response);
-                    assertEquals(29, response.getPaymentProducts().size());
+                    assertEquals(30, response.getPaymentProducts().size());
                     latch.countDown();
                 }
 
