@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <!-- NewPage -->
 <html lang="en"><head>
-    <title>AccountOnFile </title>
+    <title>BasicPaymentProduct </title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="dc.created" content="2020-03-25">
     <link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
@@ -89,7 +89,7 @@ var pathtoroot = "../../../../../../../";
 <main role="main">
     <div class="header">
         <div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html"></a></div>
-        <h2 title="Class AccountOnFile" class="title">Class AccountOnFile</h2>
+        <h2 title="Class BasicPaymentProduct" class="title">Class BasicPaymentProduct</h2>
     </div>
     <div class="contentContainer">
         <!-- <ul class="inheritance">
@@ -117,10 +117,10 @@ var pathtoroot = "../../../../../../../";
                     <hr>
                     <pre class="wrap-overflow">
 
-public final class <span class="typeNameLabel"><a href=AccountOnFile.html>AccountOnFile</a></span>
+public class <span class="typeNameLabel"><a href=BasicPaymentProduct.html>BasicPaymentProduct</a></span>
  implements <a href=https://developer.android.com/reference/kotlin/java/io/Serializable.html>Serializable</a>
                     </pre>
-                    <div class="block"><p>Domain model that represents an AccountOnFile object.</p></div>
+                    <div class="block"></div>
                 </li>
             </ul>
         </div>
@@ -146,7 +146,7 @@ public final class <span class="typeNameLabel"><a href=AccountOnFile.html>Accoun
                                         
                                         <tr class="altColor">
                                             <td class="colFirst"><code>public class</code></td>
-                                            <th class="colSecond" scope="row"><code><a href="AccountOnFile.Companion.html">AccountOnFile.Companion</a></span></code>
+                                            <th class="colSecond" scope="row"><code><a href="BasicPaymentProduct.Companion.html">BasicPaymentProduct.Companion</a></span></code>
                                             </th>
                                             <td class="colLast"></td>
                                         </tr>
@@ -175,20 +175,74 @@ public final class <span class="typeNameLabel"><a href=AccountOnFile.html>Accoun
                                         </tr>
                                         
                                         <tr class="altColor">
-                                            <td class="colFirst"><code>private final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a></code></td>
-                                            <th class="colSecond" scope="row"><code><a href=AccountOnFile.html#id>id</a></code></th>
+                                            <td class="colFirst"><code>private final <a href=https://developer.android.com/reference/kotlin/java/lang/Integer.html>Integer</a></code></td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#id>id</a></code></th>
                                             <td class="colLast"></td>
                                         </tr>
                                         
                                         <tr class="rowColor">
-                                            <td class="colFirst"><code>private final <a href=https://developer.android.com/reference/kotlin/java/lang/Integer.html>Integer</a></code></td>
-                                            <th class="colSecond" scope="row"><code><a href=AccountOnFile.html#paymentProductId>paymentProductId</a></code></th>
+                                            <td class="colFirst"><code>private final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a></code></td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#paymentMethod>paymentMethod</a></code></th>
                                             <td class="colLast"></td>
                                         </tr>
                                         
                                         <tr class="altColor">
                                             <td class="colFirst"><code>private final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a></code></td>
-                                            <th class="colSecond" scope="row"><code><a href=AccountOnFile.html#label>label</a></code></th>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#paymentProductGroup>paymentProductGroup</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="rowColor">
+                                            <td class="colFirst"><code>private final <a href=https://developer.android.com/reference/kotlin/java/lang/Boolean.html>Boolean</a></code></td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#allowsRecurring>allowsRecurring</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="altColor">
+                                            <td class="colFirst"><code>private final <a href=https://developer.android.com/reference/kotlin/java/lang/Boolean.html>Boolean</a></code></td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#allowsTokenization>allowsTokenization</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="rowColor">
+                                            <td class="colFirst"><code>private final <a href=https://developer.android.com/reference/kotlin/java/lang/Boolean.html>Boolean</a></code></td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#usesRedirectionTo3rdParty>usesRedirectionTo3rdParty</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="altColor">
+                                            <td class="colFirst"><code>private final <a href=specificData/PaymentProduct302SpecificData.html>PaymentProduct302SpecificData</a></code></td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#paymentProduct302SpecificData>paymentProduct302SpecificData</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="rowColor">
+                                            <td class="colFirst"><code>private final <a href=specificData/PaymentProduct320SpecificData.html>PaymentProduct320SpecificData</a></code></td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#paymentProduct320SpecificData>paymentProduct320SpecificData</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="altColor">
+                                            <td class="colFirst"><code>private final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a></code></td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#logo>logo</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="rowColor">
+                                            <td class="colFirst"><code>private final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a></code></td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#label>label</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="altColor">
+                                            <td class="colFirst"><code>private final <a href=https://developer.android.com/reference/kotlin/java/lang/Number.html>Number</a></code></td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#displayOrder>displayOrder</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="rowColor">
+                                            <td class="colFirst"><code>private final <a href=https://developer.android.com/reference/kotlin/java/util/List.html>List</a>&lt;<a href=../accountOnFile/AccountOnFile.html>AccountOnFile</a>&gt;</code></td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#accountsOnFile>accountsOnFile</a></code></th>
                                             <td class="colLast"></td>
                                         </tr>
                                         
@@ -224,17 +278,17 @@ public final class <span class="typeNameLabel"><a href=AccountOnFile.html>Accoun
                                         </tr>
                                         
                                         <tr id="i0" class="altColor">
-                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a></code>
+                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/Integer.html>Integer</a></code>
                                             </td>
-                                            <th class="colSecond" scope="row"><code><a href=AccountOnFile.html#getId()>getId</a>() </code>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getId()>getId</a>() </code>
                                             </th>
                                             <td class="colLast"></td>
                                         </tr>
                                         
                                         <tr id="i1" class="rowColor">
-                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/Integer.html>Integer</a></code>
+                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a></code>
                                             </td>
-                                            <th class="colSecond" scope="row"><code><a href=AccountOnFile.html#getPaymentProductId()>getPaymentProductId</a>() </code>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getPaymentMethod()>getPaymentMethod</a>() </code>
                                             </th>
                                             <td class="colLast"></td>
                                         </tr>
@@ -242,55 +296,87 @@ public final class <span class="typeNameLabel"><a href=AccountOnFile.html>Accoun
                                         <tr id="i2" class="altColor">
                                             <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a></code>
                                             </td>
-                                            <th class="colSecond" scope="row"><code><a href=AccountOnFile.html#getLabel()>getLabel</a>() </code>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getPaymentProductGroup()>getPaymentProductGroup</a>() </code>
                                             </th>
                                             <td class="colLast"></td>
                                         </tr>
                                         
                                         <tr id="i3" class="rowColor">
-                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a></code>
+                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/Boolean.html>Boolean</a></code>
                                             </td>
-                                            <th class="colSecond" scope="row"><code><a href=AccountOnFile.html#getValue(String)>getValue</a>(<a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> fieldId) </code>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getAllowsRecurring()>getAllowsRecurring</a>() </code>
                                             </th>
                                             <td class="colLast"></td>
                                         </tr>
                                         
                                         <tr id="i4" class="altColor">
-                                            <td class="colFirst"><code>final <a href=AccountOnFileAttribute.html>AccountOnFileAttribute</a></code>
+                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/Boolean.html>Boolean</a></code>
                                             </td>
-                                            <th class="colSecond" scope="row"><code><a href=AccountOnFile.html#getAttribute(String)>getAttribute</a>(<a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> fieldId) </code>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getAllowsTokenization()>getAllowsTokenization</a>() </code>
                                             </th>
                                             <td class="colLast"></td>
                                         </tr>
                                         
                                         <tr id="i5" class="rowColor">
-                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/util/List.html>List</a>&lt;<a href=AccountOnFileAttribute.html>AccountOnFileAttribute</a>&gt;</code>
+                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/Boolean.html>Boolean</a></code>
                                             </td>
-                                            <th class="colSecond" scope="row"><code><a href=AccountOnFile.html#getRequiredAttributes()>getRequiredAttributes</a>() </code>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getUsesRedirectionTo3rdParty()>getUsesRedirectionTo3rdParty</a>() </code>
                                             </th>
                                             <td class="colLast"></td>
                                         </tr>
                                         
                                         <tr id="i6" class="altColor">
-                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/util/List.html>List</a>&lt;<a href=AccountOnFileAttribute.html>AccountOnFileAttribute</a>&gt;</code>
+                                            <td class="colFirst"><code>final <a href=specificData/PaymentProduct302SpecificData.html>PaymentProduct302SpecificData</a></code>
                                             </td>
-                                            <th class="colSecond" scope="row"><code><a href=AccountOnFile.html#getWritableAttributes()>getWritableAttributes</a>() </code>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getPaymentProduct302SpecificData()>getPaymentProduct302SpecificData</a>() </code>
                                             </th>
                                             <td class="colLast"></td>
                                         </tr>
                                         
                                         <tr id="i7" class="rowColor">
-                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/util/List.html>List</a>&lt;<a href=AccountOnFileAttribute.html>AccountOnFileAttribute</a>&gt;</code>
+                                            <td class="colFirst"><code>final <a href=specificData/PaymentProduct320SpecificData.html>PaymentProduct320SpecificData</a></code>
                                             </td>
-                                            <th class="colSecond" scope="row"><code><a href=AccountOnFile.html#getReadOnlyAttributes()>getReadOnlyAttributes</a>() </code>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getPaymentProduct320SpecificData()>getPaymentProduct320SpecificData</a>() </code>
                                             </th>
                                             <td class="colLast"></td>
                                         </tr>
                                         
                                         <tr id="i8" class="altColor">
-                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/Boolean.html>Boolean</a></code>
+                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a></code>
                                             </td>
-                                            <th class="colSecond" scope="row"><code><a href=AccountOnFile.html#isWritable(String)>isWritable</a>(<a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> fieldId) </code>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getLogo()>getLogo</a>() </code>
+                                            </th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr id="i9" class="rowColor">
+                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a></code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getLabel()>getLabel</a>() </code>
+                                            </th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr id="i10" class="altColor">
+                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/lang/Number.html>Number</a></code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getDisplayOrder()>getDisplayOrder</a>() </code>
+                                            </th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr id="i11" class="rowColor">
+                                            <td class="colFirst"><code>final <a href=https://developer.android.com/reference/kotlin/java/util/List.html>List</a>&lt;<a href=../accountOnFile/AccountOnFile.html>AccountOnFile</a>&gt;</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getAccountsOnFile()>getAccountsOnFile</a>() </code>
+                                            </th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr id="i12" class="altColor">
+                                            <td class="colFirst"><code>final <a href=../accountOnFile/AccountOnFile.html>AccountOnFile</a></code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=BasicPaymentProduct.html#getAccountOnFile(String)>getAccountOnFile</a>(<a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> id) </code>
                                             </th>
                                             <td class="colLast"></td>
                                         </tr>
@@ -336,22 +422,127 @@ public final class <span class="typeNameLabel"><a href=AccountOnFile.html>Accoun
                                           >
                                     <li class="blockList">
                                         <h4>getId</h4>
-                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> <a href=AccountOnFile.html#getId()>getId</a>()</pre>
+                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/Integer.html>Integer</a> <a href=BasicPaymentProduct.html#getId()>getId</a>()</pre>
                                         <div class="block"></div>
                                         
                                         <!-- TODO missing return annotation -->
                                     </li>
                                 </ul>
                                 
-                                <a id="getPaymentProductId()">
+                                <a id="getPaymentMethod()">
                                     <!--   -->
                                 </a>
                                 <ul class=
                                               "blockList"
                                           >
                                     <li class="blockList">
-                                        <h4>getPaymentProductId</h4>
-                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/Integer.html>Integer</a> <a href=AccountOnFile.html#getPaymentProductId()>getPaymentProductId</a>()</pre>
+                                        <h4>getPaymentMethod</h4>
+                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> <a href=BasicPaymentProduct.html#getPaymentMethod()>getPaymentMethod</a>()</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getPaymentProductGroup()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getPaymentProductGroup</h4>
+                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> <a href=BasicPaymentProduct.html#getPaymentProductGroup()>getPaymentProductGroup</a>()</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getAllowsRecurring()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getAllowsRecurring</h4>
+                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/Boolean.html>Boolean</a> <a href=BasicPaymentProduct.html#getAllowsRecurring()>getAllowsRecurring</a>()</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getAllowsTokenization()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getAllowsTokenization</h4>
+                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/Boolean.html>Boolean</a> <a href=BasicPaymentProduct.html#getAllowsTokenization()>getAllowsTokenization</a>()</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getUsesRedirectionTo3rdParty()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getUsesRedirectionTo3rdParty</h4>
+                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/Boolean.html>Boolean</a> <a href=BasicPaymentProduct.html#getUsesRedirectionTo3rdParty()>getUsesRedirectionTo3rdParty</a>()</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getPaymentProduct302SpecificData()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getPaymentProduct302SpecificData</h4>
+                                        <pre class="methodSignature"> final <a href=specificData/PaymentProduct302SpecificData.html>PaymentProduct302SpecificData</a> <a href=BasicPaymentProduct.html#getPaymentProduct302SpecificData()>getPaymentProduct302SpecificData</a>()</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getPaymentProduct320SpecificData()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getPaymentProduct320SpecificData</h4>
+                                        <pre class="methodSignature"> final <a href=specificData/PaymentProduct320SpecificData.html>PaymentProduct320SpecificData</a> <a href=BasicPaymentProduct.html#getPaymentProduct320SpecificData()>getPaymentProduct320SpecificData</a>()</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getLogo()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getLogo</h4>
+                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> <a href=BasicPaymentProduct.html#getLogo()>getLogo</a>()</pre>
                                         <div class="block"></div>
                                         
                                         <!-- TODO missing return annotation -->
@@ -366,97 +557,52 @@ public final class <span class="typeNameLabel"><a href=AccountOnFile.html>Accoun
                                           >
                                     <li class="blockList">
                                         <h4>getLabel</h4>
-                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> <a href=AccountOnFile.html#getLabel()>getLabel</a>()</pre>
+                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> <a href=BasicPaymentProduct.html#getLabel()>getLabel</a>()</pre>
                                         <div class="block"></div>
                                         
                                         <!-- TODO missing return annotation -->
                                     </li>
                                 </ul>
                                 
-                                <a id="getValue(String)">
+                                <a id="getDisplayOrder()">
                                     <!--   -->
                                 </a>
                                 <ul class=
                                               "blockList"
                                           >
                                     <li class="blockList">
-                                        <h4>getValue</h4>
-                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> <a href=AccountOnFile.html#getValue(String)>getValue</a>(<a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> fieldId)</pre>
+                                        <h4>getDisplayOrder</h4>
+                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/Number.html>Number</a> <a href=BasicPaymentProduct.html#getDisplayOrder()>getDisplayOrder</a>()</pre>
                                         <div class="block"></div>
                                         
                                         <!-- TODO missing return annotation -->
                                     </li>
                                 </ul>
                                 
-                                <a id="getAttribute(String)">
+                                <a id="getAccountsOnFile()">
                                     <!--   -->
                                 </a>
                                 <ul class=
                                               "blockList"
                                           >
                                     <li class="blockList">
-                                        <h4>getAttribute</h4>
-                                        <pre class="methodSignature"> final <a href=AccountOnFileAttribute.html>AccountOnFileAttribute</a> <a href=AccountOnFile.html#getAttribute(String)>getAttribute</a>(<a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> fieldId)</pre>
+                                        <h4>getAccountsOnFile</h4>
+                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/util/List.html>List</a>&lt;<a href=../accountOnFile/AccountOnFile.html>AccountOnFile</a>&gt; <a href=BasicPaymentProduct.html#getAccountsOnFile()>getAccountsOnFile</a>()</pre>
                                         <div class="block"></div>
                                         
                                         <!-- TODO missing return annotation -->
                                     </li>
                                 </ul>
                                 
-                                <a id="getRequiredAttributes()">
-                                    <!--   -->
-                                </a>
-                                <ul class=
-                                              "blockList"
-                                          >
-                                    <li class="blockList">
-                                        <h4>getRequiredAttributes</h4>
-                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/util/List.html>List</a>&lt;<a href=AccountOnFileAttribute.html>AccountOnFileAttribute</a>&gt; <a href=AccountOnFile.html#getRequiredAttributes()>getRequiredAttributes</a>()</pre>
-                                        <div class="block"></div>
-                                        
-                                        <!-- TODO missing return annotation -->
-                                    </li>
-                                </ul>
-                                
-                                <a id="getWritableAttributes()">
-                                    <!--   -->
-                                </a>
-                                <ul class=
-                                              "blockList"
-                                          >
-                                    <li class="blockList">
-                                        <h4>getWritableAttributes</h4>
-                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/util/List.html>List</a>&lt;<a href=AccountOnFileAttribute.html>AccountOnFileAttribute</a>&gt; <a href=AccountOnFile.html#getWritableAttributes()>getWritableAttributes</a>()</pre>
-                                        <div class="block"></div>
-                                        
-                                        <!-- TODO missing return annotation -->
-                                    </li>
-                                </ul>
-                                
-                                <a id="getReadOnlyAttributes()">
-                                    <!--   -->
-                                </a>
-                                <ul class=
-                                              "blockList"
-                                          >
-                                    <li class="blockList">
-                                        <h4>getReadOnlyAttributes</h4>
-                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/util/List.html>List</a>&lt;<a href=AccountOnFileAttribute.html>AccountOnFileAttribute</a>&gt; <a href=AccountOnFile.html#getReadOnlyAttributes()>getReadOnlyAttributes</a>()</pre>
-                                        <div class="block"></div>
-                                        
-                                        <!-- TODO missing return annotation -->
-                                    </li>
-                                </ul>
-                                
-                                <a id="isWritable(String)">
+                                <a id="getAccountOnFile(String)">
                                     <!--   -->
                                 </a>
                                 <ul class=
                                               "blockListLast"
                                           >
                                     <li class="blockList">
-                                        <h4>isWritable</h4>
-                                        <pre class="methodSignature"> final <a href=https://developer.android.com/reference/kotlin/java/lang/Boolean.html>Boolean</a> <a href=AccountOnFile.html#isWritable(String)>isWritable</a>(<a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> fieldId)</pre>
+                                        <h4>getAccountOnFile</h4>
+                                        <pre class="methodSignature"> final <a href=../accountOnFile/AccountOnFile.html>AccountOnFile</a> <a href=BasicPaymentProduct.html#getAccountOnFile(String)>getAccountOnFile</a>(<a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> id)</pre>
                                         <div class="block"></div>
                                         
                                         <!-- TODO missing return annotation -->
