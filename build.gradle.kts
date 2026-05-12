@@ -8,13 +8,14 @@
  * Please contact Worldline for questions regarding license and user rights.
  */
 
-import java.io.FileInputStream
-import java.util.Properties
-
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Top-level build file where you can add configuration options common to all subprojects/modules.
 buildscript {
     repositories {
         google()
+        // Mirror first, mavenCentral as fallback — see settings.gradle.kts for why.
+        maven {
+            url = uri("https://maven-central.storage-download.googleapis.com/maven2/")
+        }
         mavenCentral()
     }
     dependencies {
@@ -37,10 +38,10 @@ tasks.register("clean", Delete::class) {
     delete(rootProject.layout.buildDirectory)
 }
 
-val localProperties = Properties()
+val localProperties = java.util.Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
-    localProperties.load(FileInputStream(localPropertiesFile))
+    localProperties.load(java.io.FileInputStream(localPropertiesFile))
 }
 
 nmcpAggregation {

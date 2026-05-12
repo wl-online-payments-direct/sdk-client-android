@@ -7,5 +7,6 @@
 #
 # Please contact Worldline for questions regarding license and user rights.
 
-# The line below ensures that JSON deserialisation succeeds when using obfuscation.
--keep class com.onlinepayments.sdk.client.android.model.** { *; }
+# The lines below ensure that API JSON serialisation/deserialisation succeeds when using obfuscation.
+-keep class com.onlinepayments.sdk.client.android.domain.** { *; }
+-keep class com.onlinepayments.sdk.client.android.infrastructure.apiModels.** { *; }

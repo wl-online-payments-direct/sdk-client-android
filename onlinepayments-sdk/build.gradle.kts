@@ -56,6 +56,15 @@ android {
     testOptions {
         targetSdk = 35
         unitTests.isIncludeAndroidResources = true
+        // Robolectric resolves Android system jars at runtime via its own
+        // Maven resolver, ignoring Gradle's repositories. Redirect it at the
+        // Google mirror so it doesn't hit repo1.maven.org's IP rate limit.
+        unitTests.all {
+            it.systemProperty(
+                "robolectric.dependency.repo.url",
+                "https://maven-central.storage-download.googleapis.com/maven2"
+            )
+        }
     }
 
     buildTypes {

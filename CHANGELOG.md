@@ -1,4 +1,10 @@
-# 5.0.1
+# 5.0.2 [2026-05-11]
+
+## Changed
+
+- Updated `consumer-rules.pro` to enable consistent behavior of the library when used in minified apps.
+
+# 5.0.1 [2026-02-22]
 
 ## Added
 
