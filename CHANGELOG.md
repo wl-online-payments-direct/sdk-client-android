@@ -1,3 +1,10 @@
+# 5.0.3 [2026-06-08]
+
+## Changed
+
+- Downgraded the version of `commons-lang3` library from `v3.20.0` to `v3.19.0`
+- Updated copyright notices
+
 # 5.0.2 [2026-05-11]
 
 ## Changed

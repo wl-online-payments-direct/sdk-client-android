@@ -1,6 +1,8 @@
 /*
  * Do not remove or alter the notices in this preamble.
  *
+ * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
+ *
  * Copyright © 2026 Worldline and/or its affiliates.
  *
  * All rights reserved. License grant and user rights and obligations according to the applicable license agreement.
@@ -87,7 +89,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.3.2")
     implementation("com.google.code.gson:gson:2.13.2")
-    implementation("org.apache.commons:commons-lang3:3.20.0")
+    implementation("org.apache.commons:commons-lang3:3.19.0")
     implementation("androidx.annotation:annotation:1.9.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")

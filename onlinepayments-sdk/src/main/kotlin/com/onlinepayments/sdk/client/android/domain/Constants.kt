@@ -1,6 +1,8 @@
 /*
  * Do not remove or alter the notices in this preamble.
  *
+ * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
+ *
  * Copyright © 2026 Worldline and/or its affiliates.
  *
  * All rights reserved. License grant and user rights and obligations according to the applicable license agreement.
@@ -12,7 +14,7 @@ package com.onlinepayments.sdk.client.android.domain
 
 internal object Constants {
     // SDK version
-    const val SDK_VERSION = "5.0.2"
+    const val SDK_VERSION = "5.0.3"
     const val SDK_IDENTIFIER = "OnlinePaymentsAndroidClientSDK/v$SDK_VERSION"
 
     const val MAX_CHARS_PAYMENT_PRODUCT_ID_LOOKUP = 8
