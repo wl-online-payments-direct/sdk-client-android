@@ -14,7 +14,9 @@ package com.onlinepayments.sdk.client.android.domain.paymentProduct
 
 import com.onlinepayments.sdk.client.android.domain.paymentProduct.productField.PaymentProductField
 import com.onlinepayments.sdk.client.android.domain.validation.rules.ValidationRuleType
+import com.onlinepayments.sdk.client.android.infrastructure.apiModels.paymentProduct.DataRestrictionsDto
 import com.onlinepayments.sdk.client.android.infrastructure.apiModels.paymentProduct.PaymentProductFieldDto
+import com.onlinepayments.sdk.client.android.infrastructure.apiModels.paymentProduct.displayHints.ProductFieldDisplayHintsDto
 import com.onlinepayments.sdk.client.android.infrastructure.factories.PaymentProductFactory
 import com.onlinepayments.sdk.client.android.testUtil.GsonHelper
 import kotlin.test.BeforeTest
@@ -73,10 +75,11 @@ class PaymentProductFieldTest {
 
     @Test
     fun `applyMask should return unmasked value if no mask`() {
-        val fieldWithoutMask = GsonHelper.fromResourceJson(
+        val dto = GsonHelper.fromResourceJson(
             "paymentProductFieldWithoutMask.json",
-            PaymentProductField::class.java
+            PaymentProductFieldDto::class.java
         )
+        val fieldWithoutMask = PaymentProductFactory().createPaymentProductField(dto)
 
         val maskedValue = fieldWithoutMask.applyMask("12345678901234567890")
         assertEquals("12345678901234567890", maskedValue)
@@ -119,5 +122,33 @@ class PaymentProductFieldTest {
         val errorMessages = paymentProductField.validate("")
         assertEquals(1, errorMessages.size)
         assertEquals("Field required.", errorMessages[0].errorMessage)
+    }
+
+    @Test
+    fun `getLabel should return field id when no label defined in display hints`() {
+        val dto = PaymentProductFieldDto(
+            id = "testField",
+            type = null,
+            displayHints = ProductFieldDisplayHintsDto(),
+            dataRestrictions = DataRestrictionsDto()
+        )
+
+        val field = PaymentProductFactory().createPaymentProductField(dto)
+
+        assertEquals("testField", field.label)
+    }
+
+    @Test
+    fun `getDisplayOrder should return Int MAX_VALUE when no display order defined in display hints`() {
+        val dto = PaymentProductFieldDto(
+            id = "testField",
+            type = null,
+            displayHints = ProductFieldDisplayHintsDto(),
+            dataRestrictions = DataRestrictionsDto()
+        )
+
+        val field = PaymentProductFactory().createPaymentProductField(dto)
+
+        assertEquals(Int.MAX_VALUE, field.displayHints.displayOrder)
     }
 }

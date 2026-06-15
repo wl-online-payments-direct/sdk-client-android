@@ -17,59 +17,31 @@ import com.onlinepayments.sdk.client.android.domain.AmountOfMoney
 import com.onlinepayments.sdk.client.android.domain.AmountOfMoneyWithAmount
 import com.onlinepayments.sdk.client.android.domain.PaymentContext
 import com.onlinepayments.sdk.client.android.domain.PaymentContextWithAmount
-import com.onlinepayments.sdk.client.android.facade.OnlinePaymentsSdk
-import com.onlinepayments.sdk.client.android.integration.utils.ServerApiHelper
-import com.onlinepayments.sdk.client.android.integration.utils.TestConfig
-import org.junit.AfterClass
-import org.junit.Assume.assumeTrue
-import org.junit.BeforeClass
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import okhttp3.mockwebserver.MockWebServer
 import kotlin.test.BeforeTest
 
 /**
- * Base class for integration tests.
- * Sets up the SDK with real session data and provides common test utilities.
+ * Base class for mock-backed integration tests.
+ *
+ * Unlike [BaseIntegrationTest], this class does NOT require live credentials — tests
+ * extend this when they use [com.onlinepayments.sdk.client.android.integration.utils.MockServerHelper]
+ * to serve controlled responses.
+ *
+ * Each test class is responsible for starting its own [MockWebServer] and calling
+ * [MockWebServer.shutdown] in an @After method or finally block.
  */
 @RunWith(RobolectricTestRunner::class)
-abstract class BaseIntegrationTest {
+abstract class BaseMockIntegrationTest {
 
-    protected lateinit var sdk: OnlinePaymentsSdk
     protected lateinit var context: Context
     protected lateinit var paymentContext: PaymentContextWithAmount
 
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun checkCredentials() {
-            // Skip all integration tests if credentials are not available
-            assumeTrue(
-                "Integration tests skipped: credentials not configured. " +
-                    "Please set up local.properties with required credentials.",
-                TestConfig.canRunIntegrationTests()
-            )
-        }
-
-        @AfterClass
-        @JvmStatic
-        fun resetSessionCache() {
-            ServerApiHelper.resetCache()
-        }
-    }
-
     @BeforeTest
     fun setUp() {
-        // Get session data from the server API (cached to avoid excessive calls)
-        val sessionData = ServerApiHelper.getCachedSession()
-
-        // Initialize Android context
         context = RuntimeEnvironment.getApplication()
-
-        // Initialize SDK
-        sdk = OnlinePaymentsSdk(sessionData, context, TestConfig.sdkConfiguration)
-
-        // Create default payment context
         paymentContext = PaymentContextWithAmount(
             amountOfMoney = AmountOfMoneyWithAmount(1000L, "EUR"),
             countryCode = "NL",

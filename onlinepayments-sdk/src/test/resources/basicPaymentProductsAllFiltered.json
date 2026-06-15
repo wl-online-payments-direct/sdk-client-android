@@ -1,0 +1,24 @@
+{
+  "paymentProducts": [
+    {
+      "id": 117,
+      "paymentMethod": "card",
+      "displayHints": {
+        "displayOrder": 0,
+        "label": "Maestro",
+        "logo": "https://example.com/maestro.png"
+      },
+      "allowsInstallments": false,
+      "allowsRecurring": false,
+      "allowsTokenization": false,
+      "usesRedirectionTo3rdParty": false,
+      "displayHintsList": [
+        {
+          "displayOrder": 0,
+          "label": "Maestro",
+          "logo": "logo"
+        }
+      ]
+    }
+  ]
+}

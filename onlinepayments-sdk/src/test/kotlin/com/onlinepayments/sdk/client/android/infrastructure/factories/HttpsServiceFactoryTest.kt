@@ -16,7 +16,9 @@ import android.content.Context
 import com.onlinepayments.sdk.client.android.domain.configuration.SdkConfiguration
 import com.onlinepayments.sdk.client.android.domain.configuration.SessionData
 import com.onlinepayments.sdk.client.android.infrastructure.encryption.MetadataUtil
-import com.onlinepayments.sdk.client.android.mocks.MockContext
+import androidx.test.core.app.ApplicationProvider
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
@@ -30,6 +32,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
+@RunWith(RobolectricTestRunner::class)
 class HttpsServiceFactoryTest {
 
     private lateinit var mockWebServer: MockWebServer
@@ -42,7 +45,7 @@ class HttpsServiceFactoryTest {
         mockWebServer = MockWebServer()
         mockWebServer.start()
 
-        context = MockContext.setup()
+        context = ApplicationProvider.getApplicationContext()
 
         sessionData = SessionData(
             clientSessionId = "test-session-123",

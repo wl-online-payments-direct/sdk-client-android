@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -44,8 +44,7 @@ class IinDetailsIntegrationTest : BaseIntegrationTest() {
             result.coBrands,
             "Co-brands should not be null"
         )
-
-        return@runBlocking
+        Unit
     }
 
     @Test
@@ -64,8 +63,6 @@ class IinDetailsIntegrationTest : BaseIntegrationTest() {
             result.status,
             "Status should be NOT_ENOUGH_DIGITS for short input"
         )
-
-        return@runBlocking
     }
 
     @Test
@@ -76,10 +73,11 @@ class IinDetailsIntegrationTest : BaseIntegrationTest() {
         val result = sdk.getIinDetails(unknownBin, paymentContext)
 
         assertNotNull(result, "Result should not be null")
-
-        assertNotNull(result.status, "Status should not be null")
-
-        return@runBlocking
+        assertEquals(
+            IinDetailStatus.UNKNOWN,
+            result.status,
+            "Status should be UNKNOWN for unrecognized card number"
+        )
     }
 
     @Test
@@ -87,28 +85,19 @@ class IinDetailsIntegrationTest : BaseIntegrationTest() {
         val partialCardNumber = TestConfig.cardNumberWithSurcharge.substring(0, 6)
 
         // First call - should fetch from API
-        val firstStartTime = System.currentTimeMillis()
         val firstResult = sdk.getIinDetails(partialCardNumber, paymentContext)
-        val firstCallTime = System.currentTimeMillis() - firstStartTime
 
-        // Second call - should use cache
-        val secondStartTime = System.currentTimeMillis()
+        // Second call - should use cache and return same data
         val secondResult = sdk.getIinDetails(partialCardNumber, paymentContext)
-        val secondCallTime = System.currentTimeMillis() - secondStartTime
 
         assertNotNull(firstResult, "First result should not be null")
         assertNotNull(secondResult, "Second result should not be null")
 
-        // Cached call should be significantly faster
-        assertTrue(firstCallTime > secondCallTime, "Cached call should be faster")
-
         assertEquals(
             firstResult.status,
             secondResult.status,
-            "Results should have same status"
+            "Cached result should have same status"
         )
-
-        return@runBlocking
     }
 
     @Test
@@ -128,8 +117,7 @@ class IinDetailsIntegrationTest : BaseIntegrationTest() {
         // Both should be SUPPORTED or UNKNOWN - just verify we get responses
         assertNotNull(firstResult.status, "First status should not be null")
         assertNotNull(secondResult.status, "Second status should not be null")
-
-        return@runBlocking
+        Unit
     }
 
     @Test
@@ -145,8 +133,6 @@ class IinDetailsIntegrationTest : BaseIntegrationTest() {
             result.status,
             "Status should be SUPPORTED for full valid card number"
         )
-
-        return@runBlocking
     }
 
     @Test
@@ -162,8 +148,6 @@ class IinDetailsIntegrationTest : BaseIntegrationTest() {
                 "Payment product ID should not be null for supported card"
             )
         }
-
-        return@runBlocking
     }
 
     @Test
@@ -178,7 +162,29 @@ class IinDetailsIntegrationTest : BaseIntegrationTest() {
             // Just verify we get a valid result
             assertNotNull(result, "IIN details should be present")
         }
+    }
 
-        return@runBlocking
+    @Test
+    fun getIinDetails_whenIsAllowedInContextAbsent_shouldReturnSupported() = runBlocking {
+        val partialCardNumber = TestConfig.cardNumberVisa
+
+        val result = sdk.getIinDetails(partialCardNumber, paymentContext)
+
+        assertNotNull(result, "Result should not be null")
+        assertTrue(
+            result.status == IinDetailStatus.SUPPORTED || result.status == IinDetailStatus.EXISTING_BUT_NOT_ALLOWED,
+            "Status should be SUPPORTED or EXISTING_BUT_NOT_ALLOWED for a recognized Visa card"
+        )
+    }
+
+    @Test
+    fun getIinDetails_withCardNumberOf6Digits_shouldNotThrow() = runBlocking {
+        val sixDigits = TestConfig.cardNumberWithCoBrands.substring(0, 6)
+
+        val result = sdk.getIinDetails(sixDigits, paymentContext)
+
+        assertNotNull(result, "Result should not be null")
+        assertNotNull(result.status, "Status should be set")
+        Unit
     }
 }

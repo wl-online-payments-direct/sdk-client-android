@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -23,7 +23,7 @@ import kotlin.test.assertTrue
 
 class ValidationRuleLengthTest {
     @Test
-    fun testRuleHasCorrectBoundaries() {
+    fun `should have correct min and max boundaries`() {
         val validationRule = ValidationRuleLength(3, 10)
 
         assertEquals(
@@ -40,7 +40,7 @@ class ValidationRuleLengthTest {
     }
 
     @Test
-    fun testValidLengthWithinRange() {
+    fun `values within range should be valid`() {
         val validationRule = ValidationRuleLength(3, 10)
 
         val validValues = listOf("abc", "test", "12345", "1234567890")
@@ -54,7 +54,7 @@ class ValidationRuleLengthTest {
     }
 
     @Test
-    fun testInvalidLengthTooShort() {
+    fun `values too short should be invalid`() {
         val validationRule = ValidationRuleLength(5, 10)
 
         val shortValues = listOf("", "a", "ab", "abc", "abcd")
@@ -68,7 +68,7 @@ class ValidationRuleLengthTest {
     }
 
     @Test
-    fun testInvalidLengthTooLong() {
+    fun `values too long should be invalid`() {
         val validationRule = ValidationRuleLength(3, 8)
 
         val longValues = listOf("123456789", "1234567890", "12345678901")
@@ -82,7 +82,7 @@ class ValidationRuleLengthTest {
     }
 
     @Test
-    fun testExactBoundaryValues() {
+    fun `exact boundary values should be valid`() {
         val validationRule = ValidationRuleLength(3, 8)
 
         // Test exact min length
@@ -99,7 +99,7 @@ class ValidationRuleLengthTest {
     }
 
     @Test
-    fun testZeroMinLength() {
+    fun `zero min length should allow empty string`() {
         val validationRule = ValidationRuleLength(0, 5)
 
         assertTrue(
@@ -119,7 +119,7 @@ class ValidationRuleLengthTest {
     }
 
     @Test
-    fun testSameLengthMinMax() {
+    fun `same min and max length enforces exact length`() {
         val validationRule = ValidationRuleLength(5, 5)
 
         assertTrue(
@@ -139,7 +139,7 @@ class ValidationRuleLengthTest {
     }
 
     @Test
-    fun testNonExistentField() {
+    fun `empty string should be invalid when min length is positive`() {
         val validationRule = ValidationRuleLength(3, 10)
 
         assertFalse(
@@ -149,21 +149,21 @@ class ValidationRuleLengthTest {
     }
 
     @Test
-    fun testInvalidParameterNegativeMinLength() {
+    fun `negative min length should throw InvalidArgumentException`() {
         assertFailsWith<InvalidArgumentException>("Negative min length should throw exception") {
             ValidationRuleLength(-1, 5)
         }
     }
 
     @Test
-    fun testInvalidParameterMaxLessThanMin() {
+    fun `max less than min should throw InvalidArgumentException`() {
         assertFailsWith<InvalidArgumentException>("Max length less than min should throw exception") {
             ValidationRuleLength(5, 3)
         }
     }
 
     @Test
-    fun testGetterMethods() {
+    fun `getter methods return configured values`() {
         val validationRule = ValidationRuleLength(3, 10)
 
         assertEquals(
@@ -179,7 +179,7 @@ class ValidationRuleLengthTest {
     }
 
     @Test
-    fun testUnicodeCharacters() {
+    fun `unicode characters count towards length`() {
         val validationRule = ValidationRuleLength(3, 10)
 
         val unicodeValues = listOf("🎉🎊", "café", "naïve", "Šal", "résumé", "中文测试")
@@ -194,7 +194,7 @@ class ValidationRuleLengthTest {
     }
 
     @Test
-    fun testWhitespaceCharacters() {
+    fun `whitespace characters count towards length`() {
         val validationRule = ValidationRuleLength(3, 10)
 
         assertTrue(
@@ -214,7 +214,7 @@ class ValidationRuleLengthTest {
     }
 
     @Test
-    fun testValidationRuleType() {
+    fun `should have correct type`() {
         val validationRule = ValidationRuleLength(3, 10)
         assertEquals(
             ValidationRuleType.LENGTH,
@@ -224,7 +224,7 @@ class ValidationRuleLengthTest {
     }
 
     @Test
-    fun testMessageId() {
+    fun `should have correct messageId`() {
         val validationRule = ValidationRuleLength(3, 10)
         assertEquals(
             "length",

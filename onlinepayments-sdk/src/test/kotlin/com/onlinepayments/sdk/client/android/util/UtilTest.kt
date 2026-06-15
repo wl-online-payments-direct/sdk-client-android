@@ -13,51 +13,37 @@
 package com.onlinepayments.sdk.client.android.util
 
 import android.os.Build
-import android.util.Base64
 import com.onlinepayments.sdk.client.android.infrastructure.encryption.MetadataUtil
-import com.onlinepayments.sdk.client.android.mocks.MockContext
-import com.onlinepayments.sdk.client.android.mocks.MockEncoding
-import io.mockk.unmockkAll
+import androidx.test.core.app.ApplicationProvider
 import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
-import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.reflect.Whitebox
-import kotlin.test.AfterTest
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.util.ReflectionHelpers
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * Junit Test class which tests Util functions
  */
-@RunWith(MockitoJUnitRunner::class)
+@RunWith(RobolectricTestRunner::class)
 class UtilTest {
     companion object {
-        private val mockContext = MockContext.setup()
-
         private const val APP_IDENTIFIER = "APP_IDENTIFIER_UTIL_TEST"
         private const val SDK_IDENTIFIER = "UtilTestSdkIdentifier/v1.0.0"
-        private const val EXPECTED_ENCODED_METADATA = "eyJwbGF0Zm9ybUlkZW50aWZpZXIiOiJBbmRyb2lkLz" +
-            "AuMC4xIiwiYXBwSWRlbnRpZmllciI6IkFQUF9JREVOVElGSUVSX1VUSUxfVEVTVCIsInNka0lkZW50aW" +
-            "ZpZXIiOiJVdGlsVGVzdFNka0lkZW50aWZpZXIvdjEuMC4wIiwic2RrQ3JlYXRvciI6Ik9ubGluZVBheW" +
-            "1lbnRzIiwic2NyZWVuU2l6ZSI6IjI0MDB4MTA4MCIsImRldmljZUJyYW5kIjoiR29vZ2xlIiwiZGV2aW" +
-            "NlVHlwZSI6IlBpeGVsIn0"
     }
+
+    private lateinit var mockContext: android.content.Context
 
     @BeforeTest
     fun setup() {
-        MockEncoding.setup()
+        mockContext = ApplicationProvider.getApplicationContext()
 
-        Whitebox.setInternalState(Build.VERSION::class.java, "SDK_INT", 30)
-        Whitebox.setInternalState(Build.VERSION::class.java, "RELEASE", "0.0.1")
-        Whitebox.setInternalState(Build::class.java, "MANUFACTURER", "Google")
-        Whitebox.setInternalState(Build::class.java, "MODEL", "Pixel")
-    }
-
-    @AfterTest
-    fun close() {
-        // Cleanup MockK mocks
-        unmockkAll()
+        ReflectionHelpers.setStaticField(Build.VERSION::class.java, "SDK_INT", 30)
+        ReflectionHelpers.setStaticField(Build.VERSION::class.java, "RELEASE", "0.0.1")
+        ReflectionHelpers.setStaticField(Build::class.java, "MANUFACTURER", "Google")
+        ReflectionHelpers.setStaticField(Build::class.java, "MODEL", "Pixel")
     }
 
     @Test
@@ -66,15 +52,15 @@ class UtilTest {
 
         assertEquals("Pixel", metaData["deviceType"])
         assertEquals(SDK_IDENTIFIER, metaData["sdkIdentifier"])
-        assertEquals("2400x1080", metaData["screenSize"])
         assertEquals(APP_IDENTIFIER, metaData["appIdentifier"])
         assertEquals("OnlinePayments", metaData["sdkCreator"])
         assertEquals("Android/0.0.1", metaData["platformIdentifier"])
         assertEquals("Google", metaData["deviceBrand"])
+        // Screen size is device-config-dependent; verify it is in "HxW" format
+        assertTrue(metaData["screenSize"]!!.matches(Regex("\\d+x\\d+")), "screenSize must be in HxW format")
     }
 
     @Test
-    @PrepareForTest(Base64::class)
     fun testGetBase64EncodedMetadata() {
         val encodedMetadata = MetadataUtil.getBase64EncodedMetadata(
             mockContext,
@@ -82,14 +68,29 @@ class UtilTest {
             SDK_IDENTIFIER
         ).lines().joinToString("")
 
-        assertEquals(EXPECTED_ENCODED_METADATA, encodedMetadata)
+        // Must be valid base64url: non-empty, no standard base64 characters, no padding
+        assertTrue(encodedMetadata.isNotEmpty())
+        assertFalse(encodedMetadata.contains('+'), "base64url must not contain '+'")
+        assertFalse(encodedMetadata.contains('/'), "base64url must not contain '/'")
+        assertFalse(encodedMetadata.contains('='), "base64url must not contain padding '='")
+
+        // Decoded JSON must contain the expected metadata fields
+        val decoded = String(java.util.Base64.getUrlDecoder().decode(encodedMetadata))
+        assertTrue(decoded.contains(APP_IDENTIFIER))
+        assertTrue(decoded.contains(SDK_IDENTIFIER))
+        assertTrue(decoded.contains("OnlinePayments"))
+        assertTrue(decoded.contains("Android/0.0.1"))
+        assertTrue(decoded.contains("Google"))
+        assertTrue(decoded.contains("Pixel"))
     }
 
     @Test
     fun testGetBase64EncodedMetadataWithMetadata() {
         val metaData = MetadataUtil.getMetadata(mockContext, APP_IDENTIFIER, SDK_IDENTIFIER)
-        val encodedMetadata = MetadataUtil.getBase64EncodedMetadata(metaData).lines().joinToString("")
+        val encodedViaMap = MetadataUtil.getBase64EncodedMetadata(metaData).lines().joinToString("")
+        val encodedViaContext = MetadataUtil.getBase64EncodedMetadata(mockContext, APP_IDENTIFIER, SDK_IDENTIFIER).lines().joinToString("")
 
-        assertEquals(EXPECTED_ENCODED_METADATA, encodedMetadata)
+        // Both overloads must produce identical output for the same metadata
+        assertEquals(encodedViaContext, encodedViaMap)
     }
 }

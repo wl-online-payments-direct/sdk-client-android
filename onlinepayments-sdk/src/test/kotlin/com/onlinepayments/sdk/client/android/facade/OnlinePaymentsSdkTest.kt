@@ -27,19 +27,31 @@ import com.onlinepayments.sdk.client.android.domain.exceptions.SdkException
 import com.onlinepayments.sdk.client.android.domain.iin.IinDetailStatus
 import com.onlinepayments.sdk.client.android.domain.paymentRequest.CreditCardTokenRequest
 import com.onlinepayments.sdk.client.android.domain.paymentRequest.PaymentRequest
+import com.onlinepayments.sdk.client.android.domain.paymentProduct.BasicPaymentProducts
+import com.onlinepayments.sdk.client.android.domain.paymentProduct.PaymentProduct
+import com.onlinepayments.sdk.client.android.domain.publicKey.PublicKeyResponse
+import com.onlinepayments.sdk.client.android.facade.helpers.SessionDataNormalizer
+import com.onlinepayments.sdk.client.android.facade.listeners.BasicPaymentProductsResponseListener
+import com.onlinepayments.sdk.client.android.facade.listeners.PaymentProductResponseListener
+import com.onlinepayments.sdk.client.android.facade.listeners.PublicKeyResponseListener
+import com.onlinepayments.sdk.client.android.infrastructure.interfaces.IServiceFactory
 import com.onlinepayments.sdk.client.android.infrastructure.providers.LoggerProvider
 import com.onlinepayments.sdk.client.android.infrastructure.utils.GooglePayUtil
 import com.onlinepayments.sdk.client.android.infrastructure.utils.Logger
-import com.onlinepayments.sdk.client.android.mocks.MockContext
-import com.onlinepayments.sdk.client.android.mocks.MockEncoding
-import com.onlinepayments.sdk.client.android.testUtil.GsonHelperJava
+import androidx.test.core.app.ApplicationProvider
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import com.onlinepayments.sdk.client.android.testUtil.GsonHelper
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -59,19 +71,24 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(RobolectricTestRunner::class)
 class OnlinePaymentsSDKTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var mockWebServer: MockWebServer
-    private val mockContext = MockContext.setup()
+    private val mockContext = ApplicationProvider.getApplicationContext<android.app.Application>()
     private val mockLogger = mockk<Logger>(relaxed = true)
+    private lateinit var originalMainDispatcher: CoroutineDispatcher
+
+    companion object {
+        private val FILTERED_PRODUCT_IDS = listOf(117, 5700, 5772, 5784)
+    }
 
     @BeforeTest
     fun setup() {
+        originalMainDispatcher = OnlinePaymentsSdk.mainDispatcher
         Dispatchers.setMain(testDispatcher)
         mockWebServer = MockWebServer()
         mockWebServer.start()
-        MockEncoding.setup()
-
         mockkObject(GooglePayUtil)
         every { GooglePayUtil.isGooglePayAllowed(any(), any(), any()) } returns false
         coEvery { GooglePayUtil.isGooglePayAllowed(any(), any(), any()) } returns false
@@ -89,6 +106,7 @@ class OnlinePaymentsSDKTest {
             // Ignore shutdown errors
         }
         Dispatchers.resetMain()
+        OnlinePaymentsSdk.mainDispatcher = originalMainDispatcher
         LoggerProvider.reset()
         unmockkAll()
     }
@@ -105,9 +123,8 @@ class OnlinePaymentsSDKTest {
         assertEquals(30, products.count())
 
         val resultIds = products.map { it.id }
-        val filteredIds = listOf(117, 5700, 5772, 5784)
 
-        filteredIds.forEach { filteredId ->
+        FILTERED_PRODUCT_IDS.forEach { filteredId ->
             assertTrue(
                 !resultIds.contains(filteredId),
                 "Expected product with id=$filteredId to be filtered out, but it was found."
@@ -126,7 +143,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getBasicPaymentProducts(paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(400, exception.httpStatusCode)
     }
 
     @Test
@@ -275,7 +292,7 @@ class OnlinePaymentsSDKTest {
 
     @Test
     fun testCreateTokenPaymentRequest() = runTest {
-        val tokenRequest = GsonHelperJava.fromResourceJson(
+        val tokenRequest = GsonHelper.fromResourceJson(
             "creditCardTokenRequest.json",
             CreditCardTokenRequest::class.java
         )
@@ -353,7 +370,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getBasicPaymentProducts(paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(401, exception.httpStatusCode)
     }
 
     @Test
@@ -367,7 +384,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getBasicPaymentProducts(paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(403, exception.httpStatusCode)
     }
 
     @Test
@@ -381,7 +398,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getBasicPaymentProducts(paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(404, exception.httpStatusCode)
     }
 
     @Test
@@ -395,7 +412,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getBasicPaymentProducts(paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(500, exception.httpStatusCode)
     }
 
     @Test
@@ -409,7 +426,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getBasicPaymentProducts(paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(503, exception.httpStatusCode)
     }
 
     @Test
@@ -423,7 +440,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getPaymentProduct(1, paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(401, exception.httpStatusCode)
     }
 
     @Test
@@ -437,7 +454,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getPaymentProduct(1, paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(404, exception.httpStatusCode)
     }
 
     @Test
@@ -451,7 +468,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getPaymentProduct(1, paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(500, exception.httpStatusCode)
     }
 
     @Test
@@ -465,7 +482,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getNetworksForPaymentProduct(Constants.PAYMENT_PRODUCT_ID_APPLEPAY, paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(401, exception.httpStatusCode)
     }
 
     @Test
@@ -479,7 +496,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getNetworksForPaymentProduct(Constants.PAYMENT_PRODUCT_ID_APPLEPAY, paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(500, exception.httpStatusCode)
     }
 
     @Test
@@ -493,7 +510,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getIinDetails("411111", paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(401, exception.httpStatusCode)
     }
 
     @Test
@@ -507,7 +524,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getIinDetails("411111", paymentContext)
         }
 
-        assertNotNull(exception)
+        assertEquals(500, exception.httpStatusCode)
     }
 
     @Test
@@ -520,7 +537,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getCurrencyConversionQuote(amountOfMoney, "411111", "1")
         }
 
-        assertNotNull(exception)
+        assertEquals(401, exception.httpStatusCode)
     }
 
     @Test
@@ -533,7 +550,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getCurrencyConversionQuote(amountOfMoney, "411111", "1")
         }
 
-        assertNotNull(exception)
+        assertEquals(500, exception.httpStatusCode)
     }
 
     @Test
@@ -546,7 +563,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getSurchargeCalculation(amountOfMoney, "411111", "1")
         }
 
-        assertNotNull(exception)
+        assertEquals(401, exception.httpStatusCode)
     }
 
     @Test
@@ -559,7 +576,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getSurchargeCalculation(amountOfMoney, "411111", "1")
         }
 
-        assertNotNull(exception)
+        assertEquals(500, exception.httpStatusCode)
     }
 
     @Test
@@ -582,12 +599,12 @@ class OnlinePaymentsSDKTest {
             getSdk().encryptPaymentRequest(paymentRequest)
         }
 
-        assertNotNull(exception)
+        assertEquals(500, exception.httpStatusCode)
     }
 
     @Test
     fun testEncryptTokenRequestWithPublicKeyError() = runTest {
-        val tokenRequest = GsonHelperJava.fromResourceJson(
+        val tokenRequest = GsonHelper.fromResourceJson(
             "creditCardTokenRequest.json",
             CreditCardTokenRequest::class.java
         )
@@ -598,7 +615,7 @@ class OnlinePaymentsSDKTest {
             getSdk().encryptTokenRequest(tokenRequest)
         }
 
-        assertNotNull(exception)
+        assertEquals(500, exception.httpStatusCode)
     }
 
     // Network Failure Tests
@@ -614,11 +631,9 @@ class OnlinePaymentsSDKTest {
         val amountOfMoney = AmountOfMoney(1298L, "EUR")
         val paymentContext = PaymentContext(amountOfMoney, "NL", isRecurring = false)
 
-        val exception = assertFailsWith<SdkException> {
+        assertFailsWith<SdkException> {
             getSdk().getBasicPaymentProducts(paymentContext)
         }
-
-        assertNotNull(exception)
     }
 
     @Test
@@ -632,11 +647,9 @@ class OnlinePaymentsSDKTest {
         val amountOfMoney = AmountOfMoney(1298L, "EUR")
         val paymentContext = PaymentContext(amountOfMoney, "NL", isRecurring = false)
 
-        val exception = assertFailsWith<SdkException> {
+        assertFailsWith<SdkException> {
             getSdk().getPaymentProduct(1, paymentContext)
         }
-
-        assertNotNull(exception)
     }
 
     @Test
@@ -650,11 +663,9 @@ class OnlinePaymentsSDKTest {
         val amountOfMoney = AmountOfMoney(1298L, "EUR")
         val paymentContext = PaymentContext(amountOfMoney, "NL", isRecurring = false)
 
-        val exception = assertFailsWith<SdkException> {
+        assertFailsWith<SdkException> {
             getSdk().getBasicPaymentProducts(paymentContext)
         }
-
-        assertNotNull(exception)
     }
 
     @Test
@@ -699,11 +710,9 @@ class OnlinePaymentsSDKTest {
 
         val amountOfMoney = AmountOfMoney(1298L, "EUR")
 
-        val exception = assertFailsWith<SdkException> {
+        assertFailsWith<SdkException> {
             getSdk().getCurrencyConversionQuote(amountOfMoney, "411111", "1")
         }
-
-        assertNotNull(exception)
     }
 
     @Test
@@ -716,11 +725,9 @@ class OnlinePaymentsSDKTest {
 
         val amountOfMoney = AmountOfMoney(1298L, "EUR")
 
-        val exception = assertFailsWith<SdkException> {
+        assertFailsWith<SdkException> {
             getSdk().getSurchargeCalculation(amountOfMoney, "411111", "1")
         }
-
-        assertNotNull(exception)
     }
 
     @Test
@@ -734,11 +741,9 @@ class OnlinePaymentsSDKTest {
         val amountOfMoney = AmountOfMoney(1298L, "EUR")
         val paymentContext = PaymentContext(amountOfMoney, "NL", isRecurring = false)
 
-        val exception = assertFailsWith<SdkException> {
+        assertFailsWith<SdkException> {
             getSdk().getNetworksForPaymentProduct(Constants.PAYMENT_PRODUCT_ID_APPLEPAY, paymentContext)
         }
-
-        assertNotNull(exception)
     }
 
     // Additional Edge Case Tests
@@ -754,11 +759,9 @@ class OnlinePaymentsSDKTest {
         val amountOfMoney = AmountOfMoney(1298L, "EUR")
         val paymentContext = PaymentContext(amountOfMoney, "NL", isRecurring = false)
 
-        val exception = assertFailsWith<SdkException> {
+        assertFailsWith<SdkException> {
             getSdk().getBasicPaymentProducts(paymentContext)
         }
-
-        assertNotNull(exception)
     }
 
     @Test
@@ -771,7 +774,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getCurrencyConversionQuote(amountOfMoney, "token-123")
         }
 
-        assertNotNull(exception)
+        assertEquals(401, exception.httpStatusCode)
     }
 
     @Test
@@ -784,7 +787,7 @@ class OnlinePaymentsSDKTest {
             getSdk().getSurchargeCalculation(amountOfMoney, "token-123")
         }
 
-        assertNotNull(exception)
+        assertEquals(401, exception.httpStatusCode)
     }
 
     @Test
@@ -797,17 +800,180 @@ class OnlinePaymentsSDKTest {
             getSdk().getSurchargeCalculation(amountOfMoney, "token-123")
         }
 
-        assertNotNull(exception)
+        assertEquals(500, exception.httpStatusCode)
+    }
+
+    @Test
+    fun testConstructorCreatesInstanceWithSessionData() {
+        val sdk = OnlinePaymentsSdk(getSessionData(), mockContext, null)
+
+        assertNotNull(sdk)
+    }
+
+    @Test
+    fun testConstructorCreatesInstanceWhenFactoryIsProvided() {
+        val mockFactory = mockk<IServiceFactory>(relaxed = true)
+
+        val sdk = OnlinePaymentsSdk(
+            getSessionData(),
+            mockContext,
+            null,
+            CoroutineScope(SupervisorJob() + Dispatchers.IO),
+            mockFactory
+        )
+
+        assertNotNull(sdk)
+    }
+
+    @Test
+    fun testConstructorCreatesInstanceWithConfiguration() {
+        val config = SdkConfiguration(
+            environmentIsProduction = false,
+            appIdentifier = "TestApp/1.0",
+            sdkIdentifier = "AndroidSDK/2.5"
+        )
+
+        val sdk = OnlinePaymentsSdk(getSessionData(), mockContext, config)
+
+        assertNotNull(sdk)
+    }
+
+    @Test
+    fun testConstructorCreatesServicesWithDefaultFactory() = runTest {
+        setMockServerResponse("publicKeyResponse.json", 200)
+
+        val sdk = OnlinePaymentsSdk(
+            getSessionData(),
+            mockContext,
+            SdkConfiguration(false, "TestApp", "AndroidSDK"),
+            CoroutineScope(SupervisorJob() + Dispatchers.IO),
+            null
+        )
+
+        val publicKey = sdk.getPublicKey()
+
+        assertNotNull(publicKey)
+    }
+
+    @Test
+    fun testConstructorNormalizesSessionData() {
+        mockkObject(SessionDataNormalizer)
+
+        var capturedSessionData: SessionData? = null
+
+        every { SessionDataNormalizer.normalize(any()) } answers {
+            capturedSessionData = firstArg()
+            callOriginal()
+        }
+
+        val sessionData = getSessionData()
+
+        OnlinePaymentsSdk(sessionData, mockContext, null)
+
+        assertEquals(sessionData, capturedSessionData)
+    }
+
+    // Listener API Tests (p4d): verify callback-based API methods deliver results via onSuccess.
+    // These tests use Dispatchers.Unconfined so the ServiceCallWrapper delivers callbacks eagerly
+    // on whichever thread the HTTP response arrives on (matching OnlinePaymentsSdkListenersJavaTest).
+
+    @Test
+    fun testGetBasicPaymentProductsWithListener_invokesOnSuccess() {
+        OnlinePaymentsSdk.mainDispatcher = Dispatchers.Unconfined
+        setMockServerResponse("paymentProducts.json", 200)
+
+        val amountOfMoney = AmountOfMoney(1298L, "EUR")
+        val paymentContext = PaymentContext(amountOfMoney, "NL", isRecurring = false)
+
+        val latch = java.util.concurrent.CountDownLatch(1)
+        var result: BasicPaymentProducts? = null
+        var error: SdkException? = null
+
+        getSdk().getBasicPaymentProducts(paymentContext, object : BasicPaymentProductsResponseListener {
+            override fun onSuccess(response: BasicPaymentProducts) {
+                result = response
+                latch.countDown()
+            }
+            override fun onFailure(exception: SdkException) {
+                error = exception
+                latch.countDown()
+            }
+        })
+
+        assertTrue(latch.await(5, TimeUnit.SECONDS), "Listener should be called within 5 seconds")
+        assertNull(error, "Expected no error but got: $error")
+
+        val actualResult = assertNotNull(result)
+        assertTrue(actualResult.paymentProducts.isNotEmpty())
+    }
+
+    @Test
+    fun testGetPaymentProductWithListener_invokesOnSuccess() {
+        OnlinePaymentsSdk.mainDispatcher = Dispatchers.Unconfined
+        setMockServerResponse("cardPaymentProduct.json", 200)
+
+        val amountOfMoney = AmountOfMoney(1298L, "EUR")
+        val paymentContext = PaymentContext(amountOfMoney, "NL", isRecurring = false)
+
+        val latch = java.util.concurrent.CountDownLatch(1)
+        var result: PaymentProduct? = null
+        var error: SdkException? = null
+
+        getSdk().getPaymentProduct(1, paymentContext, object : PaymentProductResponseListener {
+            override fun onSuccess(response: PaymentProduct?) {
+                result = response
+                latch.countDown()
+            }
+            override fun onFailure(exception: SdkException) {
+                error = exception
+                latch.countDown()
+            }
+        })
+
+        assertTrue(latch.await(5, TimeUnit.SECONDS), "Listener should be called within 5 seconds")
+        assertNull(error, "Expected no error but got: $error")
+
+        val actualResult = assertNotNull(result)
+        assertEquals(1, actualResult.id)
+    }
+
+    @Test
+    fun testGetPublicKeyWithListener_invokesOnSuccess() {
+        OnlinePaymentsSdk.mainDispatcher = Dispatchers.Unconfined
+        setMockServerResponse("publicKeyResponse.json", 200)
+
+        val latch = java.util.concurrent.CountDownLatch(1)
+        var result: PublicKeyResponse? = null
+        var error: SdkException? = null
+
+        getSdk().getPublicKey(object : PublicKeyResponseListener {
+            override fun onSuccess(response: PublicKeyResponse) {
+                result = response
+                latch.countDown()
+            }
+            override fun onFailure(exception: SdkException) {
+                error = exception
+                latch.countDown()
+            }
+        })
+
+        assertTrue(latch.await(5, TimeUnit.SECONDS), "Listener should be called within 5 seconds")
+        assertNull(error, "Expected no error but got: $error")
+
+        val actualResult = assertNotNull(result)
+        assertEquals("12345678-aaaa-bbbb-cccc-876543218765", actualResult.getKeyId())
+    }
+
+    private fun getSessionData(): SessionData {
+        return SessionData(
+            clientSessionId = "sessionId",
+            customerId = "clientId",
+            clientApiUrl = mockWebServer.url("/").toString(),
+            assetUrl = "https://example.com"
+        )
     }
 
     private fun getSdk(): OnlinePaymentsSdk {
-        val sessionData = SessionData(
-            "sessionId",
-            "clientId",
-            mockWebServer.url("/").toString(),
-            "https://example.com"
-        )
-
         val config = SdkConfiguration(
             false,
             "SDKTestApp",
@@ -815,11 +981,11 @@ class OnlinePaymentsSDKTest {
             true
         )
 
-        return OnlinePaymentsSdk(sessionData, mockContext, config)
+        return OnlinePaymentsSdk(getSessionData(), mockContext, config)
     }
 
     private fun setMockServerResponse(jsonFile: String, responseCode: Int, delay: Long = 0L) {
-        val json = GsonHelperJava.fromResourceJson(jsonFile, JsonElement::class.java)
+        val json = GsonHelper.fromResourceJson(jsonFile, JsonElement::class.java)
 
         mockWebServer.enqueue(
             MockResponse()

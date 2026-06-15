@@ -126,10 +126,11 @@ class PaymentRequestFieldTest {
 
     @Test
     fun `setValue should throw correct error message for READ_ONLY field`() {
-        paymentProductField = GsonHelper.fromResourceJson(
+        val dto = GsonHelper.fromResourceJson(
             "paymentProductFieldCard.json",
-            PaymentProductField::class.java
+            PaymentProductFieldDto::class.java
         )
+        paymentProductField = PaymentProductFactory().createPaymentProductField(dto)
         paymentRequestField = PaymentRequestField(paymentProductField, true)
 
         val exception = assertFailsWith<InvalidArgumentException> {

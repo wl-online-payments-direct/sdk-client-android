@@ -13,15 +13,19 @@
 package com.onlinepayments.sdk.client.android.integration.tests
 
 import com.onlinepayments.sdk.client.android.domain.exceptions.InvalidArgumentException
+import com.onlinepayments.sdk.client.android.domain.paymentRequest.CreditCardTokenRequest
 import com.onlinepayments.sdk.client.android.domain.paymentRequest.PaymentRequest
 import com.onlinepayments.sdk.client.android.domain.validation.ValidationResult
 import com.onlinepayments.sdk.client.android.domain.validation.rules.ValidationRuleType
+import com.onlinepayments.sdk.client.android.facade.OnlinePaymentsSdk
 import com.onlinepayments.sdk.client.android.integration.BaseIntegrationTest
+import com.onlinepayments.sdk.client.android.integration.utils.MockServerHelper
 import com.onlinepayments.sdk.client.android.integration.utils.ServerApiHelper
 import com.onlinepayments.sdk.client.android.integration.utils.TestConfig
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -60,8 +64,6 @@ class PaymentRequestIntegrationTest : BaseIntegrationTest() {
             result.encodedClientMetaInfo.isEmpty(),
             "Encoded client meta info should not be empty"
         )
-
-        return@runBlocking
     }
 
     @Test
@@ -89,8 +91,6 @@ class PaymentRequestIntegrationTest : BaseIntegrationTest() {
             assertEquals(ValidationRuleType.REQUIRED.toString(), validationResult.errors[0].type)
             assertEquals("cardNumber", validationResult.errors[0].paymentProductFieldId)
         }
-
-        return@runBlocking
     }
 
     @Test
@@ -117,8 +117,6 @@ class PaymentRequestIntegrationTest : BaseIntegrationTest() {
             assertEquals(1, validationResult.errors.size)
             assertEquals(ValidationRuleType.LUHN.toString(), validationResult.errors[0].type)
         }
-
-        return@runBlocking
     }
 
     @Test
@@ -139,8 +137,6 @@ class PaymentRequestIntegrationTest : BaseIntegrationTest() {
 
         assertTrue(validationResult.isValid, "Payment request should be valid")
         assertTrue(validationResult.errors.isEmpty(), "Should have no validation errors")
-
-        return@runBlocking
     }
 
     @Test
@@ -177,8 +173,6 @@ class PaymentRequestIntegrationTest : BaseIntegrationTest() {
             result1.encryptedCustomerInput != result2.encryptedCustomerInput,
             "Encrypted data should be different even with same input (random nonce)"
         )
-
-        return@runBlocking
     }
 
     @Test
@@ -191,9 +185,7 @@ class PaymentRequestIntegrationTest : BaseIntegrationTest() {
 
         assertNotNull(response)
         assertNotNull(response.token)
-        assertNotNull("CREATED", response.tokenStatus)
-
-        return@runBlocking
+        assertEquals("CREATED", response.tokenStatus)
     }
 
     @Test
@@ -208,8 +200,95 @@ class PaymentRequestIntegrationTest : BaseIntegrationTest() {
 
         assertNotNull(payment, "Payment should not be null")
         assertNotNull(payment.get("id"))
+        Unit
+    }
 
-        return@runBlocking
+    @Test
+    fun encryptPaymentRequest_withAofEndToEnd_createsPaymentSuccessfully() = runBlocking {
+        val tokenRequest = CreditCardTokenRequest()
+        tokenRequest.cardNumber = TestConfig.cardNumberWithSurcharge
+        tokenRequest.cardholderName = "Darwin Núñez"
+        tokenRequest.expiryDate = "1230"
+        tokenRequest.securityCode = "123"
+        tokenRequest.paymentProductId = TestConfig.productIdVisa
+
+        val encryptedToken = sdk.encryptTokenRequest(tokenRequest)
+        assertNotNull(encryptedToken, "Token encryption should succeed")
+
+        val tokenResponse = ServerApiHelper.createToken(encryptedToken.encryptedCustomerInput)
+        assertNotNull(tokenResponse.token, "Token should be created")
+
+        val sessionWithToken = ServerApiHelper.createSessionWithTokens(listOf(tokenResponse.token!!))
+        val sdkWithToken = OnlinePaymentsSdk(
+            sessionWithToken,
+            context,
+            TestConfig.sdkConfiguration
+        )
+
+        val product = sdkWithToken.getPaymentProduct(TestConfig.productIdVisa, paymentContext)
+        assertNotNull(product)
+        assertTrue(product.accountsOnFile.isNotEmpty(), "Product should contain accounts on file")
+
+        val aof = product.accountsOnFile[0]
+        val request = PaymentRequest(product, aof)
+        request.setValue("cvv", "123")
+
+        val encryptedData = sdkWithToken.encryptPaymentRequest(request)
+        assertNotNull(encryptedData, "Encrypted payment request should not be null")
+
+        val paymentResult = ServerApiHelper.createPayment(encryptedData.encryptedCustomerInput)
+        val payment = paymentResult.getAsJsonObject("payment")
+        assertNotNull(payment, "Payment should be created")
+        assertNotNull(payment.get("id"), "Payment should have an ID")
+        Unit
+    }
+
+    @Test
+    fun encryptPaymentRequest_withAofAndShortCvv_shouldFailValidation() = runBlocking {
+        val json = MockServerHelper.loadJsonResource("paymentProductVisa.json")
+        val (mockSdk, server) = MockServerHelper.createMockSdkWithResponse(context, json)
+
+        try {
+            val product = mockSdk.getPaymentProduct(TestConfig.productIdVisa, paymentContext)
+            val aof = product.accountsOnFile[0]
+            val request = PaymentRequest(product, aof)
+            request.setValue("cvv", "1") // too short: minLength is 3 for Visa CVV
+
+            val exception = assertFailsWith<InvalidArgumentException> {
+                mockSdk.encryptPaymentRequest(request)
+            }
+
+            val validationResult = exception.metadata!!["data"] as ValidationResult
+
+            assertFalse(validationResult.isValid)
+            assertEquals(1, validationResult.errors.size)
+            assertEquals("cvv", validationResult.errors.first().paymentProductFieldId)
+        } finally {
+            server.shutdown()
+        }
+    }
+
+    @Test
+    fun encryptPaymentRequest_withTokenizeFlag_shouldSucceed() = runBlocking {
+        val product = sdk.getPaymentProduct(TestConfig.productIdVisa, paymentContext)
+
+        val maskedValue = product.getField("expiryDate")!!.applyMask("122030")
+        val validExpiry = if (maskedValue?.length == 5) "1230" else "122030"
+
+        val request = PaymentRequest(product, null, false)
+        request.setValue("cardNumber", TestConfig.cardNumberWithoutSurcharge)
+        request.setValue("cardholderName", "Test Cardholder")
+        request.setValue("cvv", "123")
+        request.setValue("expiryDate", validExpiry)
+        request.setTokenize(true)
+
+        assertTrue(request.getTokenize(), "Tokenize flag should be true before encryption")
+
+        val result = sdk.encryptPaymentRequest(request)
+
+        assertNotNull(result, "Encrypted result should not be null")
+        assertTrue(result.encryptedCustomerInput.isNotEmpty(), "Encrypted customer input should not be empty")
+        assertTrue(result.encodedClientMetaInfo.isNotEmpty(), "Encoded client meta info should not be empty")
     }
 
     private suspend fun createValidRequest(): PaymentRequest {

@@ -12,6 +12,10 @@
 
 package com.onlinepayments.sdk.client.android.domain.paymentRequest
 
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -162,8 +166,8 @@ class CreditCardTokenRequestTest {
     }
 
     @Test
-    fun serialization_shouldBeSerializable() {
-        val request = CreditCardTokenRequest(
+    fun serialization_roundTrip_shouldPreserveAllFields() {
+        val original = CreditCardTokenRequest(
             cardNumber = "4567350000427977",
             cardholderName = "Test User",
             expiryDate = "1226",
@@ -171,8 +175,18 @@ class CreditCardTokenRequestTest {
             paymentProductId = 1
         )
 
-        // Verify it's Serializable (compilation check)
-        val serializable: java.io.Serializable = request
-        assertNotNull(serializable)
+        val bytes = ByteArrayOutputStream().use { bos ->
+            ObjectOutputStream(bos).use { it.writeObject(original) }
+            bos.toByteArray()
+        }
+        val deserialized = ByteArrayInputStream(bytes).use { bis ->
+            ObjectInputStream(bis).use { it.readObject() as CreditCardTokenRequest }
+        }
+
+        assertEquals(original.cardNumber, deserialized.cardNumber)
+        assertEquals(original.cardholderName, deserialized.cardholderName)
+        assertEquals(original.expiryDate, deserialized.expiryDate)
+        assertEquals(original.securityCode, deserialized.securityCode)
+        assertEquals(original.paymentProductId, deserialized.paymentProductId)
     }
 }

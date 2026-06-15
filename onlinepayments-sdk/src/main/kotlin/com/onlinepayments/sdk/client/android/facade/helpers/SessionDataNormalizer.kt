@@ -37,9 +37,21 @@ internal object SessionDataNormalizer {
     }
 
     private fun sanitizeClientApiUrl(clientApiUrl: String): String {
-        return StringBuilder(clientApiUrl)
-            .appendIf({ !it.endsWith("/") }, "/")
-            .appendIf({ !it.endsWith(API_BASE, true) }, API_BASE)
-            .toString()
+        val queryIndex = clientApiUrl.indexOf('?')
+        return if (queryIndex != -1) {
+            // Insert /client/ before the query string so the path is well-formed
+            val path = clientApiUrl.substring(0, queryIndex)
+            val query = clientApiUrl.substring(queryIndex)
+            StringBuilder(path)
+                .appendIf({ !it.endsWith("/") }, "/")
+                .appendIf({ !it.endsWith(API_BASE, true) }, API_BASE)
+                .append(query)
+                .toString()
+        } else {
+            StringBuilder(clientApiUrl)
+                .appendIf({ !it.endsWith("/") }, "/")
+                .appendIf({ !it.endsWith(API_BASE, true) }, API_BASE)
+                .toString()
+        }
     }
 }

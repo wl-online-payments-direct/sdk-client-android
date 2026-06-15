@@ -56,6 +56,14 @@ internal class PaymentProductService(
 
             filterUnsupportedProducts(basicPaymentProducts.paymentProducts)
 
+            if (basicPaymentProducts.paymentProducts.isEmpty()) {
+                throw ResponseException(
+                    httpStatusCode = 404,
+                    message = "No payment products available.",
+                    apiError = SupportedProductsUtil.get404Error()
+                )
+            }
+
             basicPaymentProducts
         }
     }

@@ -14,6 +14,8 @@ package com.onlinepayments.sdk.client.android.integration.utils
 
 import java.io.FileInputStream
 import java.util.Properties
+import com.onlinepayments.sdk.client.android.domain.Constants
+import com.onlinepayments.sdk.client.android.domain.configuration.SdkConfiguration
 
 /**
  * Test configuration for integration tests.
@@ -96,6 +98,27 @@ object TestConfig {
 
     val productIdVisa: Int
         get() = 1
+
+    val cardTokenWithCurrencyConversion: String
+        get() = getOptionalProperty("CARD_TOKEN_WITH_CURRENCY_CONVERSION", "")
+
+    val productIdWithCurrencyConversion: String
+        get() = getOptionalProperty("PRODUCT_ID_WITH_CURRENCY_CONVERSION", "5700")
+
+    val productIdWithoutCurrencyConversion: String
+        get() = getOptionalProperty("PRODUCT_ID_WITHOUT_CURRENCY_CONVERSION", "1")
+
+    val cardTokenWithSurcharge: String
+        get() = getOptionalProperty("CARD_TOKEN_WITH_SURCHARGE", "")
+
+    val productIdWithSurcharge: String
+        get() = getOptionalProperty("PRODUCT_ID_WITH_SURCHARGE", "5700")
+
+    val productIdWithoutSurcharge: String
+        get() = getOptionalProperty("PRODUCT_ID_WITHOUT_SURCHARGE", "1")
+
+    val sdkConfiguration: SdkConfiguration
+        get() = SdkConfiguration(false, "AndroidSDK/IntegrationTests", Constants.SDK_IDENTIFIER, true)
 
     /**
      * Check if integration tests can run (all required credentials are available).

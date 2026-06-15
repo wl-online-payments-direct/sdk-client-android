@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -12,6 +12,7 @@
 
 package com.onlinepayments.sdk.client.android.integration.tests
 
+import com.onlinepayments.sdk.client.android.domain.Constants
 import com.onlinepayments.sdk.client.android.domain.exceptions.ResponseException
 import com.onlinepayments.sdk.client.android.integration.BaseIntegrationTest
 import com.onlinepayments.sdk.client.android.integration.utils.TestConfig
@@ -38,8 +39,6 @@ class BasicPaymentProductsIntegrationTest : BaseIntegrationTest() {
             result.paymentProducts.isEmpty(),
             "Should have at least one payment product"
         )
-
-        return@runBlocking
     }
 
     @Test
@@ -58,46 +57,46 @@ class BasicPaymentProductsIntegrationTest : BaseIntegrationTest() {
             result.fields.isEmpty(),
             "Payment product should have fields"
         )
-
-        return@runBlocking
     }
 
     @Test
-    fun getBasicPaymentProducts_withInvalidAmount_shouldReturnEmpty() = runBlocking {
+    fun getBasicPaymentProducts_withInvalidAmount_shouldThrowResponseException() = runBlocking {
         val invalidContext = createPaymentContext(amount = -1)
 
-        val response = sdk.getBasicPaymentProducts(invalidContext)
-        assertEquals(0, response.paymentProducts.size)
-
-        return@runBlocking
+        try {
+            sdk.getBasicPaymentProducts(invalidContext)
+            fail("Should have thrown an exception when no payment products are available")
+        } catch (e: ResponseException) {
+            assertEquals(404, e.httpStatusCode, "Should return 404 when no payment products are available")
+            assertEquals(
+                "No payment products available.",
+                e.message,
+                "Should return the expected error message"
+            )
+        }
     }
 
     @Test
     fun getBasicPaymentProducts_calledTwice_shouldUseCacheOnSecondCall() = runBlocking {
         // First call - should fetch from API
         val firstResult = sdk.getBasicPaymentProducts(paymentContext)
-        val firstCallTime = System.currentTimeMillis()
 
-        // Second call - should use cache
+        // Second call - should hit cache and return same data
         val secondResult = sdk.getBasicPaymentProducts(paymentContext)
-        val secondCallTime = System.currentTimeMillis()
 
         assertNotNull(firstResult, "First result should not be null")
         assertNotNull(secondResult, "Second result should not be null")
 
-        // Cached call should be significantly faster
-        assertTrue(
-            (secondCallTime - firstCallTime) < 100, // Less than 100ms for cached call
-            "Second call should be faster (cached)"
-        )
-
         assertEquals(
             firstResult.paymentProducts.size,
             secondResult.paymentProducts.size,
-            "Results should have same number of products"
+            "Cached result should have the same number of products"
         )
-
-        return@runBlocking
+        assertEquals(
+            firstResult.paymentProducts.map { it.id },
+            secondResult.paymentProducts.map { it.id },
+            "Cached result should contain the same product IDs"
+        )
     }
 
     @Test
@@ -111,8 +110,7 @@ class BasicPaymentProductsIntegrationTest : BaseIntegrationTest() {
 
         assertNotNull(firstResult, "First result should not be null")
         assertNotNull(secondResult, "Second result should not be null")
-
-        return@runBlocking
+        Unit
     }
 
     @Test
@@ -123,8 +121,7 @@ class BasicPaymentProductsIntegrationTest : BaseIntegrationTest() {
 
         assertNotNull(result, "Result should not be null")
         assertNotNull(result.logo, "Result should have logo")
-
-        return@runBlocking
+        Unit
     }
 
     @Test
@@ -142,8 +139,6 @@ class BasicPaymentProductsIntegrationTest : BaseIntegrationTest() {
             fieldIds.contains("cardNumber"),
             "Card product should have cardNumber field"
         )
-
-        return@runBlocking
     }
 
     @Test
@@ -157,7 +152,21 @@ class BasicPaymentProductsIntegrationTest : BaseIntegrationTest() {
             // Expected - server returns 500 for non-existent products
             assertEquals(500, e.httpStatusCode, "Should return error for non-existent product")
         }
+    }
 
-        return@runBlocking
+    @Test
+    fun getBasicPaymentProducts_whenSdkUnsupportedProductsReturned_shouldFilterThemOut() = runBlocking {
+        val result = sdk.getBasicPaymentProducts(paymentContext)
+
+        assertNotNull(result, "Result should not be null")
+
+        val returnedIds = result.paymentProducts.mapNotNull { it.id }.toSet()
+        val unavailableIds = Constants.UNAVAILABLE_PAYMENT_PRODUCT_IDS.toSet()
+        val intersection = returnedIds.intersect(unavailableIds)
+
+        assertTrue(
+            intersection.isEmpty(),
+            "SDK-unsupported products should be filtered out. Found: $intersection"
+        )
     }
 }

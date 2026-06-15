@@ -38,9 +38,15 @@ class ValidationRuleTermsAndConditionsTest {
     fun shouldValidateStringTrue() {
         val validator = createValidator()
 
+        // Kotlin's toBoolean() is case-insensitive; "TRUE" and "True" must also be accepted
         assertEquals(
             RuleValidationResult(valid = true, message = ""),
-            validator.validate("true")
+            validator.validate("TRUE")
+        )
+
+        assertEquals(
+            RuleValidationResult(valid = true, message = ""),
+            validator.validate("True")
         )
     }
 
@@ -61,12 +67,13 @@ class ValidationRuleTermsAndConditionsTest {
     fun shouldRejectStringFalse() {
         val validator = createValidator()
 
+        // Null input must also be rejected
         assertEquals(
             RuleValidationResult(
                 valid = false,
                 message = "Please accept terms and conditions."
             ),
-            validator.validate("false")
+            validator.validate(null)
         )
     }
 

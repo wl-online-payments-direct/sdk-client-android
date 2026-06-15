@@ -15,13 +15,20 @@ package com.onlinepayments.sdk.client.android.infrastructure.factories
 import android.content.Context
 import com.onlinepayments.sdk.client.android.domain.configuration.SdkConfiguration
 import com.onlinepayments.sdk.client.android.domain.configuration.SessionData
+import com.onlinepayments.sdk.client.android.infrastructure.http.ApiClient
 import com.onlinepayments.sdk.client.android.infrastructure.interfaces.IApiClient
+import com.onlinepayments.sdk.client.android.infrastructure.interfaces.IPaymentProductFactory
+import androidx.test.core.app.ApplicationProvider
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import io.mockk.mockk
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
+@RunWith(RobolectricTestRunner::class)
 class ServiceFactoryTest {
     private lateinit var context: Context
     private lateinit var sessionData: SessionData
@@ -157,5 +164,70 @@ class ServiceFactoryTest {
         val second = factory.encryptionService
 
         assertSame(first, second, "Same instance should be returned")
+    }
+
+    @Test
+    fun `cacheManager returns same instance on every call`() {
+        val factory = createFactory()
+
+        assertSame(factory.cacheManager, factory.cacheManager)
+    }
+
+    @Test
+    fun `encryption client and payment product services all share the same cacheManager`() {
+        val factory = createFactory()
+
+        val cacheManager = factory.cacheManager
+
+        assertNotNull(cacheManager)
+        assertNotNull(factory.encryptionService)
+        assertNotNull(factory.clientService)
+        assertNotNull(factory.paymentProductService)
+        assertSame(cacheManager, factory.cacheManager)
+    }
+
+    @Test
+    fun `paymentProductService is created using default factory when no paymentProductFactory is provided`() {
+        val factory = createFactory()
+
+        assertNotNull(factory.paymentProductService)
+    }
+
+    @Test
+    fun `paymentProductService uses provided paymentProductFactory when given`() {
+        val customFactory = mockk<IPaymentProductFactory>(relaxed = true)
+
+        val factory = createFactory(paymentProductFactory = customFactory)
+
+        assertNotNull(factory.paymentProductService)
+        // The custom factory is wired in — verified by the fact that paymentProductService
+        // is successfully created (it would throw if the factory was incompatible).
+    }
+
+    @Test
+    fun `apiClient is a default ApiClient instance when no override is provided`() {
+        val factory = createFactory(
+            apiClient = null,
+            context = ApplicationProvider.getApplicationContext()
+        )
+
+        assertNotNull(factory.apiClient)
+        assertIs<ApiClient>(factory.apiClient)
+    }
+
+    private fun createFactory(
+        apiClient: IApiClient? = this.apiClient,
+        paymentProductFactory: IPaymentProductFactory? = null,
+        context: Context = this.context
+    ): ServiceFactory {
+        return ServiceFactory(
+            ServiceFactoryConfiguration(
+                sessionData = sessionData,
+                configuration = configuration,
+                context = context,
+                apiClient = apiClient,
+                paymentProductFactory = paymentProductFactory
+            )
+        )
     }
 }

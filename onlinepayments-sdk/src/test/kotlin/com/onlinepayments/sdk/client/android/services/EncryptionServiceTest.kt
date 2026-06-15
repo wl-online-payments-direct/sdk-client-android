@@ -12,6 +12,8 @@
 
 package com.onlinepayments.sdk.client.android.services
 
+import com.onlinepayments.sdk.client.android.domain.exceptions.ApiError
+import com.onlinepayments.sdk.client.android.domain.exceptions.ResponseException
 import com.onlinepayments.sdk.client.android.domain.configuration.SessionData
 import com.onlinepayments.sdk.client.android.domain.exceptions.InvalidArgumentException
 import com.onlinepayments.sdk.client.android.domain.paymentRequest.CreditCardTokenRequest
@@ -20,8 +22,9 @@ import com.onlinepayments.sdk.client.android.infrastructure.apiModels.paymentPro
 import com.onlinepayments.sdk.client.android.infrastructure.apiModels.publicKey.PublicKeyResponseDto
 import com.onlinepayments.sdk.client.android.infrastructure.factories.PaymentProductFactory
 import com.onlinepayments.sdk.client.android.infrastructure.interfaces.IApiClient
-import com.onlinepayments.sdk.client.android.mocks.MockContext
-import com.onlinepayments.sdk.client.android.mocks.MockEncoding
+import androidx.test.core.app.ApplicationProvider
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import com.onlinepayments.sdk.client.android.testUtil.GsonHelper
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -37,8 +40,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
+@RunWith(RobolectricTestRunner::class)
 class EncryptionServiceTest {
 
     private lateinit var apiClient: IApiClient
@@ -50,8 +55,6 @@ class EncryptionServiceTest {
     @BeforeTest
     fun setUp() {
         clearAllMocks()
-        MockEncoding.setup()
-
         apiClient = mockk()
 
         sessionData = SessionData(
@@ -67,7 +70,7 @@ class EncryptionServiceTest {
         encryptionService = EncryptionService(
             apiClient = apiClient,
             sessionData = sessionData,
-            context = MockContext.setup(),
+            context = ApplicationProvider.getApplicationContext(),
         )
     }
 
@@ -90,8 +93,8 @@ class EncryptionServiceTest {
         val result = encryptionService.getPublicKey()
 
         assertNotNull(result)
-        assertNotNull(result.getKeyId())
-        assertNotNull(result.getPublicKey())
+        assertEquals("12345678-aaaa-bbbb-cccc-876543218765", result.getKeyId())
+        assertNotNull(result.getPublicKey(), "Public key should be parseable as an RSA key")
         coVerify { apiClient.getPublicKey(sessionData.customerId) }
     }
 
@@ -120,8 +123,9 @@ class EncryptionServiceTest {
         val result = encryptionService.encryptPaymentRequest(paymentRequest)
 
         assertNotNull(result)
-        assertNotNull(result.encryptedCustomerInput)
-        assertNotNull(result.encodedClientMetaInfo)
+        // A valid JWE compact serialisation has 5 base64url segments separated by dots
+        assertEquals(5, result.encryptedCustomerInput.split(".").size, "encryptedCustomerInput must be a JWE (5 segments)")
+        assertTrue(result.encodedClientMetaInfo.isNotEmpty(), "encodedClientMetaInfo must not be empty")
 
         verify { paymentRequest.validate() }
         verify { paymentRequest.getAccountOnFile() }
@@ -175,8 +179,8 @@ class EncryptionServiceTest {
         val result = encryptionService.encryptTokenPaymentRequest(tokenRequest)
 
         assertNotNull(result)
-        assertNotNull(result.encryptedCustomerInput)
-        assertNotNull(result.encodedClientMetaInfo)
+        assertEquals(5, result.encryptedCustomerInput.split(".").size, "encryptedCustomerInput must be a JWE (5 segments)")
+        assertTrue(result.encodedClientMetaInfo.isNotEmpty(), "encodedClientMetaInfo must not be empty")
     }
 
     @Test
@@ -190,7 +194,7 @@ class EncryptionServiceTest {
             PaymentProductDto::class.java
         )
 
-        val realEncryptionService = EncryptionService(apiClient, sessionData, MockContext.setup())
+        val realEncryptionService = EncryptionService(apiClient, sessionData, ApplicationProvider.getApplicationContext())
 
         val paymentProduct = PaymentProductFactory().createPaymentProduct(paymentProductDto)
         val request = PaymentRequest(paymentProduct)
@@ -226,7 +230,7 @@ class EncryptionServiceTest {
                 PaymentProductDto::class.java
             )
 
-            val realEncryptionService = EncryptionService(apiClient, sessionData, MockContext.setup())
+            val realEncryptionService = EncryptionService(apiClient, sessionData, ApplicationProvider.getApplicationContext())
 
             val paymentProduct = PaymentProductFactory().createPaymentProduct(paymentProductDto)
             val paymentRequest = PaymentRequest(paymentProduct)
@@ -263,7 +267,7 @@ class EncryptionServiceTest {
                 PaymentProductDto::class.java
             )
 
-            val realEncryptionService = EncryptionService(apiClient, sessionData, MockContext.setup())
+            val realEncryptionService = EncryptionService(apiClient, sessionData, ApplicationProvider.getApplicationContext())
 
             val paymentProduct = PaymentProductFactory().createPaymentProduct(paymentProductDto)
             val paymentRequest = PaymentRequest(paymentProduct)
@@ -283,7 +287,6 @@ class EncryptionServiceTest {
                 realEncryptionService.encryptPaymentRequest(paymentRequest)
             }
 
-            assertNotNull(validationMessages.errors)
             assertEquals(
                 "Cannot encrypt invalid request.",
                 exception.message
@@ -298,7 +301,7 @@ class EncryptionServiceTest {
             PublicKeyResponseDto::class.java
         )
 
-        val realEncryptionService = EncryptionService(apiClient, sessionData, MockContext.setup())
+        val realEncryptionService = EncryptionService(apiClient, sessionData, ApplicationProvider.getApplicationContext())
 
         val token = CreditCardTokenRequest()
         token.securityCode = "123"
@@ -317,5 +320,65 @@ class EncryptionServiceTest {
 
         assertTrue(result.encryptedCustomerInput.isNotEmpty())
         assertTrue(result.encodedClientMetaInfo.isNotEmpty())
+    }
+
+    @Test
+    fun `getPublicKey propagates ResponseException from api client`() = runTest {
+        val responseException = ResponseException(503, "Service Unavailable", ApiError())
+
+        coEvery { apiClient.getPublicKey(any()) } throws responseException
+
+        val exception = assertFailsWith<ResponseException> {
+            encryptionService.getPublicKey()
+        }
+
+        assertSame(responseException, exception)
+    }
+
+    @Test
+    fun `encryptPaymentRequest calls validate on the payment request before encrypting`() = runTest {
+        val publicKeyResponseDto = GsonHelper.fromResourceJson(
+            "publicKeyResponse.json",
+            PublicKeyResponseDto::class.java
+        )
+
+        coEvery { apiClient.getPublicKey(any()) } returns publicKeyResponseDto
+        every { paymentRequest.validate() } returns mockk { every { isValid } returns true }
+        every { paymentRequest.getAccountOnFile() } returns null
+        every { paymentRequest.paymentProduct.id } returns 1
+        every { paymentRequest.getValues() } returns mapOf("cardNumber" to "4567350000427977")
+        every { paymentRequest.getTokenize() } returns false
+
+        encryptionService.encryptPaymentRequest(paymentRequest)
+
+        verify { paymentRequest.validate() }
+        verify { paymentRequest.getAccountOnFile() }
+        verify { paymentRequest.paymentProduct.id }
+        verify { paymentRequest.getValues() }
+        verify { paymentRequest.getTokenize() }
+    }
+
+    @Test
+    fun `encryptTokenPaymentRequest retrieves values from token request for encryption`() = runTest {
+        val publicKeyResponseDto = GsonHelper.fromResourceJson(
+            "publicKeyResponse.json",
+            PublicKeyResponseDto::class.java
+        )
+
+        coEvery { apiClient.getPublicKey(any()) } returns publicKeyResponseDto
+        every { tokenRequest.paymentProductId } returns 1
+        every { tokenRequest.getValues() } returns mapOf(
+            "cardNumber" to "4567350000427977",
+            "cvv" to "123"
+        )
+
+        encryptionService.encryptTokenPaymentRequest(tokenRequest)
+
+        verify { tokenRequest.getValues() }
+        verify { tokenRequest.paymentProductId }
+
+        coVerify {
+            apiClient.getPublicKey(sessionData.customerId)
+        }
     }
 }

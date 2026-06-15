@@ -14,6 +14,8 @@ package com.onlinepayments.sdk.client.android.domain.paymentProduct
 
 import com.onlinepayments.sdk.client.android.domain.accountOnFile.AccountOnFile
 import com.onlinepayments.sdk.client.android.domain.accountOnFile.AccountOnFileAttribute
+import com.onlinepayments.sdk.client.android.infrastructure.apiModels.accountOnFile.AccountOnFileAttributeDto
+import com.onlinepayments.sdk.client.android.infrastructure.apiModels.accountOnFile.AccountOnFileDisplayHintsDto
 import com.onlinepayments.sdk.client.android.infrastructure.apiModels.accountOnFile.AccountOnFileDto
 import com.onlinepayments.sdk.client.android.infrastructure.factories.PaymentProductFactory
 import com.onlinepayments.sdk.client.android.testUtil.GsonHelper
@@ -21,6 +23,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class AccountOnFileTest {
@@ -94,5 +97,31 @@ class AccountOnFileTest {
     fun `getValue should return 411111XXXXXX1111 for cardNumber`() {
         val value = accountOnFile.getValue("cardNumber")
         assertEquals("411111XXXXXX1111", value)
+    }
+
+    @Test
+    fun `getValue should return empty string for attribute with empty value`() {
+        val dto = AccountOnFileDto(
+            id = "999",
+            paymentProductId = 1,
+            displayHints = AccountOnFileDisplayHintsDto(labelTemplate = emptyList()),
+            attributes = listOf(
+                AccountOnFileAttributeDto("nickname", "", AccountOnFileAttributeDto.Status.CAN_WRITE)
+            )
+        )
+
+        val aof = PaymentProductFactory().createAccountOnFile(dto)
+
+        assertEquals("", aof.getValue("nickname"))
+    }
+
+    @Test
+    fun `getAttribute should return attribute for existing key`() {
+        val attribute = accountOnFile.getAttribute("cardNumber")
+
+        assertNotNull(attribute)
+        assertEquals("cardNumber", attribute.key)
+        assertEquals("411111XXXXXX1111", attribute.value)
+        assertEquals(AccountOnFileAttribute.Status.READ_ONLY, attribute.status)
     }
 }

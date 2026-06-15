@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -21,7 +21,10 @@ import com.onlinepayments.sdk.client.android.domain.PaymentContext
 import com.onlinepayments.sdk.client.android.domain.PaymentContextWithAmount
 import com.onlinepayments.sdk.client.android.domain.configuration.SdkConfiguration
 import com.onlinepayments.sdk.client.android.domain.configuration.SessionData
+import com.onlinepayments.sdk.client.android.domain.exceptions.ApiError
 import com.onlinepayments.sdk.client.android.domain.exceptions.ResponseException
+import com.onlinepayments.sdk.client.android.domain.paymentProduct.BasicPaymentProducts
+import com.onlinepayments.sdk.client.android.domain.paymentProduct.PaymentProduct
 import com.onlinepayments.sdk.client.android.domain.paymentProduct.PaymentProductNetworksResponse
 import com.onlinepayments.sdk.client.android.infrastructure.apiModels.paymentProduct.BasicPaymentProductsDto
 import com.onlinepayments.sdk.client.android.infrastructure.apiModels.paymentProduct.PaymentProductDto
@@ -42,6 +45,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class PaymentProductServiceTest {
 
@@ -104,7 +108,7 @@ class PaymentProductServiceTest {
         val result = paymentProductService.getBasicPaymentProducts(paymentContext)
 
         assertNotNull(result)
-        assertNotNull(result.paymentProducts)
+        assertTrue(result.paymentProducts.isNotEmpty(), "Should return at least one payment product")
     }
 
     @Test
@@ -114,6 +118,10 @@ class PaymentProductServiceTest {
         val result = paymentProductService.getBasicPaymentProducts(paymentContext)
 
         assertNotNull(result)
+        assertTrue(
+            result.paymentProducts.none { it.id == Constants.PAYMENT_PRODUCT_ID_APPLEPAY },
+            "Apple Pay (product ${Constants.PAYMENT_PRODUCT_ID_APPLEPAY}) must not appear in the filtered list"
+        )
     }
 
     @Test
@@ -198,6 +206,9 @@ class PaymentProductServiceTest {
         val result = paymentProductService.getPaymentProductNetworks(1, paymentContext)
 
         assertNotNull(result)
+        assertEquals(2, result.networks!!.size, "Should return exactly 2 networks from fixture")
+        assertTrue(result.networks.contains("visa"), "Networks should include visa")
+        assertTrue(result.networks.contains("mastercard"), "Networks should include mastercard")
     }
 
     @Test
@@ -379,6 +390,69 @@ class PaymentProductServiceTest {
         }
     }
 
+    @Test
+    fun `getPaymentProduct throws exception when api response is missing required data`() = runTest {
+        prepareProductClientResponse(PaymentProductDto())
+
+        assertFailsWith<UninitializedPropertyAccessException> {
+            paymentProductService.getPaymentProduct(1, paymentContext)
+        }
+    }
+
+    @Test
+    fun `getBasicPaymentProducts stores result in cache after api call`() = runTest {
+        prepareBasicProductsClientResponse()
+
+        paymentProductService.getBasicPaymentProducts(paymentContext)
+
+        val cacheKey = cacheManager.createCacheKeyFromContext("getPaymentProducts", paymentContext)
+        assertNotNull(cacheManager.get<BasicPaymentProducts>(cacheKey))
+    }
+
+    @Test
+    fun `getPaymentProduct stores result in cache after api call`() = runTest {
+        prepareProductClientResponse()
+
+        paymentProductService.getPaymentProduct(1, paymentContext)
+
+        val cacheKey = cacheManager.createCacheKeyFromContext("getPaymentProduct-1", paymentContext)
+        assertNotNull(cacheManager.get<PaymentProduct>(cacheKey))
+    }
+
+    @Test
+    fun `getPaymentProduct propagates ResponseException from api client`() = runTest {
+        prepareProductClientException(
+            ResponseException(404, "Not found", ApiError("err", emptyList()))
+        )
+
+        assertFailsWith<ResponseException> {
+            paymentProductService.getPaymentProduct(1, paymentContext)
+        }
+    }
+
+    @Test
+    fun `getPaymentProductNetworks stores result in cache after api call`() = runTest {
+        prepareProductNetworksClientResponse(
+            PaymentProductNetworksResponse(arrayListOf("visa", "mastercard"))
+        )
+
+        paymentProductService.getPaymentProductNetworks(1, paymentContext)
+
+        val cacheKey = cacheManager.createCacheKeyFromContext("getPaymentProductNetworks-1", paymentContext)
+        assertNotNull(cacheManager.get<PaymentProductNetworksResponse>(cacheKey))
+    }
+
+    @Test
+    fun `getPaymentProductNetworks propagates ResponseException from api client`() = runTest {
+        prepareProductNetworksClientException(
+            ResponseException(500, "Server error", ApiError("err", emptyList()))
+        )
+
+        assertFailsWith<ResponseException> {
+            paymentProductService.getPaymentProductNetworks(1, paymentContext)
+        }
+    }
+
     private fun prepareBasicProductsClientResponse() {
         val dto = GsonHelper.fromResourceJson(
             "basicPaymentProducts.json",
@@ -399,6 +473,10 @@ class PaymentProductServiceTest {
             PaymentProductDto::class.java
         )
 
+        prepareProductClientResponse(dto)
+    }
+
+    private fun prepareProductClientResponse(dto: PaymentProductDto) {
         coEvery {
             apiClient.getPaymentProduct(
                 customerId = sessionData.customerId,
@@ -406,5 +484,37 @@ class PaymentProductServiceTest {
                 params = paymentContext.toMap()
             )
         } returns dto
+    }
+
+    private fun prepareProductClientException(exception: ResponseException) {
+        coEvery {
+            apiClient.getPaymentProduct(
+                customerId = sessionData.customerId,
+                productId = "1",
+                params = paymentContext.toMap()
+            )
+        } throws exception
+    }
+
+    private fun prepareProductNetworksClientResponse(
+        response: PaymentProductNetworksResponse
+    ) {
+        coEvery {
+            apiClient.getPaymentProductNetworks(
+                customerId = sessionData.customerId,
+                productId = "1",
+                params = paymentContext.toMap()
+            )
+        } returns response
+    }
+
+    private fun prepareProductNetworksClientException(exception: ResponseException) {
+        coEvery {
+            apiClient.getPaymentProductNetworks(
+                customerId = sessionData.customerId,
+                productId = "1",
+                params = paymentContext.toMap()
+            )
+        } throws exception
     }
 }

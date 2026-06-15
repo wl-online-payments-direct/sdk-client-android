@@ -12,6 +12,7 @@
 
 package com.onlinepayments.sdk.client.android.integration.tests
 
+import com.onlinepayments.sdk.client.android.domain.exceptions.EncryptionException
 import com.onlinepayments.sdk.client.android.domain.paymentRequest.CreditCardTokenRequest
 import com.onlinepayments.sdk.client.android.domain.paymentRequest.EncryptedRequest
 import com.onlinepayments.sdk.client.android.integration.BaseIntegrationTest
@@ -30,12 +31,25 @@ import kotlin.test.fail
  */
 class CreditCardTokenRequestIntegrationTest : BaseIntegrationTest() {
     @Test
+    fun validRequest_getValues_shouldContainCorrectFields() {
+        val request = getValidRequest()
+        assertEquals(
+            mapOf<String, Any>(
+                "paymentProductId" to TestConfig.productIdVisa,
+                "cardNumber" to TestConfig.cardNumberVisa,
+                "cardholderName" to "Test Cardholder",
+                "cvv" to "123",
+                "expiryDate" to "1230",
+            ),
+            request.getValues()
+        )
+    }
+
+    @Test
     fun encryptTokenRequest_withValidData_shouldReturnEncryptedData() = runBlocking {
         val result = sdk.encryptTokenRequest(getValidRequest())
 
         assertAllValid(result)
-
-        return@runBlocking
     }
 
     @Test
@@ -43,8 +57,6 @@ class CreditCardTokenRequestIntegrationTest : BaseIntegrationTest() {
         val result = sdk.encryptTokenRequest(getInvalidRequest())
 
         assertAllValid(result)
-
-        return@runBlocking
     }
 
     @Test
@@ -55,9 +67,7 @@ class CreditCardTokenRequestIntegrationTest : BaseIntegrationTest() {
 
         assertNotNull(response)
         assertNotNull(response.token)
-        assertNotNull("CREATED", response.tokenStatus)
-
-        return@runBlocking
+        assertEquals("CREATED", response.tokenStatus)
     }
 
     @Test
@@ -69,9 +79,26 @@ class CreditCardTokenRequestIntegrationTest : BaseIntegrationTest() {
             fail("Should not create token")
         } catch (e: Throwable) {
             assertNotNull(e)
+            Unit
         }
+    }
 
-        return@runBlocking
+    @Test
+    fun encryptTokenRequest_withMissingPaymentProductId_shouldThrowEncryptionException() = runBlocking {
+        val request = CreditCardTokenRequest()
+        request.cardNumber = "4567350000427977"
+        // paymentProductId intentionally not set
+
+        try {
+            sdk.encryptTokenRequest(request)
+            fail("Should have thrown an EncryptionException when paymentProductId is not set")
+        } catch (e: EncryptionException) {
+            assertEquals(
+                "Error encrypting credit card token request: the payment product ID not set.",
+                e.message,
+                "Should return the expected error message"
+            )
+        }
     }
 
     private fun assertAllValid(result: EncryptedRequest) {
@@ -95,18 +122,6 @@ class CreditCardTokenRequestIntegrationTest : BaseIntegrationTest() {
         request.cardholderName = "Test Cardholder"
         request.securityCode = "123"
         request.expiryDate = "1230"
-
-        assertEquals(
-            mapOf<String, Any>(
-                "paymentProductId" to TestConfig.productIdVisa,
-                "cardNumber" to TestConfig.cardNumberVisa,
-                "cardholderName" to "Test Cardholder",
-                "cvv" to "123",
-                "expiryDate" to "1230",
-            ),
-            request.getValues()
-        )
-
         return request
     }
 

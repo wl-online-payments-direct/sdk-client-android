@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -22,6 +22,9 @@ import com.onlinepayments.sdk.client.android.domain.currencyConversion.CurrencyC
 import com.onlinepayments.sdk.client.android.domain.iin.IinDetailStatus
 import com.onlinepayments.sdk.client.android.domain.iin.IinDetailsResponse
 import com.onlinepayments.sdk.client.android.domain.surchargeCalculation.SurchargeCalculationResponse
+import com.onlinepayments.sdk.client.android.domain.exceptions.ApiError
+import com.onlinepayments.sdk.client.android.domain.exceptions.ResponseException
+import com.onlinepayments.sdk.client.android.domain.iin.IinDetailsRequest
 import com.onlinepayments.sdk.client.android.infrastructure.interfaces.IApiClient
 import com.onlinepayments.sdk.client.android.infrastructure.interfaces.ICacheManager
 import com.onlinepayments.sdk.client.android.infrastructure.utils.CacheManager
@@ -37,7 +40,9 @@ import retrofit2.HttpException
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
+import kotlin.test.assertSame
 
 class ClientServiceTest {
 
@@ -89,10 +94,7 @@ class ClientServiceTest {
 
     @Test
     fun `getIinDetails returns EXISTING_BUT_NOT_ALLOWED when not allowed in context`() = runTest {
-        val iinResponseDto = mockk<IinDetailsResponse>(relaxed = true)
-
-        every { iinResponseDto.paymentProductId } returns "1"
-        every { iinResponseDto.isAllowedInContext } returns false
+        val iinResponseDto = IinDetailsResponse(paymentProductId = "1", isAllowedInContext = false)
 
         coEvery {
             apiClient.getIinDetails(any(), any())
@@ -106,9 +108,7 @@ class ClientServiceTest {
 
     @Test
     fun `getIinDetails returns UNKNOWN status when paymentProductId is null`() = runTest {
-        val iinResponseDto = mockk<IinDetailsResponse>(relaxed = true)
-
-        every { iinResponseDto.paymentProductId } returns null
+        val iinResponseDto = IinDetailsResponse(paymentProductId = null)
 
         coEvery {
             apiClient.getIinDetails(any(), any())
@@ -122,10 +122,7 @@ class ClientServiceTest {
 
     @Test
     fun `getIinDetails returns SUPPORTED when paymentProductId exists and is allowed`() = runTest {
-        val iinResponseDto = mockk<IinDetailsResponse>(relaxed = true)
-
-        every { iinResponseDto.paymentProductId } returns "1"
-        every { iinResponseDto.isAllowedInContext } returns true
+        val iinResponseDto = IinDetailsResponse(paymentProductId = "1", isAllowedInContext = true)
 
         coEvery {
             apiClient.getIinDetails(any(), any())
@@ -414,5 +411,129 @@ class ClientServiceTest {
         coVerify(exactly = 2) {
             apiClient.getIinDetails(sessionData.customerId, any())
         }
+    }
+
+    @Test
+    fun `getIinDetails truncates partial credit card number to 8 digits before making request`() = runTest {
+        val iinResponseDto = GsonHelper.fromResourceJson(
+            "iinDetailsResponse.json",
+            IinDetailsResponse::class.java
+        )
+        var capturedCustomerId: String? = null
+        var capturedRequest: IinDetailsRequest? = null
+
+        coEvery { apiClient.getIinDetails(any(), any()) } answers {
+            capturedCustomerId = firstArg()
+            capturedRequest = secondArg()
+            iinResponseDto
+        }
+
+        clientService.getIinDetails("41111111111111", paymentContext)
+
+        assertEquals(sessionData.customerId, capturedCustomerId)
+        assertEquals("41111111", capturedRequest?.bin)
+    }
+
+    @Test
+    fun `getIinDetails stores mapped response in cache after successful api call`() = runTest {
+        val iinResponseDto = GsonHelper.fromResourceJson(
+            "iinDetailsResponse.json",
+            IinDetailsResponse::class.java
+        )
+
+        coEvery { apiClient.getIinDetails(any(), any()) } returns iinResponseDto
+
+        val result = clientService.getIinDetails("411111", paymentContext)
+
+        val cached = cacheManager.get<IinDetailsResponse>("getIinDetails-411111")
+
+        assertNotNull(cached)
+        assertEquals(result.paymentProductId, cached.paymentProductId)
+        assertEquals(result.countryCode, cached.countryCode)
+        assertEquals(result.isAllowedInContext, cached.isAllowedInContext)
+        assertEquals(result.coBrands, cached.coBrands)
+        assertEquals(result.cardType, cached.cardType)
+        assertEquals(result.status, cached.status)
+    }
+
+    @Test
+    fun `getIinDetails propagates ResponseException when api returns non-404 error`() = runTest {
+        val responseException = ResponseException(500, "Internal Server Error", ApiError())
+
+        coEvery { apiClient.getIinDetails(any(), any()) } throws responseException
+
+        val exception = assertFailsWith<ResponseException> {
+            clientService.getIinDetails("411111", paymentContext)
+        }
+
+        assertSame(responseException, exception)
+    }
+
+    @Test
+    fun `getCurrencyConversionQuote stores mapped response in cache after successful api call`() = runTest {
+        val responseDto = GsonHelper.fromResourceJson(
+            "currencyConversionSuccess.json",
+            CurrencyConversionResponse::class.java
+        )
+
+        coEvery { apiClient.getCurrencyConversionQuote(any(), any()) } returns responseDto
+
+        val amountOfMoney = AmountOfMoney(1000L, "EUR")
+        val cardSource = CardSource(Card("411111", 1))
+
+        val result = clientService.getCurrencyConversionQuote(amountOfMoney, cardSource)
+
+        val cached = cacheManager.get<CurrencyConversionResponse>("getCurrencyConversionQuote-1000-EUR-411111")
+
+        assertNotNull(cached)
+        assertEquals(result.dccSessionId, cached.dccSessionId)
+        assertEquals(result.result, cached.result)
+        assertEquals(result.proposal, cached.proposal)
+    }
+
+    @Test
+    fun `getCurrencyConversionQuote propagates ResponseException from api client`() = runTest {
+        val responseException = ResponseException(500, "Internal Server Error", ApiError())
+
+        coEvery { apiClient.getCurrencyConversionQuote(any(), any()) } throws responseException
+
+        val exception = assertFailsWith<ResponseException> {
+            clientService.getCurrencyConversionQuote(AmountOfMoney(1000L, "EUR"), CardSource(Card("411111", 1)))
+        }
+
+        assertSame(responseException, exception)
+    }
+
+    @Test
+    fun `getSurchargeCalculation stores response in cache after successful api call`() = runTest {
+        val responseDto = GsonHelper.fromResourceJson(
+            "scWithSurcharge.json",
+            SurchargeCalculationResponse::class.java
+        )
+
+        coEvery { apiClient.getSurchargeCalculation(any(), any()) } returns responseDto
+
+        val amountOfMoney = AmountOfMoney(1000L, "EUR")
+        val cardSource = CardSource(Card("411111", 1))
+
+        val result = clientService.getSurchargeCalculation(amountOfMoney, cardSource)
+
+        val cached = cacheManager.get<SurchargeCalculationResponse>("getSurchargeCalculation-1000-EUR-411111")
+
+        assertNotNull(cached)
+        assertEquals(result, cached)
+    }
+
+    @Test
+    fun `getSurchargeCalculation propagates ResponseException from api client`() = runTest {
+        val responseException = ResponseException(500, "Internal Server Error", ApiError())
+
+        coEvery { apiClient.getSurchargeCalculation(any(), any()) } throws responseException
+
+        val exception = assertFailsWith<ResponseException> {
+            clientService.getSurchargeCalculation(AmountOfMoney(1000L, "EUR"), CardSource(Card("411111", 1)))
+        }
+
+        assertSame(responseException, exception)
     }
 }

@@ -263,6 +263,29 @@ class PaymentRequestTest {
     }
 
     @Test
+    fun `should return error for 'cardholderName' when it is 'CAN_WRITE' and user provides invalid value with AOF`() {
+        val accountOnFileResponse = GsonHelper.fromResourceJson(
+            "accountOnFileWithCanWriteCardholderName.json",
+            AccountOnFileDto::class.java
+        )
+
+        accountOnFile = PaymentProductFactory().createAccountOnFile(accountOnFileResponse)
+
+        val paymentRequest = PaymentRequest(paymentProduct, accountOnFile)
+
+        paymentRequest.setValue("cardNumber", "7822551678890142249")
+        paymentRequest.setValue("expiryDate", "11/2026")
+        paymentRequest.setValue("cvv", "123")
+        paymentRequest.setValue("cardholderName", "1") // too short, minLength is 2
+
+        val validationResult = paymentRequest.validate()
+
+        assertFalse(validationResult.isValid)
+        assertEquals(1, validationResult.errors.size)
+        assertEquals("cardholderName", validationResult.errors.first().paymentProductFieldId)
+    }
+
+    @Test
     fun `should not pass validation when 'cvv' is 'MUST_WRITE' and user does not provide value`(){
         val accountOnFileResponse = GsonHelper.fromResourceJson(
             "accountOnFileWithMustWriteCvv.json",

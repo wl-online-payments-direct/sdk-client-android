@@ -117,7 +117,8 @@ class SessionDataNormalizerTest {
 
         val normalized = SessionDataNormalizer.normalize(sessionData)
 
-        assertEquals("https://api.example.com?test=value/client/", normalized.clientApiUrl)
+        // /client/ must be part of the URL path, not appended after the query string
+        assertEquals("https://api.example.com/client/?test=value", normalized.clientApiUrl)
     }
 
     @Test
@@ -134,5 +135,21 @@ class SessionDataNormalizerTest {
         assertEquals("session123", normalized.clientSessionId)
         assertEquals("customer456", normalized.customerId)
         assertEquals("https://assets.example.com", normalized.assetUrl)
+    }
+
+    @Test
+    fun `normalize should return normalized copy without mutating original session data`() {
+        val originalUrl = "https://api.example.com"
+        val sessionData = SessionData(
+            clientSessionId = "session123",
+            customerId = "customer456",
+            clientApiUrl = originalUrl,
+            assetUrl = "https://assets.example.com"
+        )
+
+        val normalized = SessionDataNormalizer.normalize(sessionData)
+
+        assertEquals(originalUrl, sessionData.clientApiUrl)
+        assertEquals("https://api.example.com/client/", normalized.clientApiUrl)
     }
 }

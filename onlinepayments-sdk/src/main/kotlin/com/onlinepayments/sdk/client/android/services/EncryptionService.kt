@@ -69,13 +69,24 @@ internal class EncryptionService(
     override suspend fun encryptTokenPaymentRequest(
         tokenRequest: CreditCardTokenRequest
     ): EncryptedRequest {
-        return encryptData(getTokenRequestEncryptionData(tokenRequest))
+        return encryptTokenData(getTokenRequestEncryptionData(tokenRequest))
     }
 
     private suspend fun encryptData(preparedData: RequestEncryptionData): EncryptedRequest {
         val publicKey = getPublicKey()
 
         val encryptedRequest = Encryptor(publicKey).encrypt(preparedData)
+
+        return EncryptedRequest(
+            encryptedRequest,
+            MetadataUtil.getBase64EncodedMetadata(context, configuration?.appIdentifier, Constants.SDK_IDENTIFIER)
+        )
+    }
+
+    private suspend fun encryptTokenData(preparedData: RequestEncryptionData): EncryptedRequest {
+        val publicKey = getPublicKey()
+
+        val encryptedRequest = Encryptor(publicKey).encryptTokenRequest(preparedData)
 
         return EncryptedRequest(
             encryptedRequest,

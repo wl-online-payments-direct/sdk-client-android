@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -47,19 +47,29 @@ class ValidationRuleRangeTest {
     fun shouldValidateStringValuesWithinRange() {
         val validator = createValidator()
 
+        // Decimal/float strings cannot be parsed as Int and must be rejected
         assertEquals(
-            RuleValidationResult(valid = true, message = ""),
-            validator.validate("1")
+            RuleValidationResult(
+                valid = false,
+                message = "Provided value must be between 1 and 100."
+            ),
+            validator.validate("1.5")
         )
 
         assertEquals(
-            RuleValidationResult(valid = true, message = ""),
-            validator.validate("50")
+            RuleValidationResult(
+                valid = false,
+                message = "Provided value must be between 1 and 100."
+            ),
+            validator.validate("50.0")
         )
 
         assertEquals(
-            RuleValidationResult(valid = true, message = ""),
-            validator.validate("100")
+            RuleValidationResult(
+                valid = false,
+                message = "Provided value must be between 1 and 100."
+            ),
+            validator.validate("100.9")
         )
     }
 
@@ -127,7 +137,17 @@ class ValidationRuleRangeTest {
     }
 
     @Test
-    fun testValidationRuleType() {
+    fun `empty string should be rejected`() {
+        val validator = createValidator()
+
+        assertEquals(
+            RuleValidationResult(valid = false, message = "Provided value must be between 1 and 100."),
+            validator.validate("")
+        )
+    }
+
+    @Test
+    fun `should have correct type`() {
         val validator = createValidator()
 
         assertEquals(
@@ -138,7 +158,7 @@ class ValidationRuleRangeTest {
     }
 
     @Test
-    fun testMessageId() {
+    fun `should have correct messageId`() {
         val validator = createValidator()
 
         assertEquals(

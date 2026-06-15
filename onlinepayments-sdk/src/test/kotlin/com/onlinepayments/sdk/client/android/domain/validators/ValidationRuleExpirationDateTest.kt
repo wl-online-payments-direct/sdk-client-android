@@ -193,20 +193,17 @@ class ValidationRuleExpirationDateTest {
     }
 
     @Test
-    fun `should handle century rollover correctly for MMYY format`() {
-        // Test that a year like "01" is interpreted correctly based on current year
-        val currentYear = YearMonth.now().year
-        val currentYearLastTwoDigits = currentYear % 100
+    fun `should reject MMYY date from previous century as expired`() {
+        // Production code always prepends the CURRENT century to 2-digit years.
+        // "0101" → month=01, year=01 → prepended century gives "012001" (January 2001).
+        // January 2001 is in the past, so it must be rejected as expired — not because
+        // it is in the next century. The test name and assertion reflect the real behaviour.
+        val result = validator.validate("0101")
 
-        // If we're in 2025, "01" should mean 2101 (next century)
-        if (currentYearLastTwoDigits > 1) {
-            val result = validator.validate("0101")
-
-            assertFalse(
-                result.valid,
-                "Year '01' should be interpreted as next century (2101) and rejected as too far in future"
-            )
-        }
+        assertFalse(
+            result.valid,
+            "January 2001 (derived from '0101' with current-century prefix) must be rejected as expired"
+        )
     }
 
     @Test
@@ -282,7 +279,7 @@ class ValidationRuleExpirationDateTest {
     }
 
     @Test
-    fun testValidationRuleType() {
+    fun `should have correct validation rule type`() {
         assertEquals(
             ValidationRuleType.EXPIRATIONDATE,
             validator.type,
@@ -291,7 +288,7 @@ class ValidationRuleExpirationDateTest {
     }
 
     @Test
-    fun testMessageId() {
+    fun `should have correct message id`() {
         assertEquals(
             "expirationDate",
             validator.messageId,

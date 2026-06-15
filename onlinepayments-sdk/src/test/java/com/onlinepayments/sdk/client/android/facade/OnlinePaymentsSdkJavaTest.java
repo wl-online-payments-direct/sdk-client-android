@@ -124,7 +124,7 @@ public class OnlinePaymentsSdkJavaTest {
             ResponseException.class,
             () -> getSdk().getBasicPaymentProductsSync(paymentContext)
         );
-        assertNotNull(exception);
+        assertEquals(Integer.valueOf(400), exception.getHttpStatusCode());
     }
 
     @Test
@@ -338,11 +338,10 @@ public class OnlinePaymentsSdkJavaTest {
         OnlinePaymentsSdk sdk = getSdk();
 
         for (Integer filteredId : filteredProductIds) {
-            ResponseException ex = assertThrows(
+            assertThrows(
                 ResponseException.class,
                 () -> sdk.getPaymentProductSync(filteredId, paymentContext)
             );
-            assertNotNull(ex);
         }
     }
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -12,11 +12,13 @@
 
 package com.onlinepayments.sdk.client.android.domain.validators
 
+import com.onlinepayments.sdk.client.android.domain.exceptions.InvalidArgumentException
 import com.onlinepayments.sdk.client.android.domain.validation.RuleValidationResult
 import com.onlinepayments.sdk.client.android.domain.validation.rules.ValidationRuleFixedList
 import com.onlinepayments.sdk.client.android.domain.validation.rules.ValidationRuleType
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class ValidationRuleFixedListTest {
 
@@ -66,7 +68,7 @@ class ValidationRuleFixedListTest {
     }
 
     @Test
-    fun testValidationRuleType() {
+    fun `should have correct type`() {
         val validator = createValidator(mutableListOf("visa", "mastercard", "amex"))
 
         assertEquals(
@@ -77,7 +79,7 @@ class ValidationRuleFixedListTest {
     }
 
     @Test
-    fun testMessageId() {
+    fun `should have correct messageId`() {
         val validator = createValidator(mutableListOf("visa", "mastercard", "amex"))
 
         assertEquals(
@@ -85,6 +87,23 @@ class ValidationRuleFixedListTest {
             validator.messageId,
             "ValidationRuleFixedList should have correct messageId"
         )
+    }
+
+    @Test
+    fun `empty string should not be in the allowed list`() {
+        val validator = createValidator(mutableListOf("visa", "mastercard", "amex"))
+
+        assertEquals(
+            RuleValidationResult(valid = false, message = "Provided value is not allowed."),
+            validator.validate("")
+        )
+    }
+
+    @Test
+    fun `constructor with empty allowed list should throw InvalidArgumentException`() {
+        assertFailsWith<InvalidArgumentException> {
+            ValidationRuleFixedList(mutableListOf())
+        }
     }
 }
 

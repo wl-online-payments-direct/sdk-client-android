@@ -13,16 +13,14 @@
 package com.onlinepayments.sdk.client.android.infrastructure.helpers
 
 import com.onlinepayments.sdk.client.android.infrastructure.utils.StringFormatter
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 /**
  * Junit Test class which tests masking and unmasking functionality
  */
-@RunWith(MockitoJUnitRunner::class)
 class StringFormatterTest {
     data class TestCase(
         val newValue: String,
@@ -133,6 +131,12 @@ class StringFormatterTest {
             assertEquals(test.expectedResult, maskResult.formattedResult)
             assertEquals(test.expectedCaretPosition, maskResult.cursorIndex)
         }
+    }
+
+    @Test
+    fun testRemoveMaskWithNoMaskReturnsNull() {
+        val result = StringFormatter.removeMask(null, "123456")
+        assertNull(result)
     }
 
     private fun getAddedTextTests(): List<TestCase> {

@@ -28,6 +28,12 @@ class CacheManagerTest {
 
     private lateinit var cacheManager: CacheManager
 
+    companion object {
+        private const val CACHE_KEY_1000_USD_US_VISA = "paymentProduct-1000_US_false_USD_visa"
+        private const val CACHE_KEY_2500_EUR_NL = "paymentProduct-2500_NL_true_EUR"
+        private const val CACHE_KEY_NULL_AMOUNT_EUR_TEST = "paymentProduct-US_false_EUR_test"
+    }
+
     @BeforeTest
     fun setUp() {
         cacheManager = CacheManager()
@@ -46,7 +52,7 @@ class CacheManagerTest {
             suffix = "visa"
         )
 
-        assertEquals("paymentProduct-1000_US_false_USD_visa", cacheKey)
+        assertEquals(CACHE_KEY_1000_USD_US_VISA, cacheKey)
     }
 
     @Test
@@ -64,7 +70,7 @@ class CacheManagerTest {
             suffix = null
         )
 
-        assertEquals("paymentProduct-2500_NL_true_EUR", cacheKey)
+        assertEquals(CACHE_KEY_2500_EUR_NL, cacheKey)
     }
 
     @Test
@@ -80,7 +86,7 @@ class CacheManagerTest {
             suffix = "test"
         )
 
-        assertEquals("paymentProduct-US_false_EUR_test", cacheKey)
+        assertEquals(CACHE_KEY_NULL_AMOUNT_EUR_TEST, cacheKey)
     }
 
     @Test
@@ -191,7 +197,7 @@ class CacheManagerTest {
 
 
         assertEquals(cacheKey1, cacheKey2)
-        assertEquals("paymentProduct-1000_US_false_USD_visa", cacheKey1)
+        assertEquals(CACHE_KEY_1000_USD_US_VISA, cacheKey1)
     }
 
     @Test

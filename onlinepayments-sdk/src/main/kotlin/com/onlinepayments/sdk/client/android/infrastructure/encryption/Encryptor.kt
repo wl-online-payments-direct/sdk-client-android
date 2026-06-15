@@ -129,6 +129,17 @@ internal class Encryptor(
         }
     }
 
+    fun encryptTokenRequest(requestEncryptionData: RequestEncryptionData): String {
+        if (requestEncryptionData.paymentProductId == null) {
+            throw EncryptionException(
+                message = "Error encrypting credit card token request: the payment product ID not set.",
+                metadata = mapOf("data" to "paymentProductId")
+            )
+        }
+
+        return encrypt(requestEncryptionData)
+    }
+
     /**
      * Calculates HMAC over the data.
      *

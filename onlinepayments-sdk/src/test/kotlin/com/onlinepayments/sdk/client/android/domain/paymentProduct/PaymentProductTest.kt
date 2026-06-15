@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -15,6 +15,7 @@ package com.onlinepayments.sdk.client.android.domain.paymentProduct
 import com.onlinepayments.sdk.client.android.domain.Constants
 import com.onlinepayments.sdk.client.android.infrastructure.apiModels.paymentProduct.PaymentProductDto
 import com.onlinepayments.sdk.client.android.infrastructure.factories.PaymentProductFactory
+import com.onlinepayments.sdk.client.android.domain.validation.rules.ValidationRuleType
 import com.onlinepayments.sdk.client.android.testUtil.GsonHelper
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -115,10 +116,10 @@ class PaymentProductTest {
     @Test
     fun `validate field should return validation messages`() {
         val validationMessages = paymentProduct.getField("cardNumber")?.validate("12345678901234567890")
-        val errorMessages = validationMessages?.map { it.errorMessage }
+        val errorTypes = validationMessages?.map { it.type }
         assertEquals(
-            listOf("Card number is in invalid format.", "Provided value does not have an allowed length."),
-            errorMessages
+            listOf(ValidationRuleType.LUHN.toString(), ValidationRuleType.LENGTH.toString()),
+            errorTypes
         )
     }
 

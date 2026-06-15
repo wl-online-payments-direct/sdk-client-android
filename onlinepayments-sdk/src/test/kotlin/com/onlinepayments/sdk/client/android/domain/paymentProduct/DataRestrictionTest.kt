@@ -59,7 +59,7 @@ class DataRestrictionTest {
         val rules = dataRestrictions.validationRules
 
         assertEquals(1, rules.size)
-        assertTrue(rules[0] is ValidationRuleLength)
+        assertTrue(rules.single() is ValidationRuleLength)
     }
 
     @Test

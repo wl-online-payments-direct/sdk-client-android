@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -24,7 +24,7 @@ class ValidationRuleIbanTest {
     }
 
     @Test
-    fun shouldValidateCorrectIbanNumbers() {
+    fun `should validate correct IBAN numbers`() {
         val validator = createValidator()
 
         // Valid IBANs from different countries
@@ -50,7 +50,7 @@ class ValidationRuleIbanTest {
     }
 
     @Test
-    fun shouldValidateIbanWithSpaces() {
+    fun `should validate IBAN with spaces`() {
         val validator = createValidator()
 
         assertEquals(
@@ -65,7 +65,7 @@ class ValidationRuleIbanTest {
     }
 
     @Test
-    fun shouldRejectInvalidIbanNumbers() {
+    fun `should reject invalid IBAN numbers`() {
         val validator = createValidator()
 
         // Invalid check digits
@@ -88,7 +88,7 @@ class ValidationRuleIbanTest {
     }
 
     @Test
-    fun shouldRejectNonIbanValues() {
+    fun `should reject non-IBAN values`() {
         val validator = createValidator()
 
         assertEquals(
@@ -108,7 +108,39 @@ class ValidationRuleIbanTest {
     }
 
     @Test
-    fun testValidationRuleType() {
+    fun `should accept lowercase IBAN (normalised to uppercase)`() {
+        val validator = createValidator()
+
+        // The validator normalises input to uppercase before checking, so lowercase is valid
+        assertEquals(
+            RuleValidationResult(valid = true, message = ""),
+            validator.validate("de89370400440532013000")
+        )
+    }
+
+    @Test
+    fun `should reject IBAN with whitespace only`() {
+        val validator = createValidator()
+
+        assertEquals(
+            RuleValidationResult(valid = false, message = "IBAN is not in the correct format."),
+            validator.validate("   ")
+        )
+    }
+
+    @Test
+    fun `should reject IBAN that exceeds 34 character maximum`() {
+        val validator = createValidator()
+
+        // 35-character string — exceeds the IBAN maximum
+        assertEquals(
+            RuleValidationResult(valid = false, message = "IBAN is not in the correct format."),
+            validator.validate("DE1234567890123456789012345678901234")
+        )
+    }
+
+    @Test
+    fun `should have correct type`() {
         val validator = createValidator()
 
         assertEquals(
@@ -119,7 +151,7 @@ class ValidationRuleIbanTest {
     }
 
     @Test
-    fun testMessageId() {
+    fun `should have correct messageId`() {
         val validator = createValidator()
 
         assertEquals(

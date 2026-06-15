@@ -13,12 +13,8 @@
 package com.onlinepayments.sdk.client.android.infrastructure.encryption
 
 import com.onlinepayments.sdk.client.android.domain.publicKey.PublicKeyResponse
-import com.onlinepayments.sdk.client.android.mocks.MockEncoding
-import io.mockk.unmockkAll
 import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
+import org.robolectric.RobolectricTestRunner
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -26,20 +22,9 @@ import kotlin.test.assertTrue
 /**
  * Junit Test class which tests EncryptUtil's functions
  */
-@RunWith(MockitoJUnitRunner::class)
+@RunWith(RobolectricTestRunner::class)
 class EncryptUtilTest {
     private val encryptionUtil = EncryptionUtil()
-
-    @BeforeTest
-    fun setup() {
-        MockEncoding.setup()
-    }
-
-    @AfterTest
-    fun tearDown() {
-        // Cleanup MockK mocks
-        unmockkAll()
-    }
 
     @Test
     fun testBase64UrlEncode() {

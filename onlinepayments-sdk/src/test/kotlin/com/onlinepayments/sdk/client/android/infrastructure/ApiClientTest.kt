@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -18,10 +18,13 @@ import com.onlinepayments.sdk.client.android.domain.card.Card
 import com.onlinepayments.sdk.client.android.domain.card.CardSource
 import com.onlinepayments.sdk.client.android.domain.currencyConversion.CurrencyConversionRequest
 import com.onlinepayments.sdk.client.android.domain.currencyConversion.Transaction
+import com.onlinepayments.sdk.client.android.domain.exceptions.CommunicationException
+import com.onlinepayments.sdk.client.android.domain.exceptions.ResponseException
 import com.onlinepayments.sdk.client.android.domain.iin.IinDetailsRequest
 import com.onlinepayments.sdk.client.android.domain.surchargeCalculation.SurchargeCalculationRequest
+import com.onlinepayments.sdk.client.android.infrastructure.http.ApiClient
 import com.onlinepayments.sdk.client.android.infrastructure.interfaces.IGoPayApi
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -31,6 +34,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -60,7 +64,7 @@ class ApiClientTest {
     }
 
     @Test
-    fun getBasicPaymentProductsReturnsDto() = runBlocking {
+    fun getBasicPaymentProductsReturnsDto() = runTest {
         enqueueOkJson("basicPaymentProducts.json")
 
         val dto = apiClient.getBasicPaymentProducts(
@@ -81,7 +85,7 @@ class ApiClientTest {
     }
 
     @Test
-    fun getPaymentProductReturnsDto() = runBlocking {
+    fun getPaymentProductReturnsDto() = runTest {
         enqueueOkJson("cardPaymentProduct.json")
 
         val dto = apiClient.getPaymentProduct(
@@ -103,7 +107,7 @@ class ApiClientTest {
     }
 
     @Test
-    fun getPaymentProductNetworksReturnsDto() = runBlocking {
+    fun getPaymentProductNetworksReturnsDto() = runTest {
         enqueueOkJson("paymentProductNetworks.json")
 
         val dto = apiClient.getPaymentProductNetworks(
@@ -123,7 +127,7 @@ class ApiClientTest {
     }
 
     @Test
-    internal fun getIinDetailsReturnsDto() = runBlocking {
+    fun getIinDetailsReturnsDto() = runTest {
         enqueueOkJson("iinDetailsResponse.json")
 
         val dto = apiClient.getIinDetails(
@@ -139,7 +143,7 @@ class ApiClientTest {
     }
 
     @Test
-    internal fun getPublicKeyReturnsDto() = runBlocking {
+    fun getPublicKeyReturnsDto() = runTest {
         enqueueOkJson("publicKeyResponse.json")
 
         val dto = apiClient.getPublicKey("customer123")
@@ -151,7 +155,7 @@ class ApiClientTest {
     }
 
     @Test
-    internal fun getCurrencyConversionQuoteReturnsDto() = runBlocking {
+    fun getCurrencyConversionQuoteReturnsDto() = runTest {
         enqueueOkJson("currencyConversionSuccess.json")
 
         val card = Card("4567350000000000", 1)
@@ -186,7 +190,7 @@ class ApiClientTest {
     }
 
     @Test
-    fun getSurchargeCalculationReturnsDto() = runBlocking {
+    fun getSurchargeCalculationReturnsDto() = runTest {
         enqueueOkJson("scWithSurcharge.json")
 
         val amountOfMoney = AmountOfMoney(
@@ -229,5 +233,54 @@ class ApiClientTest {
         requireNotNull(stream) { "Missing test resource: $resourceName" }
 
         return stream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+    }
+
+    @Test
+    fun getBasicPaymentProductsThrowsCommunicationErrorWhenGetResponseIsNotJson() = runTest {
+        server.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setHeader("Content-Type", "text/html")
+                .setBody("<html><body>Not JSON</body></html>")
+        )
+
+        val client = ApiClient(apiClient)
+
+        val exception = assertFailsWith<CommunicationException> {
+            client.getBasicPaymentProducts("customer123", emptyMap())
+        }
+
+        assertEquals(exception.message?.contains("JSON", ignoreCase = true), true)
+    }
+
+    @Test
+    fun getIinDetailsThrowsCommunicationErrorWhenPostResponseIsNotJson() = runTest {
+        server.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setHeader("Content-Type", "text/html")
+                .setBody("<html><body>Not JSON</body></html>")
+        )
+
+        val client = ApiClient(apiClient)
+
+        val exception = assertFailsWith<CommunicationException> {
+            client.getIinDetails("customer123", IinDetailsRequest("411111"))
+        }
+
+        assertEquals(exception.message?.contains("JSON", ignoreCase = true), true)
+    }
+
+    @Test
+    fun getBasicPaymentProductsThrowsResponseExceptionForHttp304() = runTest {
+        server.enqueue(MockResponse().setResponseCode(304))
+
+        val client = ApiClient(apiClient)
+
+        val exception = assertFailsWith<ResponseException> {
+            client.getBasicPaymentProducts("customer123", emptyMap())
+        }
+
+        assertEquals(304, exception.httpStatusCode)
     }
 }

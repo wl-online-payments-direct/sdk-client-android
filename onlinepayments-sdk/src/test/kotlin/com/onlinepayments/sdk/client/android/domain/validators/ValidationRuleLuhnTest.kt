@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -30,7 +30,7 @@ class ValidationRuleLuhnTest {
     }
 
     @Test
-    fun testValidCreditCardNumbers() {
+    fun `valid credit card numbers should pass Luhn check`() {
         val validCardNumbers = listOf(
             "4111111111111111", // Visa test card
             "4000000000000002", // Visa test card
@@ -53,7 +53,7 @@ class ValidationRuleLuhnTest {
     }
 
     @Test
-    fun testValidCreditCardNumbersWithSpaces() {
+    fun `valid credit card numbers with spaces should pass Luhn check`() {
         val validCardNumbersWithSpaces = listOf(
             "4111 1111 1111 1111", // Visa test card with spaces
             "5555 5555 5555 4444", // MasterCard test card with spaces
@@ -70,7 +70,7 @@ class ValidationRuleLuhnTest {
     }
 
     @Test
-    fun testInvalidCreditCardNumbers() {
+    fun `invalid credit card numbers should fail Luhn check`() {
         val invalidCardNumbers = listOf(
             "4111111111111112",
             "4000000000000001",
@@ -90,7 +90,7 @@ class ValidationRuleLuhnTest {
     }
 
     @Test
-    fun testTooShortNumbers() {
+    fun `too short numbers should be invalid`() {
         val shortNumbers = listOf(
             "411111111",      // 9 digits
             "41111111111",    // 11 digits
@@ -106,7 +106,7 @@ class ValidationRuleLuhnTest {
     }
 
     @Test
-    fun testNonNumericCharacters() {
+    fun `non-numeric characters should be invalid`() {
         val invalidInputs = listOf(
             "411111111111111a", // Contains letter
             "4111-1111-1111-1111", // Contains dashes
@@ -124,7 +124,7 @@ class ValidationRuleLuhnTest {
     }
 
     @Test
-    fun testEmptyValue() {
+    fun `empty input should be invalid`() {
         assertFalse(
             validationRule.validate("").valid,
             "Empty card number should be invalid"
@@ -132,7 +132,7 @@ class ValidationRuleLuhnTest {
     }
 
     @Test
-    fun testValidationRuleType() {
+    fun `should have correct type`() {
         assertEquals(
             ValidationRuleType.LUHN,
             validationRule.type,
@@ -141,7 +141,7 @@ class ValidationRuleLuhnTest {
     }
 
     @Test
-    fun testMessageId() {
+    fun `should have correct messageId`() {
         assertEquals(
             "luhn",
             validationRule.messageId,

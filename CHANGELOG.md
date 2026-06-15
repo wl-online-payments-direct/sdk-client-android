@@ -1,3 +1,18 @@
+# 5.1.0 [2026-06-15]
+
+## Added
+
+- Significantly expanded unit and integration test coverage across all major SDK components.
+
+## Changed
+
+- Fixed `SessionDataNormalizer` incorrectly appending `/client/` after query string parameters
+  in `clientApiUrl`. The path segment is now inserted before `?` so the URL remains well-formed.
+- `getBasicPaymentProducts` now throws `ResponseException` (HTTP 404) when all returned products
+  are filtered out by the SDK, instead of silently returning an empty list.
+- `encryptTokenPaymentRequest` now validates that `paymentProductId` is set on the
+  `CreditCardTokenRequest` before encryption, throwing `EncryptionException` if it is missing.
+
 # 5.0.3 [2026-06-08]
 
 ## Changed

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -44,24 +44,24 @@ object ServerApiHelper {
 
     private fun getPlatformIdentifier(): String {
         val properties: Properties = System.getProperties()
-        val sb = StringBuilder()
-        sb.append(properties.get("os.name"))
-        sb.append("/")
-        sb.append(properties.get("os.version"))
-        sb.append(" ")
-        sb.append("Java")
-        sb.append("/")
-        sb.append(properties.get("java.vm.specification.version"))
-        sb.append(" ")
-        sb.append("(")
-        sb.append(properties.get("java.vm.vendor"))
-        sb.append("; ")
-        sb.append(properties.get("java.vm.name"))
-        sb.append("; ")
-        sb.append(properties.get("java.version"))
-        sb.append(")")
 
-        return sb.toString()
+        return buildString {
+            append(properties["os.name"])
+            append("/")
+            append(properties["os.version"])
+            append(" ")
+            append("Java")
+            append("/")
+            append(properties["java.vm.specification.version"])
+            append(" ")
+            append("(")
+            append(properties["java.vm.vendor"])
+            append("; ")
+            append(properties["java.vm.name"])
+            append("; ")
+            append(properties["java.version"])
+            append(")")
+        }
     }
 
     private fun prepareRequest(path: String, body: RequestBody): Request {
@@ -124,6 +124,24 @@ object ServerApiHelper {
             val responseBody = response.body.string()
 
             return gson.fromJson(responseBody, SessionData::class.java)
+        }
+    }
+
+    fun createSessionWithTokens(tokens: List<String>): SessionData {
+        val tokensJson = tokens.joinToString(",") { "\"$it\"" }
+        val jsonBody = """{"tokens": [$tokensJson]}"""
+        val body = jsonBody.toRequestBody(CONTENT_TYPE.toMediaType())
+        val request = prepareRequest("/sessions", body)
+
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                throw RuntimeException(
+                    "Failed to create session with tokens: ${response.code} ${response.message}\n" +
+                        "Body: ${response.body.string()}"
+                )
+            }
+
+            return gson.fromJson(response.body.string(), SessionData::class.java)
         }
     }
 
@@ -235,6 +253,15 @@ object ServerApiHelper {
     private var cachedSession: SessionData? = null
     private var cacheTimestamp: Long = 0
     private const val CACHE_DURATION_MS = 30 * 60 * 1000 // 30 minutes
+
+    /**
+     * Resets the cached session, forcing the next call to [getCachedSession] to create a new session.
+     * Call this in @AfterClass to prevent session state from leaking between test classes.
+     */
+    fun resetCache() {
+        cachedSession = null
+        cacheTimestamp = 0
+    }
 
     /**
      * Get a session, using cache if available and not expired.

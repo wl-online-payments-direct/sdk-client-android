@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Do not remove or alter the notices in this preamble.
  *
  * This software is owned by Worldline and may not be be altered, copied, reproduced, republished, uploaded, posted, transmitted or distributed in any way, without the prior written consent of Worldline.
@@ -23,39 +23,44 @@ import com.onlinepayments.sdk.client.android.infrastructure.utils.Logger
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ServiceCallWrapperTest {
 
+    private lateinit var testDispatcher: TestDispatcher
     private lateinit var testScope: CoroutineScope
     private lateinit var mockLogger: Logger
     private lateinit var wrapper: ServiceCallWrapper
 
-    @Before
+    @BeforeTest
     fun setup() {
-        testScope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
+        testDispatcher = StandardTestDispatcher()
+        testScope = CoroutineScope(SupervisorJob() + testDispatcher)
         mockLogger = mockk(relaxed = true)
         LoggerProvider.logger = mockLogger
         ApiLogger.setLoggingEnabled(true)
 
         wrapper = ServiceCallWrapper(
             sessionScope = testScope,
-            mainDispatcher = Dispatchers.Unconfined,
+            mainDispatcher = testDispatcher,
             logger = mockLogger
         )
     }
 
-    @After
+    @AfterTest
     fun tearDown() {
         testScope.cancel()
         LoggerProvider.reset()
@@ -64,7 +69,7 @@ class ServiceCallWrapperTest {
 
     // Suspend wrap tests
     @Test
-    fun `suspend wrap should return result on success`() = runBlocking {
+    fun `suspend wrap should return result on success`() = runTest(testDispatcher) {
         val expectedResult = "Success"
 
         val result = wrapper.wrap {
@@ -75,7 +80,7 @@ class ServiceCallWrapperTest {
     }
 
     @Test
-    fun `suspend wrap should propagate ResponseException`() = runBlocking {
+    fun `suspend wrap should propagate ResponseException`() = runTest(testDispatcher) {
         val apiError = ApiError(
             errorId = "ERR123",
             errors = listOf(
@@ -104,7 +109,7 @@ class ServiceCallWrapperTest {
     }
 
     @Test
-    fun `suspend wrap should propagate generic Exception`() = runBlocking {
+    fun `suspend wrap should propagate generic Exception`() = runTest(testDispatcher) {
         val genericException = IllegalStateException("Something went wrong")
 
         val exception = assertFailsWith<IllegalStateException> {
@@ -118,7 +123,7 @@ class ServiceCallWrapperTest {
 
     // Listener-based wrap tests
     @Test
-    fun `listener wrap should call onSuccess with result`() = runBlocking {
+    fun `listener wrap should call onSuccess with result`() = runTest(testDispatcher) {
         val expectedResult = "Success"
         var successCalled = false
         var failureCalled = false
@@ -138,15 +143,14 @@ class ServiceCallWrapperTest {
             expectedResult
         }
 
-        // Wait for async execution
-        delay(100)
+        advanceUntilIdle()
 
         assertTrue(successCalled, "onSuccess should be called")
         assertTrue(!failureCalled, "onFailure should not be called")
     }
 
     @Test
-    fun `listener wrap should call onFailure with ResponseException`() = runBlocking {
+    fun `listener wrap should call onFailure with ResponseException`() = runTest(testDispatcher) {
         val apiError = ApiError(
             errorId = "ERR456",
             errors = listOf(
@@ -182,8 +186,7 @@ class ServiceCallWrapperTest {
             throw responseException
         }
 
-        // Wait for async execution
-        delay(100)
+        advanceUntilIdle()
 
         assertTrue(!successCalled, "onSuccess should not be called")
         assertTrue(failureCalled, "onFailure should be called")
@@ -192,7 +195,7 @@ class ServiceCallWrapperTest {
     }
 
     @Test
-    fun `listener wrap should wrap generic Exception in SdkException`() = runBlocking {
+    fun `listener wrap should wrap generic Exception in SdkException`() = runTest(testDispatcher) {
         val genericException = IllegalArgumentException("Invalid argument")
 
         var successCalled = false
@@ -214,8 +217,7 @@ class ServiceCallWrapperTest {
             throw genericException
         }
 
-        // Wait for async execution
-        delay(100)
+        advanceUntilIdle()
 
         assertTrue(!successCalled, "onSuccess should not be called")
         assertTrue(failureCalled, "onFailure should be called")
@@ -225,7 +227,7 @@ class ServiceCallWrapperTest {
     }
 
     @Test
-    fun `listener wrap should not double-wrap SdkException`() = runBlocking {
+    fun `listener wrap should not double-wrap SdkException`() = runTest(testDispatcher) {
         val sdkException = SdkException("SDK error")
 
         var receivedException: SdkException? = null
@@ -242,14 +244,13 @@ class ServiceCallWrapperTest {
             throw sdkException
         }
 
-        // Wait for async execution
-        delay(100)
+        advanceUntilIdle()
 
         assertEquals(sdkException, receivedException)
     }
 
     @Test
-    fun `suspend wrap should log ResponseException with API error details`() = runBlocking {
+    fun `suspend wrap should log ResponseException with API error details`() = runTest(testDispatcher) {
         val apiError = ApiError(
             errorId = "ERR789",
             errors = listOf(
@@ -286,7 +287,7 @@ class ServiceCallWrapperTest {
     }
 
     @Test
-    fun `suspend wrap should log generic Exception`() = runBlocking {
+    fun `suspend wrap should log generic Exception`() = runTest(testDispatcher) {
         val exception = RuntimeException("Unexpected error")
 
         assertFailsWith<RuntimeException> {
@@ -308,7 +309,7 @@ class ServiceCallWrapperTest {
     }
 
     @Test
-    fun `listener wrap should add ListenerBased suffix to log tag`() = runBlocking {
+    fun `listener wrap should add ListenerBased suffix to log tag`() = runTest(testDispatcher) {
         val apiError = ApiError(
             errorId = "ERR001",
             errors = emptyList()
@@ -328,8 +329,7 @@ class ServiceCallWrapperTest {
             throw responseException
         }
 
-        // Wait for async execution
-        delay(100)
+        advanceUntilIdle()
 
         verify {
             mockLogger.e(
@@ -342,7 +342,7 @@ class ServiceCallWrapperTest {
     }
 
     @Test
-    fun `suspend wrap should not log when logging is disabled`() = runBlocking {
+    fun `suspend wrap should not log when logging is disabled`() = runTest(testDispatcher) {
         ApiLogger.setLoggingEnabled(false)
 
         val responseException = ResponseException(
@@ -363,7 +363,7 @@ class ServiceCallWrapperTest {
     }
 
     @Test
-    fun `listener wrap should not log when logging is disabled`() = runBlocking {
+    fun `listener wrap should not log when logging is disabled`() = runTest(testDispatcher) {
         ApiLogger.setLoggingEnabled(false)
 
         val listener = object : GenericResponseListener<String> {
@@ -375,7 +375,7 @@ class ServiceCallWrapperTest {
             throw RuntimeException("Test error")
         }
 
-        delay(100)
+        advanceUntilIdle()
 
         verify(exactly = 0) {
             mockLogger.e(any(), any())
@@ -386,7 +386,7 @@ class ServiceCallWrapperTest {
     }
 
     @Test
-    fun `suspend wrap should handle null apiError errors list`() = runBlocking {
+    fun `suspend wrap should handle null apiError errors list`() = runTest(testDispatcher) {
         val apiError = ApiError(
             errorId = "ERR123",
             errors = null
@@ -415,7 +415,7 @@ class ServiceCallWrapperTest {
     }
 
     @Test
-    fun `suspend wrap should log multiple API error items`() = runBlocking {
+    fun `suspend wrap should log multiple API error items`() = runTest(testDispatcher) {
         val apiError = ApiError(
             errorId = "ERR999",
             errors = listOf(
@@ -465,7 +465,7 @@ class ServiceCallWrapperTest {
     }
 
     @Test
-    fun `listener wrap should handle exception in listener-based call when logging disabled`() = runBlocking {
+    fun `listener wrap should handle exception in listener-based call when logging disabled`() = runTest(testDispatcher) {
         ApiLogger.setLoggingEnabled(false)
 
         var receivedException: SdkException? = null
@@ -481,7 +481,7 @@ class ServiceCallWrapperTest {
             throw IllegalStateException("Test error")
         }
 
-        delay(100)
+        advanceUntilIdle()
 
         assertTrue(receivedException is SdkException)
         assertEquals("Test error", receivedException.message)
