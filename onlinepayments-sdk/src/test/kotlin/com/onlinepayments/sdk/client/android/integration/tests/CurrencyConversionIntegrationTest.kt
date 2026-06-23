@@ -28,7 +28,7 @@ import kotlin.test.fail
  * Integration tests for getCurrencyConversionQuote.
  * Tests real API calls to the preprod environment.
  *
- * @todo un-skip this test suite, once the merchant has been configured to support currency conversion
+ * @todo un-skip this test suite once the merchant has been configured to support currency conversion.
  */
 @Ignore("Currency conversion integration tests skipped: merchant is not configured to support currency conversion.")
 class CurrencyConversionIntegrationTest : BaseIntegrationTest() {
@@ -36,96 +36,65 @@ class CurrencyConversionIntegrationTest : BaseIntegrationTest() {
     private val amountOfMoney = AmountOfMoney(1000L, "AUD")
 
     @Test
-    fun getCurrencyConversionQuote_withCardAndProductId_shouldReturnBaseAmount() = runBlocking {
+    fun `GetCurrencyConversionQuote Returns proposal with card and payment product id`() = runBlocking {
         val result = sdk.getCurrencyConversionQuote(
             amountOfMoney,
             TestConfig.cardNumberWithSurcharge,
             TestConfig.productIdWithCurrencyConversion
         )
 
-        assertNotNull(result, "Result should not be null")
-        assertEquals(
-            amountOfMoney.amount,
-            result.proposal.baseAmount.amount,
-            "Base amount should match the requested amount"
-        )
-        assertEquals(
-            amountOfMoney.currencyCode,
-            result.proposal.baseAmount.currencyCode,
-            "Base currency should match the requested currency"
-        )
+        assertProposalBaseAmount(result.proposal.baseAmount)
     }
 
     @Test
-    fun getCurrencyConversionQuote_withCardAndNoProductId_shouldReturnBaseAmount() = runBlocking {
+    fun `GetCurrencyConversionQuote Returns proposal with card without payment product id`() = runBlocking {
         val result = sdk.getCurrencyConversionQuote(
             amountOfMoney,
             TestConfig.cardNumberWithSurcharge,
             null
         )
 
-        assertNotNull(result, "Result should not be null")
-        assertEquals(
-            amountOfMoney.amount,
-            result.proposal.baseAmount.amount,
-            "Base amount should match the requested amount"
-        )
-        assertEquals(
-            amountOfMoney.currencyCode,
-            result.proposal.baseAmount.currencyCode,
-            "Base currency should match the requested currency"
-        )
+        assertProposalBaseAmount(result.proposal.baseAmount)
     }
 
     @Test
-    fun getCurrencyConversionQuote_withToken_shouldReturnBaseAmount() = runBlocking {
+    fun `GetCurrencyConversionQuote Returns proposal with token source`() = runBlocking {
         val result = sdk.getCurrencyConversionQuote(amountOfMoney, TestConfig.cardTokenWithCurrencyConversion)
 
-        assertNotNull(result, "Result should not be null")
-        assertEquals(
-            amountOfMoney.amount,
-            result.proposal.baseAmount.amount,
-            "Base amount should match the requested amount"
-        )
-        assertEquals(
-            amountOfMoney.currencyCode,
-            result.proposal.baseAmount.currencyCode,
-            "Base currency should match the requested currency"
-        )
+        assertProposalBaseAmount(result.proposal.baseAmount)
     }
 
     @Test
-    fun getCurrencyConversionQuote_withNoConversionCardAndProductId_shouldThrowResponseError() = runBlocking {
-        try {
+    fun `GetCurrencyConversionQuote Throws error with card and payment product id`() = runBlocking {
+        assertCurrencyConversionNotFound {
             sdk.getCurrencyConversionQuote(
                 amountOfMoney,
                 TestConfig.cardNumberWithoutSurcharge,
                 TestConfig.productIdWithoutCurrencyConversion
             )
-            fail("Should have thrown a ResponseException for a card that does not support currency conversion")
-        } catch (e: ResponseException) {
-            assertNotNull(e.httpStatusCode, "Response error should have an HTTP status code")
-            assertTrue(e.httpStatusCode >= 400, "Response error should have an error HTTP status code")
         }
     }
 
     @Test
-    fun getCurrencyConversionQuote_withNoConversionCardAndNoProductId_shouldThrowResponseError() = runBlocking {
-        try {
+    fun `GetCurrencyConversionQuote Throws error with card without payment product id`() = runBlocking {
+        assertCurrencyConversionNotFound {
             sdk.getCurrencyConversionQuote(
                 amountOfMoney,
                 TestConfig.cardNumberWithoutSurcharge,
                 null
             )
-            fail("Should have thrown a ResponseException for a card that does not support currency conversion")
-        } catch (e: ResponseException) {
-            assertNotNull(e.httpStatusCode, "Response error should have an HTTP status code")
-            assertTrue(e.httpStatusCode >= 400, "Response error should have an error HTTP status code")
         }
     }
 
     @Test
-    fun getCurrencyConversionQuote_calledTwice_shouldUseCacheOnSecondCall() = runBlocking {
+    fun `GetCurrencyConversionQuote Throws error with token source`() = runBlocking {
+        assertCurrencyConversionNotFound {
+            sdk.getCurrencyConversionQuote(amountOfMoney, TestConfig.cardTokenWithoutCurrencyConversion)
+        }
+    }
+
+    @Test
+    fun `GetCurrencyConversionQuote returns cached result for repeated request`() = runBlocking {
         val cachedAmount = AmountOfMoney(1100L, "AUD")
 
         val firstStartTime = System.currentTimeMillis()
@@ -148,5 +117,29 @@ class CurrencyConversionIntegrationTest : BaseIntegrationTest() {
             "Cached result base currency should match the requested currency"
         )
         assertTrue(firstCallDuration > secondCallDuration, "Cached call should be faster than network call")
+    }
+
+    private fun assertProposalBaseAmount(baseAmount: AmountOfMoney) {
+        assertNotNull(baseAmount, "Base amount should not be null")
+        assertEquals(
+            amountOfMoney.amount,
+            baseAmount.amount,
+            "Base amount should match the requested amount"
+        )
+        assertEquals(
+            amountOfMoney.currencyCode,
+            baseAmount.currencyCode,
+            "Base currency should match the requested currency"
+        )
+    }
+
+    private suspend fun assertCurrencyConversionNotFound(action: suspend () -> Unit) {
+        try {
+            action()
+            fail("Should have thrown a ResponseException for a source that does not support currency conversion")
+        } catch (e: ResponseException) {
+            assertNotNull(e.httpStatusCode, "Response error should have an HTTP status code")
+            assertTrue(e.httpStatusCode >= 400, "Response error should have an error HTTP status code")
+        }
     }
 }

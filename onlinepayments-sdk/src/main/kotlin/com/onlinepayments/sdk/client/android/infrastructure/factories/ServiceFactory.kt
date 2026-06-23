@@ -51,7 +51,8 @@ internal class ServiceFactory internal constructor(
             apiClient = apiClient,
             sessionData = props.sessionData,
             context = props.context,
-            configuration = props.configuration
+            configuration = props.configuration,
+            cacheManager = cacheManager
         )
     }
 

@@ -15,10 +15,12 @@ package com.onlinepayments.sdk.client.android.integration.tests
 import com.onlinepayments.sdk.client.android.domain.Constants
 import com.onlinepayments.sdk.client.android.domain.exceptions.ResponseException
 import com.onlinepayments.sdk.client.android.integration.BaseIntegrationTest
+import com.onlinepayments.sdk.client.android.integration.utils.TestConfig
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 /**
@@ -28,11 +30,31 @@ import kotlin.test.assertTrue
 class PaymentProductIntegrationTest : BaseIntegrationTest() {
 
     @Test
-    fun getPaymentProduct_withSdkUnsupportedProductId_shouldThrowResponseError() = runBlocking {
+    fun `GetPaymentProduct returns payment product for valid context`() = runBlocking {
+        val result = sdk.getPaymentProduct(TestConfig.productIdVisa, paymentContext)
+
+        assertNotNull(result, "Result should not be null")
+        assertEquals(TestConfig.productIdVisa, result.id, "Payment product id should match")
+    }
+
+    @Test
+    fun `GetPaymentProduct throws error for unsupported or missing payment product`() = runBlocking {
+        val exception = assertFailsWith<ResponseException> {
+            sdk.getPaymentProduct(99999, paymentContext)
+        }
+
+        val httpStatusCode = assertNotNull(exception.httpStatusCode)
+
+        assertTrue(httpStatusCode > 400)
+    }
+
+    @Test
+    fun `Payment Product unsupported product`() = runBlocking {
         assertTrue(
             Constants.UNAVAILABLE_PAYMENT_PRODUCT_IDS.isNotEmpty(),
-            "UNAVAILABLE_PAYMENT_PRODUCT_IDS must not be empty — otherwise this test is vacuous"
+            "UNAVAILABLE_PAYMENT_PRODUCT_IDS must not be empty"
         )
+
         for (unsupportedId in Constants.UNAVAILABLE_PAYMENT_PRODUCT_IDS) {
             val exception = assertFailsWith<ResponseException> {
                 sdk.getPaymentProduct(unsupportedId, paymentContext)

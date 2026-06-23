@@ -15,7 +15,6 @@ package com.onlinepayments.sdk.client.android.integration.tests
 import com.onlinepayments.sdk.client.android.domain.Constants
 import com.onlinepayments.sdk.client.android.domain.exceptions.ResponseException
 import com.onlinepayments.sdk.client.android.integration.BaseIntegrationTest
-import com.onlinepayments.sdk.client.android.integration.utils.TestConfig
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,36 +30,15 @@ import kotlin.test.fail
 class BasicPaymentProductsIntegrationTest : BaseIntegrationTest() {
 
     @Test
-    fun getBasicPaymentProducts_shouldReturnBasicPaymentProducts() = runBlocking {
+    fun `GetBasicPaymentProducts returns basic payment products for valid context`() = runBlocking {
         val result = sdk.getBasicPaymentProducts(paymentContext)
 
         assertNotNull(result, "Result should not be null")
-        assertFalse(
-            result.paymentProducts.isEmpty(),
-            "Should have at least one payment product"
-        )
+        assertFalse(result.paymentProducts.isEmpty(), "Should have at least one payment product")
     }
 
     @Test
-    fun getPaymentProduct_shouldReturnPaymentProduct() = runBlocking {
-        val productId = TestConfig.productIdVisa
-
-        val result = sdk.getPaymentProduct(productId, paymentContext)
-
-        assertNotNull(result, "Result should not be null")
-        assertEquals(
-            productId,
-            result.id,
-            "Product ID should match requested ID"
-        )
-        assertFalse(
-            result.fields.isEmpty(),
-            "Payment product should have fields"
-        )
-    }
-
-    @Test
-    fun getBasicPaymentProducts_withInvalidAmount_shouldThrowResponseException() = runBlocking {
+    fun `GetBasicPaymentProducts throws error for invalid amount`() = runBlocking {
         val invalidContext = createPaymentContext(amount = -1)
 
         try {
@@ -77,96 +55,18 @@ class BasicPaymentProductsIntegrationTest : BaseIntegrationTest() {
     }
 
     @Test
-    fun getBasicPaymentProducts_calledTwice_shouldUseCacheOnSecondCall() = runBlocking {
-        // First call - should fetch from API
-        val firstResult = sdk.getBasicPaymentProducts(paymentContext)
-
-        // Second call - should hit cache and return same data
-        val secondResult = sdk.getBasicPaymentProducts(paymentContext)
-
-        assertNotNull(firstResult, "First result should not be null")
-        assertNotNull(secondResult, "Second result should not be null")
-
-        assertEquals(
-            firstResult.paymentProducts.size,
-            secondResult.paymentProducts.size,
-            "Cached result should have the same number of products"
-        )
-        assertEquals(
-            firstResult.paymentProducts.map { it.id },
-            secondResult.paymentProducts.map { it.id },
-            "Cached result should contain the same product IDs"
-        )
-    }
-
-    @Test
-    fun getBasicPaymentProducts_withDifferentContext_shouldInvalidateCache() = runBlocking {
-        // First call with EUR
-        val firstResult = sdk.getBasicPaymentProducts(paymentContext)
-
-        // Second call with USD - different context should invalidate cache
-        val usdContext = createPaymentContext(amount = 1000, currencyCode = "USD")
-        val secondResult = sdk.getBasicPaymentProducts(usdContext)
-
-        assertNotNull(firstResult, "First result should not be null")
-        assertNotNull(secondResult, "Second result should not be null")
-        Unit
-    }
-
-    @Test
-    fun getPaymentProduct_shouldHaveDisplayHints() = runBlocking {
-        val productId = TestConfig.productIdVisa
-
-        val result = sdk.getPaymentProduct(productId, paymentContext)
-
-        assertNotNull(result, "Result should not be null")
-        assertNotNull(result.logo, "Result should have logo")
-        Unit
-    }
-
-    @Test
-    fun getPaymentProduct_shouldHavePaymentProductFields() = runBlocking {
-        val productId = TestConfig.productIdVisa
-
-        val result = sdk.getPaymentProduct(productId, paymentContext)
-
-        assertNotNull(result, "Result should not be null")
-        assertFalse(result.fields.isEmpty(), "Should have payment product fields")
-
-        // Verify card products have expected fields
-        val fieldIds = result.fields.map { it.id }
-        assertTrue(
-            fieldIds.contains("cardNumber"),
-            "Card product should have cardNumber field"
-        )
-    }
-
-    @Test
-    fun getPaymentProduct_nonExistentProduct_shouldThrowException() = runBlocking {
-        val nonExistentProductId = 99999
-
-        try {
-            sdk.getPaymentProduct(nonExistentProductId, paymentContext)
-            fail("Should have thrown an exception for non-existent product")
-        } catch (e: ResponseException) {
-            // Expected - server returns 500 for non-existent products
-            assertEquals(500, e.httpStatusCode, "Should return error for non-existent product")
-        }
-    }
-
-    @Test
-    fun getBasicPaymentProducts_whenSdkUnsupportedProductsReturned_shouldFilterThemOut() = runBlocking {
+    fun `GetBasicPaymentProducts filters products not supported in this browser`() = runBlocking {
         val result = sdk.getBasicPaymentProducts(paymentContext)
 
         assertNotNull(result, "Result should not be null")
 
         val returnedIds = result.paymentProducts.mapNotNull { it.id }.toSet()
         val unavailableIds = Constants.UNAVAILABLE_PAYMENT_PRODUCT_IDS.toSet()
-        val intersection = returnedIds.intersect(unavailableIds)
+        val unsupportedReturnedIds = returnedIds.intersect(unavailableIds)
 
         assertTrue(
-            intersection.isEmpty(),
-            "SDK-unsupported products should be filtered out. Found: $intersection"
+            unsupportedReturnedIds.isEmpty(),
+            "Unsupported products should be filtered out. Found: $unsupportedReturnedIds"
         )
     }
 }

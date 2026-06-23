@@ -12,39 +12,192 @@
 
 package com.onlinepayments.sdk.client.android.integration.tests
 
+import com.onlinepayments.sdk.client.android.domain.configuration.SessionData
+import com.onlinepayments.sdk.client.android.domain.exceptions.CommunicationException
 import com.onlinepayments.sdk.client.android.domain.exceptions.ResponseException
+import com.onlinepayments.sdk.client.android.facade.OnlinePaymentsSdk
 import com.onlinepayments.sdk.client.android.integration.BaseMockIntegrationTest
 import com.onlinepayments.sdk.client.android.integration.utils.MockServerHelper
+import com.onlinepayments.sdk.client.android.integration.utils.TestConfig
 import kotlinx.coroutines.runBlocking
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.SocketPolicy
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.fail
+import kotlin.test.assertFailsWith
 
 /**
- * Mock-backed integration tests for basic payment products filtering.
- * Tests SDK filtering logic without requiring live credentials.
+ * Mock-backed integration tests for basic payment products.
+ * Tests caching, filtering and error handling without requiring live credentials.
  */
 class BasicPaymentProductsMockIntegrationTest : BaseMockIntegrationTest() {
 
     @Test
-    fun getBasicPaymentProducts_whenAllProductsAreFiltered_shouldThrowResponseException() = runBlocking {
-        val filteredJson = MockServerHelper.loadJsonResource("basicPaymentProductsAllFiltered.json")
-        val (mockSdk, mockWebServer) = MockServerHelper.createMockSdkWithResponse(context, filteredJson)
+    fun `GetBasicPaymentProducts returns cached result for repeated request`() {
+        runBlocking {
+            val response = MockServerHelper.loadJsonResource("basicPaymentProducts.json")
+            val (mockSdk, mockWebServer) = MockServerHelper.createMockSdkWithResponse(context, response)
 
-        try {
+            try {
+                val firstResult = mockSdk.getBasicPaymentProducts(paymentContext)
+                val secondResult = mockSdk.getBasicPaymentProducts(paymentContext)
+
+                assertEquals(1, mockWebServer.requestCount, "Repeated request with same context should use cache")
+                assertEquals(
+                    firstResult.paymentProducts.map { it.id },
+                    secondResult.paymentProducts.map { it.id },
+                    "Cached result should contain the same product IDs"
+                )
+            } finally {
+                mockWebServer.shutdown()
+            }
+        }
+    }
+
+    @Test
+    fun `GetBasicPaymentProducts makes new API call for different context`() {
+        runBlocking {
+            val response = MockServerHelper.loadJsonResource("basicPaymentProducts.json")
+            val (mockSdk, mockWebServer) = MockServerHelper.createMockSdkWithResponses(
+                context,
+                MockResponse()
+                    .setResponseCode(200)
+                    .setHeader("Content-Type", "application/json")
+                    .setBody(response),
+                MockResponse()
+                    .setResponseCode(200)
+                    .setHeader("Content-Type", "application/json")
+                    .setBody(response)
+            )
+
             try {
                 mockSdk.getBasicPaymentProducts(paymentContext)
-                fail("Should have thrown a ResponseException when all products are filtered out")
-            } catch (e: ResponseException) {
-                assertEquals(404, e.httpStatusCode, "Should return 404 when all products are filtered out")
+
+                val differentContext = createPaymentContext(
+                    amount = 1000,
+                    currencyCode = "USD",
+                    countryCode = "NL"
+                )
+
+                mockSdk.getBasicPaymentProducts(differentContext)
+
+                assertEquals(2, mockWebServer.requestCount, "Different context should trigger a new API call")
+            } finally {
+                mockWebServer.shutdown()
+            }
+        }
+    }
+
+    @Test
+    fun `GetBasicPaymentProducts filters products not supported by SDK`() {
+        runBlocking {
+            val response = MockServerHelper.loadJsonResource("basicPaymentProductsAllFiltered.json")
+            val (mockSdk, mockWebServer) = MockServerHelper.createMockSdkWithResponse(context, response)
+
+            try {
+                val exception = assertFailsWith<ResponseException> {
+                    mockSdk.getBasicPaymentProducts(paymentContext)
+                }
+
+                assertEquals(404, exception.httpStatusCode, "Should return 404 when all products are filtered out")
                 assertEquals(
                     "No payment products available.",
-                    e.message,
+                    exception.message,
                     "Should return the expected error message"
                 )
+            } finally {
+                mockWebServer.shutdown()
             }
-        } finally {
-            mockWebServer.shutdown()
+        }
+    }
+
+    @Test
+    fun `GetBasicPaymentProducts throws error when no payment products are available`() {
+        runBlocking {
+            val response = """{"paymentProducts":[]}"""
+            val (mockSdk, mockWebServer) = MockServerHelper.createMockSdkWithResponse(context, response)
+
+            try {
+                val exception = assertFailsWith<ResponseException> {
+                    mockSdk.getBasicPaymentProducts(paymentContext)
+                }
+
+                assertEquals(404, exception.httpStatusCode)
+                assertEquals("No payment products available.", exception.message)
+            } finally {
+                mockWebServer.shutdown()
+            }
+        }
+    }
+
+    @Test
+    fun `GetBasicPaymentProducts throws response error for 503 response`() {
+        runBlocking {
+            val (mockSdk, mockWebServer) = MockServerHelper.createMockSdkWithResponse(
+                context = context,
+                responseBody = """{"errorId":"SERVER_ERROR","errors":[]}""",
+                statusCode = 503
+            )
+
+            try {
+                val exception = assertFailsWith<ResponseException> {
+                    mockSdk.getBasicPaymentProducts(paymentContext)
+                }
+
+                assertEquals(503, exception.httpStatusCode)
+            } finally {
+                mockWebServer.shutdown()
+            }
+        }
+    }
+
+    @Test
+    fun `GetBasicPaymentProducts throws communication error for malformed JSON`() {
+        runBlocking {
+            val (mockSdk, mockWebServer) = MockServerHelper.createMockSdkWithResponse(
+                context = context,
+                responseBody = "not-valid-json",
+                statusCode = 200
+            )
+
+            try {
+                assertFailsWith<CommunicationException> {
+                    mockSdk.getBasicPaymentProducts(paymentContext)
+                }
+            } finally {
+                mockWebServer.shutdown()
+            }
+        }
+    }
+
+    @Test
+    fun `GetBasicPaymentProducts throws communication error for network failure`() {
+        runBlocking {
+            val mockWebServer = MockWebServer()
+            mockWebServer.start()
+            mockWebServer.enqueue(
+                MockResponse().apply {
+                    socketPolicy = SocketPolicy.DISCONNECT_AFTER_REQUEST
+                }
+            )
+
+            val baseUrl = mockWebServer.url("/").toString()
+            val sessionData = SessionData(
+                clientSessionId = "mock-session-id",
+                customerId = "mock-customer-id",
+                clientApiUrl = baseUrl,
+                assetUrl = baseUrl
+            )
+            val mockSdk = OnlinePaymentsSdk(sessionData, context, TestConfig.sdkConfiguration)
+
+            try {
+                assertFailsWith<CommunicationException> {
+                    mockSdk.getBasicPaymentProducts(paymentContext)
+                }
+            } finally {
+                mockWebServer.shutdown()
+            }
         }
     }
 }

@@ -25,8 +25,10 @@ import com.onlinepayments.sdk.client.android.infrastructure.encryption.Encryptor
 import com.onlinepayments.sdk.client.android.infrastructure.encryption.MetadataUtil
 import com.onlinepayments.sdk.client.android.infrastructure.encryption.RequestEncryptionData
 import com.onlinepayments.sdk.client.android.infrastructure.interfaces.IApiClient
+import com.onlinepayments.sdk.client.android.infrastructure.interfaces.ICacheManager
 import com.onlinepayments.sdk.client.android.infrastructure.interfaces.INonceProvider
 import com.onlinepayments.sdk.client.android.infrastructure.providers.NonceProvider
+import com.onlinepayments.sdk.client.android.infrastructure.utils.CacheManager
 import com.onlinepayments.sdk.client.android.services.interfaces.IEncryptionService
 
 internal class EncryptionService(
@@ -34,6 +36,7 @@ internal class EncryptionService(
     private val sessionData: SessionData,
     private val context: Context,
     private val configuration: SdkConfiguration?,
+    private val cacheManager: ICacheManager = CacheManager(),
     private val nonceProvider: INonceProvider = NonceProvider()
 ) : IEncryptionService {
     constructor(
@@ -43,9 +46,13 @@ internal class EncryptionService(
     ) : this(apiClient, sessionData, context, null)
 
     override suspend fun getPublicKey(): PublicKeyResponse {
-        val dto = apiClient.getPublicKey(sessionData.customerId)
+        val cacheKey = "getPublicKey-${sessionData.customerId}"
 
-        return PublicKeyResponse(dto.keyId, dto.publicKey)
+        return cacheManager.getOrFetch(cacheKey) {
+            val dto = apiClient.getPublicKey(sessionData.customerId)
+
+            PublicKeyResponse(dto.keyId, dto.publicKey)
+        }
     }
 
     override suspend fun encryptPaymentRequest(

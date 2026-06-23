@@ -102,6 +102,9 @@ object TestConfig {
     val cardTokenWithCurrencyConversion: String
         get() = getOptionalProperty("CARD_TOKEN_WITH_CURRENCY_CONVERSION", "")
 
+    val cardTokenWithoutCurrencyConversion: String
+        get() = getOptionalProperty("CARD_TOKEN_WITHOUT_CURRENCY_CONVERSION", "")
+
     val productIdWithCurrencyConversion: String
         get() = getOptionalProperty("PRODUCT_ID_WITH_CURRENCY_CONVERSION", "5700")
 

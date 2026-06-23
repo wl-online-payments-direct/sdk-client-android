@@ -15,60 +15,100 @@ package com.onlinepayments.sdk.client.android.integration.tests
 import com.onlinepayments.sdk.client.android.domain.Constants
 import com.onlinepayments.sdk.client.android.domain.exceptions.ResponseException
 import com.onlinepayments.sdk.client.android.integration.BaseIntegrationTest
+import com.onlinepayments.sdk.client.android.integration.utils.MockServerHelper
 import kotlinx.coroutines.runBlocking
+import okhttp3.mockwebserver.MockResponse
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import kotlin.test.fail
 
 /**
  * Integration tests for getNetworksForPaymentProduct.
- * Tests real API calls to the preprod environment.
+ * Tests real API calls and cache behavior for payment product networks.
  */
 class PaymentProductNetworksIntegrationTest : BaseIntegrationTest() {
 
     @Test
-    fun getNetworksForPaymentProduct_withWrongProductId_shouldThrowResponseError() = runBlocking {
-        try {
-            sdk.getNetworksForPaymentProduct(1, paymentContext)
-            fail("Should have thrown a ResponseException for a product that does not support networks")
-        } catch (e: ResponseException) {
-            assertNotNull(e.httpStatusCode, "Response error should have an HTTP status code")
-            assertTrue(
-                e.httpStatusCode >= 400,
-                "HTTP status should be a 4xx or 5xx error, got: ${e.httpStatusCode}"
-            )
-        }
-    }
-
-    @Test
-    fun getNetworksForPaymentProduct_withValidProductId_shouldReturnNetworksList() = runBlocking {
+    fun `GetPaymentProductNetworks returns networks for supported payment product`() = runBlocking {
         val result = sdk.getNetworksForPaymentProduct(Constants.PAYMENT_PRODUCT_ID_GOOGLEPAY, paymentContext)
 
         assertNotNull(result, "Result should not be null")
         assertNotNull(result.networks, "Networks list should not be null")
+        assertTrue(result.networks.isNotEmpty(), "Networks list should be non-empty for Google Pay")
+    }
+
+    @Test
+    fun `GetPaymentProductNetworks throws error for unsupported payment product`() = runBlocking {
+        val exception = assertFailsWith<ResponseException> {
+            sdk.getNetworksForPaymentProduct(1, paymentContext)
+        }
+
+        assertNotNull(exception.httpStatusCode, "Response error should have an HTTP status code")
         assertTrue(
-            result.networks.isNotEmpty(),
-            "Networks list should be non-empty for Google Pay"
+            exception.httpStatusCode >= 400,
+            "HTTP status should be a 4xx or 5xx error, got: ${exception.httpStatusCode}"
         )
     }
 
     @Test
-    fun getNetworksForPaymentProduct_calledTwice_shouldUseCacheOnSecondCall() = runBlocking {
-        val productId = Constants.PAYMENT_PRODUCT_ID_GOOGLEPAY
+    fun `GetPaymentProductNetworks returns cached result for repeated request`() = runBlocking {
+        val response = MockServerHelper.loadJsonResource("paymentProductNetworks.json")
+        val (mockSdk, server) = MockServerHelper.createMockSdkWithResponse(context, response)
 
-        val firstStartTime = System.currentTimeMillis()
-        val firstResult = sdk.getNetworksForPaymentProduct(productId, paymentContext)
-        val firstCallDuration = System.currentTimeMillis() - firstStartTime
+        try {
+            val firstResult = mockSdk.getNetworksForPaymentProduct(
+                Constants.PAYMENT_PRODUCT_ID_GOOGLEPAY,
+                paymentContext
+            )
+            val secondResult = mockSdk.getNetworksForPaymentProduct(
+                Constants.PAYMENT_PRODUCT_ID_GOOGLEPAY,
+                paymentContext
+            )
 
-        val secondStartTime = System.currentTimeMillis()
-        val secondResult = sdk.getNetworksForPaymentProduct(productId, paymentContext)
-        val secondCallDuration = System.currentTimeMillis() - secondStartTime
+            assertEquals(1, server.requestCount, "Repeated request with same context should use cache")
+            assertEquals(firstResult.networks, secondResult.networks, "Cached result should contain the same networks")
+        } finally {
+            server.shutdown()
+        }
+    }
 
-        assertNotNull(firstResult, "First result should not be null")
-        assertNotNull(secondResult, "Second result should not be null")
-        assertEquals(firstResult.networks, secondResult.networks, "Both results should have the same networks")
-        assertTrue(firstCallDuration > secondCallDuration, "Cached call should be faster than network call")
+    @Test
+    fun `GetPaymentProductNetworks makes new API call for different context`() = runBlocking {
+        val response = MockServerHelper.loadJsonResource("paymentProductNetworks.json")
+        val (mockSdk, server) = MockServerHelper.createMockSdkWithResponses(
+            context,
+            MockResponse()
+                .setResponseCode(200)
+                .setHeader("Content-Type", "application/json")
+                .setBody(response),
+            MockResponse()
+                .setResponseCode(200)
+                .setHeader("Content-Type", "application/json")
+                .setBody(response)
+        )
+
+        try {
+            mockSdk.getNetworksForPaymentProduct(
+                Constants.PAYMENT_PRODUCT_ID_GOOGLEPAY,
+                paymentContext
+            )
+
+            val differentContext = createPaymentContext(
+                amount = 1000,
+                currencyCode = "USD",
+                countryCode = "NL"
+            )
+
+            mockSdk.getNetworksForPaymentProduct(
+                Constants.PAYMENT_PRODUCT_ID_GOOGLEPAY,
+                differentContext
+            )
+
+            assertEquals(2, server.requestCount, "Different context should trigger a new API call")
+        } finally {
+            server.shutdown()
+        }
     }
 }

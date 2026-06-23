@@ -26,96 +26,130 @@ import kotlin.test.assertNotNull
 import kotlin.test.fail
 
 /**
- * Integration tests for credit card tokenization request encryption.
- * Tests real encryption with actual public keys from the preprod environment.
+ * Integration tests for credit card token request encryption.
+ * Tests real encryption with public keys from the preprod environment.
  */
 class CreditCardTokenRequestIntegrationTest : BaseIntegrationTest() {
+
     @Test
-    fun validRequest_getValues_shouldContainCorrectFields() {
-        val request = getValidRequest()
+    fun `CreateToken succeeds with valid token request data`() {
+        runBlocking {
+            val encryptedRequest = sdk.encryptTokenRequest(createValidTokenRequest())
+
+            val response = ServerApiHelper.createToken(encryptedRequest.encryptedCustomerInput)
+
+            assertNotNull(response, "Create token response should not be null")
+            assertNotNull(response.token, "Created token should not be null")
+            assertEquals("CREATED", response.tokenStatus, "Token status should be CREATED")
+        }
+    }
+
+    @Test
+    fun `CreateToken fails with invalid token request data`() {
+        runBlocking {
+            val encryptedRequest = sdk.encryptTokenRequest(createInvalidTokenRequest())
+
+            try {
+                ServerApiHelper.createToken(encryptedRequest.encryptedCustomerInput)
+                fail("Should not create token for invalid token request data")
+            } catch (e: Throwable) {
+                assertNotNull(e, "Server API should reject invalid token request data")
+            }
+        }
+    }
+
+    @Test
+    fun `EncryptTokenRequest fails when payment product id is missing`() {
+        runBlocking {
+            val request = CreditCardTokenRequest()
+            request.cardNumber = TestConfig.cardNumberVisa
+
+            try {
+                sdk.encryptTokenRequest(request)
+                fail("Should have thrown EncryptionException when paymentProductId is not set")
+            } catch (e: EncryptionException) {
+                assertEquals(
+                    "Error encrypting credit card token request: the payment product ID not set.",
+                    e.message,
+                    "Should return the expected error message"
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `EncryptTokenRequest returns correct values map`() {
+        val request = createValidTokenRequest()
+
         assertEquals(
-            mapOf<String, Any>(
-                "paymentProductId" to TestConfig.productIdVisa,
+            mapOf<String, Any?>(
                 "cardNumber" to TestConfig.cardNumberVisa,
                 "cardholderName" to "Test Cardholder",
-                "cvv" to "123",
                 "expiryDate" to "1230",
+                "cvv" to "123",
+                "paymentProductId" to TestConfig.productIdVisa
             ),
             request.getValues()
         )
     }
 
     @Test
-    fun encryptTokenRequest_withValidData_shouldReturnEncryptedData() = runBlocking {
-        val result = sdk.encryptTokenRequest(getValidRequest())
+    fun `EncryptTokenRequest returns encoded client meta information`() {
+        runBlocking {
+            val result = sdk.encryptTokenRequest(createValidTokenRequest())
 
-        assertAllValid(result)
-    }
-
-    @Test
-    fun encryptTokenRequest_withInvalidData_shouldReturnEncryptedData() = runBlocking {
-        val result = sdk.encryptTokenRequest(getInvalidRequest())
-
-        assertAllValid(result)
-    }
-
-    @Test
-    fun createToken_withValidData_shouldSucceed() = runBlocking {
-        val request = sdk.encryptTokenRequest(getValidRequest())
-
-        val response = ServerApiHelper.createToken(request.encryptedCustomerInput)
-
-        assertNotNull(response)
-        assertNotNull(response.token)
-        assertEquals("CREATED", response.tokenStatus)
-    }
-
-    @Test
-    fun createToken_withInvalidData_shouldFail() = runBlocking {
-        val result = sdk.encryptTokenRequest(getInvalidRequest())
-
-        try {
-            ServerApiHelper.createToken(result.encryptedCustomerInput)
-            fail("Should not create token")
-        } catch (e: Throwable) {
-            assertNotNull(e)
-            Unit
+            assertNotNull(result.encodedClientMetaInfo, "Encoded client meta info should not be null")
+            assertFalse(result.encodedClientMetaInfo.isEmpty(), "Encoded client meta info should not be empty")
         }
     }
 
     @Test
-    fun encryptTokenRequest_withMissingPaymentProductId_shouldThrowEncryptionException() = runBlocking {
-        val request = CreditCardTokenRequest()
-        request.cardNumber = "4567350000427977"
-        // paymentProductId intentionally not set
+    fun `EncryptTokenRequest returns encrypted token as string`() {
+        runBlocking {
+            val result = sdk.encryptTokenRequest(createValidTokenRequest())
 
-        try {
-            sdk.encryptTokenRequest(request)
-            fail("Should have thrown an EncryptionException when paymentProductId is not set")
-        } catch (e: EncryptionException) {
+            assertNotNull(result.encryptedCustomerInput, "Encrypted customer input should not be null")
+            assertFalse(result.encryptedCustomerInput.isEmpty(), "Encrypted customer input should not be empty")
             assertEquals(
-                "Error encrypting credit card token request: the payment product ID not set.",
-                e.message,
-                "Should return the expected error message"
+                5,
+                result.encryptedCustomerInput.lines().joinToString("").split(".").size,
+                "Encrypted customer input should be a JWE compact serialization"
             )
         }
     }
 
-    private fun assertAllValid(result: EncryptedRequest) {
+    @Test
+    fun `EncryptTokenRequest with invalid data still produces encrypted output`() {
+        runBlocking {
+            val result = sdk.encryptTokenRequest(createInvalidTokenRequest())
+
+            assertValidEncryptedRequest(result)
+        }
+    }
+
+    @Test
+    fun `EncryptTokenRequest with valid data returns encrypted output`() {
+        runBlocking {
+            val result = sdk.encryptTokenRequest(createValidTokenRequest())
+
+            assertValidEncryptedRequest(result)
+        }
+    }
+
+    private fun assertValidEncryptedRequest(result: EncryptedRequest) {
         assertNotNull(result, "Result should not be null")
         assertNotNull(result.encryptedCustomerInput, "Encrypted customer input should not be null")
         assertNotNull(result.encodedClientMetaInfo, "Encoded client meta info should not be null")
-        assertFalse(
-            result.encryptedCustomerInput.isEmpty(),
-            "Encrypted customer input should not be empty"
-        )
-        assertFalse(
-            result.encodedClientMetaInfo.isEmpty(),
-            "Encoded client meta info should not be empty"
+        assertFalse(result.encryptedCustomerInput.isEmpty(), "Encrypted customer input should not be empty")
+        assertFalse(result.encodedClientMetaInfo.isEmpty(), "Encoded client meta info should not be empty")
+        assertEquals(
+            5,
+            result.encryptedCustomerInput.lines().joinToString("").split(".").size,
+            "Encrypted customer input should be a JWE compact serialization"
         )
     }
 
-    private fun getValidRequest(): CreditCardTokenRequest {
+    private fun createValidTokenRequest(): CreditCardTokenRequest {
         val request = CreditCardTokenRequest()
         request.paymentProductId = TestConfig.productIdVisa
         request.cardNumber = TestConfig.cardNumberVisa
@@ -125,12 +159,13 @@ class CreditCardTokenRequestIntegrationTest : BaseIntegrationTest() {
         return request
     }
 
-    private fun getInvalidRequest(): CreditCardTokenRequest {
+    private fun createInvalidTokenRequest(): CreditCardTokenRequest {
         val request = CreditCardTokenRequest()
         request.paymentProductId = TestConfig.productIdVisa
-        request.cardNumber = TestConfig.cardNumberWithSurcharge
-        request.cardholderName = "Test Cardholder"
-
+        request.cardNumber = "not-a-valid-card-number"
+        request.cardholderName = ""
+        request.securityCode = "x"
+        request.expiryDate = "invalid-expiry-date"
         return request
     }
 }

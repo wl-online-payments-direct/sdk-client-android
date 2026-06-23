@@ -1,3 +1,14 @@
+# 5.1.1 [2026-06-23]
+
+## Added
+
+- Additionally expanded integration test coverage across all major SDK components.
+
+## Changed
+
+- `getIinDetails` now ignores whitespace in partial card numbers.
+- `getPublicKey` now caches the public key response.
+
 # 5.1.0 [2026-06-15]
 
 ## Added

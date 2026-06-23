@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
  * Integration tests for getSurchargeCalculation.
  * Tests real API calls to the preprod environment.
  *
- * @todo un-skip this test suite, once the merchant has been configured to support surcharge
+ * @todo un-skip this test suite once the merchant has been configured to support surcharge.
  */
 @Ignore("Surcharge integration tests skipped: merchant is not configured to support surcharge.")
 class SurchargeCalculationIntegrationTest : BaseIntegrationTest() {
@@ -35,106 +35,92 @@ class SurchargeCalculationIntegrationTest : BaseIntegrationTest() {
     private val amountOfMoney = AmountOfMoney(1000L, "EUR")
 
     @Test
-    fun getSurchargeCalculation_withCardAndProductId_shouldReturnSurchargeResponse() = runBlocking {
+    fun `GetSurchargeCalculation Returns surcharge result with card and payment product id`() = runBlocking {
         val result = sdk.getSurchargeCalculation(
             amountOfMoney,
             TestConfig.cardNumberWithSurcharge,
             TestConfig.productIdWithSurcharge
         )
 
-        assertNotNull(result, "Result should not be null")
-        assertTrue(result.surcharges.isNotEmpty(), "Surcharges list should not be empty")
-        assertEquals(
-            SurchargeResult.OK,
-            result.surcharges[0].result,
-            "Surcharge result should be OK"
-        )
-        assertEquals(
-            amountOfMoney.amount,
-            result.surcharges[0].netAmount.amount,
-            "Net amount should match the requested amount"
-        )
+        assertSurchargeResult(result.surcharges[0])
     }
 
     @Test
-    fun getSurchargeCalculation_withCardAndNoProductId_shouldReturnSurchargeResponse() = runBlocking {
+    fun `GetSurchargeCalculation Returns surcharge result with card without payment product id`() = runBlocking {
         val result = sdk.getSurchargeCalculation(
             amountOfMoney,
             TestConfig.cardNumberWithSurcharge,
             null
         )
 
-        assertNotNull(result, "Result should not be null")
-        assertTrue(result.surcharges.isNotEmpty(), "Surcharges list should not be empty")
-        assertEquals(
-            SurchargeResult.OK,
-            result.surcharges[0].result,
-            "Surcharge result should be OK"
-        )
+        assertSurchargeResult(result.surcharges[0])
     }
 
     @Test
-    fun getSurchargeCalculation_withToken_shouldReturnSurchargeResponse() = runBlocking {
+    fun `GetSurchargeCalculation Returns surcharge result with token source`() = runBlocking {
         val result = sdk.getSurchargeCalculation(amountOfMoney, TestConfig.cardTokenWithSurcharge)
 
-        assertNotNull(result, "Result should not be null")
-        assertTrue(result.surcharges.isNotEmpty(), "Surcharges list should not be empty")
-        assertEquals(
-            SurchargeResult.OK,
-            result.surcharges[0].result,
-            "Surcharge result should be OK"
-        )
+        assertSurchargeResult(result.surcharges[0])
     }
 
     @Test
-    fun getSurchargeCalculation_withNoSurchargeCardAndProductId_shouldReturnNoSurchargeResponse() = runBlocking {
+    fun `GetSurchargeCalculation Returns no surcharge with card and payment product id`() = runBlocking {
         val result = sdk.getSurchargeCalculation(
             amountOfMoney,
             TestConfig.cardNumberWithoutSurcharge,
             TestConfig.productIdWithoutSurcharge
         )
 
-        assertNotNull(result, "Result should not be null")
-        assertTrue(result.surcharges.isNotEmpty(), "Surcharges list should not be empty")
-        assertEquals(
-            SurchargeResult.NO_SURCHARGE,
-            result.surcharges[0].result,
-            "Surcharge result should be NO_SURCHARGE"
-        )
+        assertNoSurchargeResult(result.surcharges[0])
     }
 
     @Test
-    fun getSurchargeCalculation_withNoSurchargeCardAndNoProductId_shouldReturnNoSurchargeResponse() = runBlocking {
+    fun `GetSurchargeCalculation Returns no surcharge with card without payment product id`() = runBlocking {
         val result = sdk.getSurchargeCalculation(
             amountOfMoney,
             TestConfig.cardNumberWithoutSurcharge,
             null
         )
 
-        assertNotNull(result, "Result should not be null")
-        assertTrue(result.surcharges.isNotEmpty(), "Surcharges list should not be empty")
-        assertEquals(
-            SurchargeResult.NO_SURCHARGE,
-            result.surcharges[0].result,
-            "Surcharge result should be NO_SURCHARGE"
-        )
+        assertNoSurchargeResult(result.surcharges[0])
     }
 
     @Test
-    fun getSurchargeCalculation_calledTwice_shouldUseCacheOnSecondCall() = runBlocking {
+    fun `GetSurchargeCalculation returns cached result for repeated request`() = runBlocking {
         val cachedAmount = AmountOfMoney(1100L, "EUR")
 
-        // First call — hits the network
         val firstStartTime = System.currentTimeMillis()
         sdk.getSurchargeCalculation(cachedAmount, TestConfig.cardTokenWithSurcharge)
         val firstCallDuration = System.currentTimeMillis() - firstStartTime
 
-        // Second call — should be served from cache
         val secondStartTime = System.currentTimeMillis()
         val secondResult = sdk.getSurchargeCalculation(cachedAmount, TestConfig.cardTokenWithSurcharge)
         val secondCallDuration = System.currentTimeMillis() - secondStartTime
 
         assertNotNull(secondResult, "Cached result should not be null")
         assertTrue(firstCallDuration > secondCallDuration, "Cached call should be faster than network call")
+    }
+
+    private fun assertSurchargeResult(surcharge: com.onlinepayments.sdk.client.android.domain.surchargeCalculation.Surcharge) {
+        assertNotNull(surcharge, "Surcharge should not be null")
+        assertEquals(
+            SurchargeResult.OK,
+            surcharge.result,
+            "Surcharge result should be OK"
+        )
+        assertEquals(
+            amountOfMoney.amount,
+            surcharge.netAmount.amount,
+            "Net amount should match the requested amount"
+        )
+    }
+
+    private fun assertNoSurchargeResult(surcharge: com.onlinepayments.sdk.client.android.domain.surchargeCalculation.Surcharge) {
+        assertNotNull(surcharge, "Surcharge should not be null")
+        assertEquals(
+            SurchargeResult.NO_SURCHARGE,
+            surcharge.result,
+            "Surcharge result should be NO_SURCHARGE"
+        )
     }
 }

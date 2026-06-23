@@ -49,7 +49,9 @@ internal class ClientService(
         }
 
         val partialCCNumber =
-            partialCreditCardNumber.take(Constants.MAX_CHARS_PAYMENT_PRODUCT_ID_LOOKUP)
+            partialCreditCardNumber
+                .filterNot { it.isWhitespace() }
+                .take(Constants.MAX_CHARS_PAYMENT_PRODUCT_ID_LOOKUP)
 
         if (partialCCNumber.length < Constants.MIN_CHARS_PAYMENT_PRODUCT_ID_LOOKUP) {
             return IinDetailsResponse(IinDetailStatus.NOT_ENOUGH_DIGITS)
