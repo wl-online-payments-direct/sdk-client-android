@@ -118,11 +118,12 @@ public final class <span class="typeNameLabel"><a href=OnlinePaymentsSdk.html>On
 )
 
 val configuration = SdkConfiguration(
-    applicationIdentifier = "MyApp/1.0.0",
-    loggingEnabled = true
+    environmentIsProduction = true,
+    appIdentifier = "MyApp/1.0.0",
+    sdkIdentifier = null
 )
 
-val sdk = OnlinePaymentsSdk(sessionData, context, configuration)</code></pre><p>The SDK provides three variants for most operations:</p><ul><li><p>Suspend functions: For use with Kotlin coroutines (recommended)</p></li><li><p>Sync functions: Blocking calls that run on the current thread</p></li><li><p>Listener functions: Callback-based for Java compatibility, callbacks run on main thread</p></li></ul></div>
+val sdk = OnlinePaymentsSdk(sessionData, context, configuration)</code></pre><p>The SDK provides three variants for most operations:</p><ul><li><p>Suspend functions: For use with Kotlin coroutines (recommended)</p></li><li><p>Sync functions: Blocking calls that run on the current thread</p></li><li><p>Listener functions: Callback-based for Java compatibility, callbacks run on main thread</p></li></ul><p>An Agent Skill with the mandatory rules and tested example code for this SDK is available at https://raw.githubusercontent.com/wl-online-payments-direct/sdk-client-android/v5.2.0/skills/onlinepayments-sdk-client-android/SKILL.md AI coding agents should read it before writing code that uses this class.</p></div>
                 </li>
             </ul>
         </div>
@@ -530,7 +531,7 @@ val sdk = OnlinePaymentsSdk(sessionData, context, configuration)</code></pre><p>
                                             
                                             
                                             
-                                            <dd><code>configuration</code> - Optional SDK configuration including application identifier and logging settings</dd>
+                                            <dd><code>configuration</code> - Optional SDK configuration including application identifier and logging settings.</dd>
                                             
                                             
                                         </dl>
@@ -769,7 +770,7 @@ val sdk = OnlinePaymentsSdk(sessionData, context, configuration)</code></pre><p>
                                     <li class="blockList">
                                         <h4>getIinDetails</h4>
                                         <pre class="methodSignature"> final <a href=../domain/iin/IinDetailsResponse.html>IinDetailsResponse</a> <a href=OnlinePaymentsSdk.html#getIinDetails(String,PaymentContextWithAmount)>getIinDetails</a>(<a href=https://developer.android.com/reference/kotlin/java/lang/String.html>String</a> partialCreditCardNumber, <a href=../domain/PaymentContextWithAmount.html>PaymentContextWithAmount</a> paymentContext)</pre>
-                                        <div class="block"><p>Looks up payment product details using an Issuer Identification Number (IIN).</p><p>The IIN is the first 6-8 digits of a payment card number. This method can be used to identify the card type and payment product as the customer enters their card number, enabling features like:</p><ul><li><p>Displaying the correct card logo</p></li><li><p>Pre-selecting the payment product</p></li><li><p>Validating card number format</p></li></ul><p>Results are cached to avoid repeated lookups for the same IIN.</p></div>
+                                        <div class="block"><p>Looks up payment product details using an Issuer Identification Number (IIN).</p><p>The IIN is the first 6-8 digits of a payment card number. This method can be used to identify the card type and payment product as the customer enters their card number, enabling features like:</p><ul><li><p>Displaying the correct card logo</p></li><li><p>Pre-selecting the payment product</p></li><li><p>Validating card number format</p></li></ul><p>Results are cached to avoid repeated lookups for the same IIN.</p><p>With fewer than 6 digits no request is made and the status is <code>NOT_ENOUGH_DIGITS</code>. When the API answers HTTP 404 (the number matches no payment product of the merchant), the status is <code>UNKNOWN</code>. Other API errors, for example an expired session, throw a <a href=../domain/exceptions/ResponseException.html>ResponseException</a>. Only one lookup can run at a time: a call while another lookup is running throws an IllegalStateSdkException.</p></div>
                                         
                                         <dl>
                                             <dt><span class="paramLabel">Parameters:</span></dt>
@@ -779,7 +780,7 @@ val sdk = OnlinePaymentsSdk(sessionData, context, configuration)</code></pre><p>
                                             
                                             
                                             
-                                            <dd><code>paymentContext</code> - Optional payment context for additional validation</dd>
+                                            <dd><code>paymentContext</code> - The payment context, including the order amount</dd>
                                             
                                             
                                         </dl>
@@ -850,7 +851,7 @@ val sdk = OnlinePaymentsSdk(sessionData, context, configuration)</code></pre><p>
                                             
                                             
                                             
-                                            <dd><code>partialCreditCardNumber</code> - The customer's card number (at least first 6 digits)</dd>
+                                            <dd><code>partialCreditCardNumber</code> - The first 8 digits of the customer's card number (at least 6).</dd>
                                             
                                             
                                             
@@ -998,7 +999,7 @@ val sdk = OnlinePaymentsSdk(sessionData, context, configuration)</code></pre><p>
                                             
                                             
                                             
-                                            <dd><code>partialCreditCardNumber</code> - The customer's card number (at least first 6 digits)</dd>
+                                            <dd><code>partialCreditCardNumber</code> - The first 8 digits of the customer's card number (at least 6).</dd>
                                             
                                             
                                             
@@ -1136,7 +1137,7 @@ val sdk = OnlinePaymentsSdk(sessionData, context, configuration)</code></pre><p>
                                     <li class="blockList">
                                         <h4>encryptPaymentRequest</h4>
                                         <pre class="methodSignature"> final <a href=../domain/paymentRequest/EncryptedRequest.html>EncryptedRequest</a> <a href=OnlinePaymentsSdk.html#encryptPaymentRequest(PaymentRequest)>encryptPaymentRequest</a>(<a href=../domain/paymentRequest/PaymentRequest.html>PaymentRequest</a> paymentRequest)</pre>
-                                        <div class="block"><p>Encrypts a payment request for secure transmission to your server.</p><p>This method:</p><ul><li><p>Validates the payment request to ensure all required fields are present and valid</p></li><li><p>Fetches the public encryption key from the API (if not cached)</p></li><li><p>Encrypts the sensitive payment data using JWE (RSA-OAEP + A256CBC-HS512)</p></li><li><p>Returns encrypted customer input and encoded client metadata</p></li></ul><p>The encrypted data should be sent to your server, which forwards it to the Online Payments Server API to process the payment.</p><pre><code>val paymentProduct = sdk.getPaymentProduct("1", paymentContext)
+                                        <div class="block"><p>Encrypts a payment request for secure transmission to your server.</p><p>This method:</p><ul><li><p>Validates the payment request to ensure all required fields are present and valid</p></li><li><p>Fetches the public encryption key from the API (if not cached)</p></li><li><p>Encrypts the sensitive payment data using JWE (RSA-OAEP + A256CBC-HS512)</p></li><li><p>Returns encrypted customer input and encoded client metadata</p></li></ul><p>The encrypted data should be sent to your server, which forwards it to the Online Payments Server API to process the payment.</p><pre><code>val paymentProduct = sdk.getPaymentProduct(1, paymentContext)
 val paymentRequest = PaymentRequest(paymentProduct)
 
 paymentRequest.setValue("cardNumber", "4567350000427977")
@@ -1250,7 +1251,7 @@ val encryptedRequest = sdk.encryptTokenRequest(tokenRequest)
                                             
                                             
                                             
-                                            <dd><code>listener</code> - Callback invoked when encryption completes<ul><li><p>onPaymentRequestPrepared: Called with EncryptedRequest on success</p></li><li><p>onFailure: Called with EncryptionException if encryption fails</p></li></ul></dd>
+                                            <dd><code>listener</code> - Callback invoked when encryption completes<ul><li><p>onSuccess: Called with EncryptedRequest on success</p></li><li><p>onFailure: Called with EncryptionException if encryption fails</p></li></ul></dd>
                                             
                                             
                                         </dl>
