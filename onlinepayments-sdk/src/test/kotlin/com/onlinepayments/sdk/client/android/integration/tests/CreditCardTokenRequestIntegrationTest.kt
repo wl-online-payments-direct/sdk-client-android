@@ -40,7 +40,7 @@ class CreditCardTokenRequestIntegrationTest : BaseIntegrationTest() {
 
             assertNotNull(response, "Create token response should not be null")
             assertNotNull(response.token, "Created token should not be null")
-            assertEquals("CREATED", response.tokenStatus, "Token status should be CREATED")
+            assertEquals("created", response.tokenStatus, "Token status should be created")
         }
     }
 

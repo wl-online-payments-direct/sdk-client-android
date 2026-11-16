@@ -1,6 +1,6 @@
 # Online Payments - Android SDK
 
-The Online Payments Android SDK helps you accept payments in your Android app, supporting API level 21 and up, through
+The Online Payments Android SDK helps you accept payments in your Android app, supporting API level 23 and up, through
 the Online Payments platform.
 
 The SDK's primary function is establishing a secure channel between your Android app and our server. This channel
@@ -20,6 +20,7 @@ processes security credentials to guarantee the safe transit of your customers' 
     - [Table of Contents](#table-of-contents)
     - [Installation](#installation)
     - [Example apps](#example-apps)
+    - [Working with AI agents](#working-with-ai-agents)
     - [Quick overview](#quick-overview)
     - [Type definitions](#type-definitions)
         - [OnlinePaymentSdk](#onlinepaymentsdk)
@@ -59,6 +60,28 @@ traditional XML implementation. If you are fine with the look-and-feel of the ex
 not need to make any changes at all. Take a look at
 the [Kotlin](https://github.com/wl-online-payments-direct/sdk-client-android-example-kotlin)
 or [Java](https://github.com/wl-online-payments-direct/sdk-client-android-example) example apps.
+
+## Working with AI agents
+
+This repository contains an [Agent Skill](https://agentskills.io) that teaches AI coding agents (for
+example Claude Code, GitHub Copilot or Cursor) how to build a checkout with this SDK: the mandatory
+security rules, the checkout steps, and Kotlin and Java code that is compiled against the SDK sources on
+every SDK build.
+
+- **Where it is:** `skills/onlinepayments-sdk-client-android/` in this repository. Start with `SKILL.md`.
+- **Online link for the SDK version you use:**
+  https://raw.githubusercontent.com/wl-online-payments-direct/sdk-client-android/v5.2.0/skills/onlinepayments-sdk-client-android/SKILL.md
+  (replace the version in the link with the tag of your SDK version). The skill is not part of the AAR: an agent
+  cannot read an AAR, and files in an AAR's `assets` or `res` folders would end up in your app.
+- **Add it to your project:** copy the folder `skills/onlinepayments-sdk-client-android/` from the
+  tag of your SDK version into the folder where your agent reads skills (for example `.claude/skills/`),
+  or put a line like this in your project's `AGENTS.md` or `CLAUDE.md`:
+
+```
+When you change code that uses com.worldline-solutions:sdk-client-android, first read
+https://raw.githubusercontent.com/wl-online-payments-direct/sdk-client-android/v5.2.0/skills/onlinepayments-sdk-client-android/SKILL.md
+and follow its rules and examples.
+```
 
 ## Quick overview
 
@@ -818,11 +841,14 @@ property status that indicates the result of the check and a property `paymentPr
 product is associated with the IIN. The returned `paymentProductId` can be used to provide visual feedback to the
 customer by showing the appropriate payment product logo.
 
-The `IinDetailsResponse` has a status property represented through the `IinStatus` enum. The `IinStatus` enum values
+The `IinDetailsResponse` has a status property represented through the `IinDetailStatus` enum. The `IinDetailStatus` enum values
 are:
 
 - `SUPPORTED` indicates that the IIN is associated with a payment product that is supported by our platform.
-- `UNKNOWN` indicates that the IIN is not recognized.
+- `UNKNOWN` indicates that the IIN is not recognized: the API answered HTTP 404 because the number matches no
+  payment product of your account. Any other API error (for example an expired session) is not turned into
+  `UNKNOWN`: the call fails with a `ResponseException`. The enum also has a value `UNSUPPORTED`, which the SDK
+  never returns.
 - `NOT_ENOUGH_DIGITS` indicates that fewer than six digits have been provided and that the IIN check cannot be
   performed.
 - `EXISTING_BUT_NOT_ALLOWED` indicates that the provided IIN is recognized, but that the corresponding product is not

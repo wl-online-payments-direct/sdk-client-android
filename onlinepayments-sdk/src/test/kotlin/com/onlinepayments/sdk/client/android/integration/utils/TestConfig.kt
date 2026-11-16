@@ -82,7 +82,7 @@ object TestConfig {
         get() = getRequiredProperty("ONLINEPAYMENTS_SDK_API_SECRET")
 
     val host: String
-        get() = getOptionalProperty("ONLINEPAYMENTS_SDK_HOST", "payment.preprod.direct.worldline-solutions.com")
+        get() = getOptionalProperty("ONLINEPAYMENTS_SDK_HOST", "payment.direct.ecom.preprod.worldline-solutions.com")
 
     val cardNumberWithSurcharge: String
         get() = getOptionalProperty("CARD_NUMBER_WITH_SURCHARGE", "4567350000427977")

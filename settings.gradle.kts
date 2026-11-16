@@ -41,3 +41,12 @@ dependencyResolutionManagement {
 }
 
 include(":onlinepayments-sdk")
+
+// Compiles the examples of the Agent Skill (skills/) against the SDK. Not published.
+// The module is in the top-level examples/ folder, which the GitHub push leaves out. The folder is missing in
+// the GitHub repositories, so the module is only included when it exists.
+val skillExamples = file("examples/skill-examples")
+if (skillExamples.exists()) {
+    include(":skill-examples")
+    project(":skill-examples").projectDir = skillExamples
+}

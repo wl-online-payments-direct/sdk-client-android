@@ -50,15 +50,19 @@ interface GenericResponseListener<T> {
      * @param exception The SDK exception that caused the failure
      */
     fun onFailure(exception: SdkException) {
-        // Default implementation calls deprecated methods for backward compatibility
-        @Suppress("DEPRECATION")
-        when (exception) {
-            is ResponseException -> {
-                onApiError(ErrorResponse(exception.message, exception.cause, exception.apiError))
-            }
+        // Default implementation calls deprecated methods for backward compatibility. Their default
+        // implementations call onFailure again: the guard ends that loop for a listener that overrides
+        // none of the failure callbacks (the failure is then ignored).
+        ListenerFailureRouting.route(this) {
+            @Suppress("DEPRECATION")
+            when (exception) {
+                is ResponseException -> {
+                    onApiError(ErrorResponse(exception.message, exception.cause, exception.apiError))
+                }
 
-            else -> {
-                onException(exception)
+                else -> {
+                    onException(exception)
+                }
             }
         }
     }

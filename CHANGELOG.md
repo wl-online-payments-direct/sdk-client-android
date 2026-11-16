@@ -1,3 +1,28 @@
+# 5.2.0 [2026-11-03]
+
+## Added
+
+- An Agent Skill for AI coding agents in `skills/onlinepayments-sdk-client-android/`. See "Working with AI agents" in
+  `README.md`.
+- `CurrencyConversionResponse`: `dccSessionIdOrNull` and `proposalOrNull`, which are `null` when the API sent no
+  data.
+- `Surcharge`: `netAmountOrNull`, `surchargeAmountOrNull` and `totalAmountOrNull`, which are `null` when the API
+  sent no data.
+
+## Fixed
+
+- `SdkConfiguration.loggingEnabled` is now applied when an `OnlinePaymentsSdk` is created. It was ignored.
+- A `GenericResponseListener` that overrides none of the failure callbacks no longer causes an endless loop when a
+  call fails. The failure is ignored then.
+- Corrected the KDoc of `OnlinePaymentsSdk` and `SdkConfiguration` (the configuration example, IIN details
+  statuses, encryption exceptions, the card digits for surcharge and currency conversion requests).
+
+## Changed
+
+- Removed the unused dependencies `commons-lang3` and `firebase-appdistribution-gradle`. The dependency
+  `logging-interceptor` is replaced by `okhttp` (same version, 5.3.2), which the SDK uses directly. Apps that relied
+  on these libraries coming in through the SDK must declare them.
+
 # 5.1.1 [2026-06-23]
 
 ## Added

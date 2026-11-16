@@ -43,6 +43,24 @@ class Surcharge internal constructor(
     @SerializedName("surchargeRate")
     val surchargeRate: SurchargeRate?
 ) : Serializable {
+    /**
+     * The [netAmount], or `null` when the API sent none.
+     *
+     * The API leaves out the amounts when [result] is [SurchargeResult.NO_SURCHARGE]. [netAmount],
+     * [surchargeAmount] and [totalAmount] keep their non-null types for compatibility, but are `null` at
+     * runtime in that case. Check [result] before reading them, or use these properties.
+     */
+    val netAmountOrNull: AmountOfMoney?
+        get() = netAmount
+
+    /** The [surchargeAmount], or `null` when the API sent none. See [netAmountOrNull]. */
+    val surchargeAmountOrNull: AmountOfMoney?
+        get() = surchargeAmount
+
+    /** The [totalAmount], or `null` when the API sent none. See [netAmountOrNull]. */
+    val totalAmountOrNull: AmountOfMoney?
+        get() = totalAmount
+
     companion object {
         @Suppress("Unused")
         private const val serialVersionUID = -4590044758612969969L

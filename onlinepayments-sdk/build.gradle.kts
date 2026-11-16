@@ -78,15 +78,14 @@ dependencies {
     //noinspection NewerVersionAvailable Will be addressed in 2026
     implementation("com.squareup.retrofit2:retrofit:2.12.0")
     implementation("com.squareup.retrofit2:converter-gson:2.12.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:5.3.2")
+    // The SDK uses OkHttp directly. Declaring it keeps the OkHttp version that logging-interceptor used to bring in.
+    implementation("com.squareup.okhttp3:okhttp:5.3.2")
     implementation("com.google.code.gson:gson:2.13.2")
-    implementation("org.apache.commons:commons-lang3:3.19.0")
     implementation("androidx.annotation:annotation:1.9.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 
     implementation("com.google.android.gms:play-services-wallet:19.5.0")
-    implementation("com.google.firebase:firebase-appdistribution-gradle:5.2.0")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("io.mockk:mockk:1.14.7")

@@ -1,0 +1,9 @@
+{
+    "skillDir": "skills/onlinepayments-sdk-client-android",
+    "examplesDir": "skills/onlinepayments-sdk-client-android/examples",
+    "version": {
+        "file": "gradle.properties",
+        "pattern": "(?:^|\\n)VERSION_NAME=(\\S+)"
+    },
+    "versionedLinkFiles": ["README.md", "onlinepayments-sdk/src/main/kotlin/com/onlinepayments/sdk/client/android/facade/OnlinePaymentsSdk.kt"]
+}

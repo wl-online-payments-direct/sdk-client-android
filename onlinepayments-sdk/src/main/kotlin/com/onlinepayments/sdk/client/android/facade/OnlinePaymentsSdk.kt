@@ -81,8 +81,9 @@ import kotlinx.coroutines.runBlocking
  * )
  *
  * val configuration = SdkConfiguration(
- *     applicationIdentifier = "MyApp/1.0.0",
- *     loggingEnabled = true
+ *     environmentIsProduction = true,
+ *     appIdentifier = "MyApp/1.0.0",
+ *     sdkIdentifier = null
  * )
  *
  * val sdk = OnlinePaymentsSdk(sessionData, context, configuration)
@@ -94,6 +95,12 @@ import kotlinx.coroutines.runBlocking
  * - **Suspend functions**: For use with Kotlin coroutines (recommended)
  * - **Sync functions**: Blocking calls that run on the current thread
  * - **Listener functions**: Callback-based for Java compatibility, callbacks run on main thread
+ *
+ * ## Working with AI agents
+ *
+ * An Agent Skill with the mandatory rules and tested example code for this SDK is available at
+ * https://raw.githubusercontent.com/wl-online-payments-direct/sdk-client-android/v5.2.0/skills/onlinepayments-sdk-client-android/SKILL.md
+ * AI coding agents should read it before writing code that uses this class.
  *
  * @see SessionData
  * @see SdkConfiguration
@@ -118,7 +125,10 @@ class OnlinePaymentsSdk {
      *                    Create Client Session API. Contains client session ID, customer ID,
      *                    and API URLs.
      * @param context Android application context
-     * @param configuration Optional SDK configuration including application identifier and logging settings
+     * @param configuration Optional SDK configuration including application identifier and logging settings.
+     *                      `loggingEnabled` writes the HTTP requests and responses (URL, headers including the
+     *                      session id, and bodies) to Logcat. It is off by default and must stay off in production.
+     *                      The setting is process-wide: the SDK instance created last decides.
      *
      * @see SessionData
      * @see SdkConfiguration
@@ -144,6 +154,10 @@ class OnlinePaymentsSdk {
     ) {
         SessionDataValidator.validateRequiredFields(sessionData)
         val normalizedSessionData = SessionDataNormalizer.normalize(sessionData)
+
+        if (factory == null) {
+            ApiLogger.setLoggingEnabled(configuration?.loggingEnabled ?: false)
+        }
 
         this.sessionData = normalizedSessionData
         this.context = context
@@ -365,8 +379,13 @@ class OnlinePaymentsSdk {
      *
      * Results are cached to avoid repeated lookups for the same IIN.
      *
+     * With fewer than 6 digits no request is made and the status is `NOT_ENOUGH_DIGITS`. When the API
+     * answers HTTP 404 (the number matches no payment product of the merchant), the status is `UNKNOWN`.
+     * Other API errors, for example an expired session, throw a [ResponseException]. Only one lookup can run
+     * at a time: a call while another lookup is running throws an IllegalStateSdkException.
+     *
      * @param partialCreditCardNumber The first 6+ digits of the card number (minimum 6 digits required)
-     * @param paymentContext Optional payment context for additional validation
+     * @param paymentContext The payment context, including the order amount
      * @return IinDetailsResponse containing payment product ID, card type, and co-brands
      *
      * @see IinDetailsResponse
@@ -425,7 +444,8 @@ class OnlinePaymentsSdk {
      * completing the transaction. This method provides the conversion rate and converted amount.
      *
      * @param amountOfMoney The payment amount in the merchant's currency
-     * @param partialCreditCardNumber The customer's card number (at least first 6 digits)
+     * @param partialCreditCardNumber The first 8 digits of the customer's card number (at least 6). The request
+     *                                is not encrypted: never pass the complete number
      * @param paymentProductId Optional payment product ID for the card
      * @return CurrencyConversionResponse containing the conversion quote
      *
@@ -558,7 +578,8 @@ class OnlinePaymentsSdk {
      * This method calculates the surcharge amount based on the payment amount and card details.
      *
      * @param amountOfMoney The base payment amount
-     * @param partialCreditCardNumber The customer's card number (at least first 6 digits)
+     * @param partialCreditCardNumber The first 8 digits of the customer's card number (at least 6). The request
+     *                                is not encrypted: never pass the complete number
      * @param paymentProductId Optional payment product ID for the card
      * @return SurchargeCalculationResponse containing surcharge details and total amount
      *
@@ -698,7 +719,7 @@ class OnlinePaymentsSdk {
      * ## Example
      *
      * ```kotlin
-     * val paymentProduct = sdk.getPaymentProduct("1", paymentContext)
+     * val paymentProduct = sdk.getPaymentProduct(1, paymentContext)
      * val paymentRequest = PaymentRequest(paymentProduct)
      *
      * paymentRequest.setValue("cardNumber", "4567350000427977")
@@ -713,7 +734,9 @@ class OnlinePaymentsSdk {
      * @param paymentRequest The payment request containing customer payment data
      * @return EncryptedRequest containing encrypted customer input and encoded metadata
      *
-     * @throws EncryptionException if the payment request is invalid or encryption fails
+     * @throws com.onlinepayments.sdk.client.android.domain.exceptions.InvalidArgumentException if the payment
+     *   request is invalid
+     * @throws EncryptionException if encryption fails
      * @throws CommunicationException if fetching the public key fails
      *
      * @see PaymentRequest
@@ -817,7 +840,7 @@ class OnlinePaymentsSdk {
      * The listener callbacks are invoked on the main thread.
      *
      * @param listener Callback invoked when encryption completes
-     *   - onPaymentRequestPrepared: Called with EncryptedRequest on success
+     *   - onSuccess: Called with EncryptedRequest on success
      *   - onFailure: Called with EncryptionException if encryption fails
      *
      * @see encryptTokenRequest

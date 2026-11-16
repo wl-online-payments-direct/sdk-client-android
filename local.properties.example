@@ -16,7 +16,7 @@ ONLINEPAYMENTS_SDK_API_ID=
 ONLINEPAYMENTS_SDK_API_SECRET=
 
 # Optional: API host (defaults to preprod environment)
-# ONLINEPAYMENTS_SDK_HOST=payment.preprod.direct.worldline-solutions.com
+# ONLINEPAYMENTS_SDK_HOST=payment.direct.ecom.preprod.worldline-solutions.com
 
 # Optional: Test card numbers (defaults provided)
 # CARD_NUMBER_WITH_SURCHARGE=4567350000427977

@@ -29,6 +29,21 @@ data class CurrencyConversionResponse internal constructor(
     @SerializedName("proposal")
     val proposal: DccProposal
 ) : Serializable {
+    /**
+     * The [dccSessionId], or `null` when the API sent none.
+     *
+     * The API sends no session id (or an empty one) and no proposal unless [CurrencyConversionResult.result] is
+     * [ConversionResultType.ALLOWED]. [dccSessionId] and [proposal] keep their non-null types for
+     * compatibility, but are `null` at runtime in that case. Check the result before reading them, or use
+     * this property and [proposalOrNull].
+     */
+    val dccSessionIdOrNull: String?
+        get() = dccSessionId
+
+    /** The [proposal], or `null` when the API sent none. See [dccSessionIdOrNull]. */
+    val proposalOrNull: DccProposal?
+        get() = proposal
+
     companion object {
         @Suppress("unused")
         private const val serialVersionUID = 197614528L

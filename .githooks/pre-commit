@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# Fails the commit when an Agent Skill example no longer compiles against the SDK or a skill code block is out of date.
+# Enable with: git config core.hooksPath .githooks
+sh scripts/skill-check.sh
